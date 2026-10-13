@@ -220,7 +220,9 @@ footer button{background:none;border:0;color:#e6ebf2;text-decoration:underline;t
 .opt[aria-pressed="true"] .tick svg,.opt[aria-checked="true"] .tick svg{opacity:1}
 .opt .rank{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:var(--terra);color:#fff;font-weight:700;display:grid;place-items:center;font-size:.9rem}
 .opt.scene{padding:0;overflow:hidden;min-height:0}
-.opt.scene .art{aspect-ratio:16/10;max-width:100%}
+.opt.scene .art{display:block;position:relative;height:0;padding-top:62.5%;flex:none}
+.opt.scene .art svg{position:absolute;inset:0}
+.opt>*{flex:none}
 .opt.scene .art svg{width:100%;height:100%;display:block}
 .opt.scene .txt{padding:12px 16px 16px;display:grid;gap:4px}
 .opt.scene .tick{top:10px;right:10px}
@@ -278,14 +280,14 @@ footer button{background:none;border:0;color:#e6ebf2;text-decoration:underline;t
 .typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:dot 1.1s ease-in-out infinite}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
 @keyframes dot{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
-.scene{margin:18px 0 6px;position:relative;border-radius:20px;overflow:hidden;aspect-ratio:21/9;max-width:100%;box-shadow:var(--shadow);background:#1d3557;animation:pop .6s ease both}
-.scene video,.scene .kbwrap{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.scene::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,20,36,.72) 0%,rgba(10,20,36,.2) 65%,rgba(10,20,36,0) 100%)}
-.scene figcaption{position:absolute;inset:auto auto 0 0;z-index:1;padding:clamp(14px,3vw,26px);color:#fff;display:grid;gap:4px;max-width:34ch}
-.scene figcaption .eyebrow{color:#f3c79c}
-.scene figcaption b{font-family:var(--f-display);font-weight:400;font-size:clamp(1.7rem,4vw,2.6rem);line-height:1.05}
-.scene figcaption span:last-child{font-size:.95rem;opacity:.9}
-@media (max-width:560px){.scene{aspect-ratio:4/3}}
+.phase-scene{margin:18px 0 6px;position:relative;border-radius:20px;overflow:hidden;aspect-ratio:21/9;max-width:100%;box-shadow:var(--shadow);background:#1d3557;animation:pop .6s ease both}
+.phase-scene video,.phase-scene .kbwrap{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.phase-scene::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,20,36,.72) 0%,rgba(10,20,36,.2) 65%,rgba(10,20,36,0) 100%)}
+.phase-scene figcaption{position:absolute;inset:auto auto 0 0;z-index:1;padding:clamp(14px,3vw,26px);color:#fff;display:grid;gap:4px;max-width:34ch}
+.phase-scene figcaption .eyebrow{color:#f3c79c}
+.phase-scene figcaption b{font-family:var(--f-display);font-weight:400;font-size:clamp(1.7rem,4vw,2.6rem);line-height:1.05}
+.phase-scene figcaption span:last-child{font-size:.95rem;opacity:.9}
+@media (max-width:560px){.phase-scene{aspect-ratio:4/3}}
 .reveal{background:var(--sand);border-radius:16px;padding:16px 18px;display:grid;gap:10px;animation:pop .5s ease both}
 .rv-top{display:grid;gap:2px}
 .rv-places{display:flex;flex-wrap:wrap;gap:6px}
@@ -1203,7 +1205,7 @@ function answerText(q){
   return esc(lbl(q.id,P.answers[q.id]));
 }
 function phaseIntro(ph,i){
-  return `<figure class="scene" aria-label="Fase ${i+1}: ${esc(ph.name)}">${media(ph.video,ph.scene,i*17+4)}<figcaption><span class="eyebrow">Fase ${i+1} van ${PHASES.length}</span><b>${esc(ph.name)}</b><span>${esc(ph.intro)}</span></figcaption></figure>`;
+  return `<figure class="phase-scene" aria-label="Fase ${i+1}: ${esc(ph.name)}">${media(ph.video,ph.scene,i*17+4)}<figcaption><span class="eyebrow">Fase ${i+1} van ${PHASES.length}</span><b>${esc(ph.name)}</b><span>${esc(ph.intro)}</span></figcaption></figure>`;
 }
 function chatItemsAfter(qid){
   return P.chat.filter(c=>c.after===qid).map(c=>`
@@ -1234,8 +1236,12 @@ function renderChat(focus){
   bindThread(); if(cur) bindQ(cur); else bindFinish();
   renderHead();
   requestAnimationFrame(()=>{
-    const target=$('#qwrap');
-    target.scrollIntoView({behavior:(focus||reduceMotion())?'auto':'smooth',block:'end'});
+    // Scroll naar de huidige vraag; staat er direct een fase-video boven, dan die mee in beeld.
+    const last=$('#thread').lastElementChild;
+    const target=(last&&last.classList.contains('phase-scene'))?last:$('#qwrap');
+    const head=($('.wz-head').getBoundingClientRect().bottom||150)+12;
+    const y=target.getBoundingClientRect().top+window.scrollY-head;
+    window.scrollTo({top:Math.max(0,y),behavior:(focus||reduceMotion())?'auto':'smooth'});
     if(focus){const h=$('#qT')||$('#qwrap');h.setAttribute('tabindex','-1');h.focus({preventScroll:true})}
   });
 }
