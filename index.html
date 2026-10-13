@@ -1,0 +1,1612 @@
+<title>SpanjeKompas</title>
+<meta name="description" content="Ontdek welke omgeving, woning en levensstijl het beste bij jou passen aan de zuidelijke Costa Blanca. Vrijblijvend, persoonlijk en helemaal op jouw tempo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: filmische hero > drie stappen > regio met kaart > over. Woonwijzer en kompas zijn eigen schermen binnen dezelfde pagina. */
+:root{
+  --night:#14243a;        /* vertrouwen, navigatie */
+  --sand:#efe5d4;         /* warme achtergronden */
+  --paper:#fbf8f2;        /* gebroken wit */
+  --card:#fffdf8;
+  --terra:#b45d3a;        /* subtiel accent */
+  --sea:#0d7473;          /* interactie (AA op licht) */
+  --sea-soft:#d6ecea;
+  --pine:#2e4a3a;         /* natuurlijk accent */
+  --ink:#1a2230;
+  --muted:#5a6370;
+  --line:rgba(20,36,58,.14);
+  --focus:#0d7473;
+  --shadow:0 1px 2px rgba(20,36,58,.06),0 8px 24px -12px rgba(20,36,58,.18);
+  --f-display:"Instrument Serif","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --f-ui:"Figtree","Segoe UI",system-ui,-apple-system,sans-serif;
+  --r:14px;
+  --gutter:clamp(16px,4vw,40px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --night:#0b1525;--sand:#18253a;--paper:#0f1a2b;--card:#16233a;--terra:#e08b66;--sea:#56c7c3;--sea-soft:#173c45;
+  --pine:#8fb59d;--ink:#eef1f5;--muted:#a8b2be;--line:rgba(230,236,245,.14);--focus:#56c7c3;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --night:#0b1525;--sand:#18253a;--paper:#0f1a2b;--card:#16233a;--terra:#e08b66;--sea:#56c7c3;--sea-soft:#173c45;
+  --pine:#8fb59d;--ink:#eef1f5;--muted:#a8b2be;--line:rgba(230,236,245,.14);--focus:#56c7c3;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;line-height:1.08;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h2{font-size:clamp(2rem,4.4vw,3.2rem)}
+h3{font-size:1.55rem}
+p{margin:0}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:var(--gutter)}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--terra)}
+.lead{font-size:1.12rem;color:var(--muted);max-width:60ch}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.55em;min-height:52px;padding:.8em 1.5em;border-radius:999px;border:1.5px solid transparent;font-weight:600;font-size:1rem;cursor:pointer;text-decoration:none;transition:transform .25s ease,background .25s ease,box-shadow .25s ease,color .25s}
+.btn svg{width:18px;height:18px;transition:transform .3s ease}
+.btn:hover svg{transform:translateX(3px)}
+.btn-primary{background:var(--sea);color:#fff}
+:root:not([data-theme="light"]) .btn-primary{color:#fff}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 24px -10px var(--sea)}
+.btn-ghost{background:transparent;border-color:currentColor}
+.btn-ghost:hover{background:rgba(127,127,127,.12)}
+.btn-quiet{background:transparent;border:0;padding-inline:.4em;min-height:44px;color:var(--muted);text-decoration:underline;text-underline-offset:4px}
+.btn-quiet:hover{color:var(--ink)}
+.btn-terra{background:var(--terra);color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn-primary,:root:not([data-theme="light"]) .btn-terra{color:#0b1525}}
+:root[data-theme="dark"] .btn-primary,:root[data-theme="dark"] .btn-terra{color:#0b1525}
+
+/* Nav */
+.nav{position:fixed;inset:0 0 auto 0;z-index:40;padding-top:env(safe-area-inset-top,0px);transition:background .4s ease,box-shadow .4s ease,color .4s;color:#fff}
+.nav.solid{background:var(--paper);color:var(--ink);box-shadow:0 1px 0 var(--line)}
+.nav-in{display:flex;align-items:center;gap:24px;height:72px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex:0 0 auto}
+.brand svg{width:36px;height:36px}
+.brand b{font-family:var(--f-display);font-weight:400;font-size:1.6rem;letter-spacing:-.01em}
+.brand b i{font-style:italic;color:var(--terra)}
+.nav.solid .brand b i{color:var(--terra)}
+.nav:not(.solid) .brand b i{color:#f3c79c}
+.links{display:flex;gap:18px;margin-left:auto;align-items:center;white-space:nowrap}
+.links a{text-decoration:none;font-weight:500;font-size:.95rem;opacity:.9;padding:6px 2px;border-bottom:1.5px solid transparent}
+.links a:hover{opacity:1;border-color:currentColor}
+.links .btn{min-height:44px;padding:.55em 1.1em;font-size:.92rem}
+.nav:not(.solid) .links .btn{background:#fff;color:var(--night)}
+@media (max-width:1120px){.links a{display:none}}
+@media (max-width:900px){.links{display:none}}
+
+/* Mobile bottom bar (one-hand) */
+.tabbar{display:none}
+@media (max-width:900px){
+  .tabbar{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;inset:auto 0 0 0;z-index:45;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .tabbar a,.tabbar button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 2px 8px;font-size:.72rem;font-weight:600;text-decoration:none;background:none;border:0;cursor:pointer;color:var(--muted)}
+  .tabbar svg{width:22px;height:22px}
+  .tabbar .go{color:var(--sea)}
+  body{padding-bottom:70px}
+}
+
+/* Hero */
+.hero{position:relative;min-height:min(92svh,860px);display:flex;align-items:flex-end;color:#fff;overflow:hidden;isolation:isolate;background:#1d3557}
+.hero-media{position:absolute;inset:0;z-index:-2}
+.hero-media svg,.hero-media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.kb{animation:kb 38s ease-in-out infinite alternate;transform-origin:62% 60%}
+@keyframes kb{from{transform:scale(1.02) translate3d(0,0,0)}to{transform:scale(1.12) translate3d(-1.5%,-1%,0)}}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,20,36,.55) 0%,rgba(10,20,36,.05) 30%,rgba(10,20,36,.25) 55%,rgba(10,20,36,.78) 100%)}
+.hero-in{padding-block:140px 72px;width:100%}
+.hero h1{font-size:clamp(2.7rem,7.2vw,6rem);max-width:13ch;animation:rise 1.4s cubic-bezier(.2,.7,.1,1) .35s both}
+.hero h1 em{font-style:italic;color:#f6cf9a}
+.hero .sub{font-size:clamp(1.05rem,1.6vw,1.25rem);max-width:46ch;margin-top:18px;opacity:.92;animation:rise 1.4s cubic-bezier(.2,.7,.1,1) .6s both}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px 16px;margin-top:30px;align-items:center;animation:rise 1.4s cubic-bezier(.2,.7,.1,1) .85s both}
+.hero .btn-ghost{color:#fff}
+.micro{margin-top:14px;font-size:.88rem;letter-spacing:.04em;opacity:.85;animation:rise 1.4s ease 1s both}
+@keyframes rise{from{opacity:.001;transform:translateY(18px)}to{opacity:1;transform:none}}
+.scrollcue{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);width:26px;height:42px;border:1.5px solid rgba(255,255,255,.6);border-radius:14px;opacity:.8}
+.scrollcue::after{content:"";position:absolute;left:50%;top:8px;width:3px;height:8px;margin-left:-1.5px;background:#fff;border-radius:2px;animation:cue 2.2s ease-in-out infinite}
+@keyframes cue{0%{transform:translateY(0);opacity:1}70%{transform:translateY(14px);opacity:0}100%{opacity:0}}
+@media (max-width:900px){.scrollcue{display:none}}
+.sway{animation:sway 7s ease-in-out infinite alternate}
+.sway2{animation:sway 9s ease-in-out infinite alternate-reverse}
+@keyframes sway{from{transform:rotate(-1.6deg)}to{transform:rotate(1.8deg)}}
+.glint{animation:glint 4.5s ease-in-out infinite}
+@keyframes glint{0%,100%{opacity:.15}50%{opacity:.75}}
+.sunrise{animation:sunrise 6s cubic-bezier(.2,.6,.2,1) both}
+@keyframes sunrise{from{transform:translateY(60px)}to{transform:none}}
+.logo-intro .needle{animation:needle 1.8s cubic-bezier(.3,1.6,.4,1) .2s both;transform-origin:50% 50%}
+@keyframes needle{from{transform:rotate(-140deg)}to{transform:rotate(0)}}
+
+/* Sections */
+section.block{padding-block:clamp(64px,9vw,120px)}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,40px);margin-top:44px}
+.step{display:grid;gap:10px;align-content:start}
+.step .n{font-family:var(--f-display);font-size:3rem;line-height:1;color:var(--terra)}
+.step p{color:var(--muted)}
+@media (max-width:760px){.steps{grid-template-columns:1fr}}
+.split{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,5vw,72px);align-items:start}
+@media (max-width:900px){.split{grid-template-columns:1fr}}
+
+/* Region */
+.region{background:var(--sand)}
+.region-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(20px,3vw,40px);margin-top:36px;align-items:start}
+@media (max-width:960px){.region-grid{grid-template-columns:1fr}}
+.map{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:14px;position:sticky;top:96px}
+@media (max-width:960px){.map{position:static}}
+.map svg{width:100%;height:auto;display:block}
+.map figcaption{font-size:.8rem;color:var(--muted);padding:8px 4px 0}
+.mapdot{cursor:pointer}
+.mapdot circle{transition:r .2s}
+.mapdot:hover circle.d,.mapdot.on circle.d{r:9}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chip{min-height:40px;padding:.4em 1em;border-radius:999px;border:1.5px solid var(--line);background:var(--card);cursor:pointer;font-weight:500;font-size:.92rem}
+.chip[aria-pressed="true"]{background:var(--night);color:var(--paper);border-color:var(--night)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip[aria-pressed="true"]{background:var(--sea);color:#0b1525;border-color:var(--sea)}}
+:root[data-theme="dark"] .chip[aria-pressed="true"]{background:var(--sea);color:#0b1525;border-color:var(--sea)}
+.places{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.place{background:var(--card);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;scroll-margin-top:96px}
+.place .art{aspect-ratio:16/9;max-width:100%;display:block}
+.place .art svg{width:100%;height:100%;display:block}
+.place .bd{padding:16px 18px 18px;display:grid;gap:10px;flex:1;align-content:start}
+.place .meta{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.place p{font-size:.95rem;color:var(--muted)}
+.place dl{margin:0;display:grid;gap:6px;font-size:.9rem}
+.place dt{font-weight:600}
+.place dd{margin:0;color:var(--muted)}
+.place .act{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap;padding-top:6px}
+.fav{min-height:44px;display:inline-flex;align-items:center;gap:8px;padding:.45em 1em;border-radius:999px;border:1.5px solid var(--sea);color:var(--sea);background:transparent;cursor:pointer;font-weight:600;font-size:.9rem}
+.fav[aria-pressed="true"]{background:var(--sea);color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .fav[aria-pressed="true"]{color:#0b1525}}
+:root[data-theme="dark"] .fav[aria-pressed="true"]{color:#0b1525}
+.fav svg{width:16px;height:16px}
+details.more summary{cursor:pointer;font-weight:600;font-size:.9rem;color:var(--sea);min-height:32px;list-style:none}
+details.more summary::-webkit-details-marker{display:none}
+details.more[open] summary{margin-bottom:6px}
+.note{font-size:.85rem;color:var(--muted);border-left:3px solid var(--terra);padding:.2em 0 .2em .9em;margin-top:22px;max-width:70ch}
+
+.about{display:grid;gap:20px;max-width:64ch}
+.about p{color:var(--muted)}
+.trust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:10px}
+.trust div{border-top:1.5px solid var(--line);padding-top:12px}
+.trust b{display:block;font-weight:600}
+.trust span{color:var(--muted);font-size:.92rem}
+@media (max-width:700px){.trust{grid-template-columns:1fr}}
+
+footer{background:var(--night);color:#e6ebf2;padding-block:48px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:24px 40px;justify-content:space-between;align-items:flex-start}
+footer small{opacity:.75;display:block;max-width:52ch}
+footer button{background:none;border:0;color:#e6ebf2;text-decoration:underline;text-underline-offset:4px;cursor:pointer;padding:8px 0;min-height:44px}
+
+/* Views */
+[hidden]{display:none!important}
+.app{min-height:100svh;padding-top:calc(72px + env(safe-area-inset-top,0px));background:var(--paper)}
+
+/* Wizard */
+.wz-head{position:sticky;top:calc(72px + env(safe-area-inset-top,0px));z-index:20;background:var(--paper);border-bottom:1px solid var(--line)}
+.wz-head .wrap{display:flex;align-items:center;gap:16px;padding-block:12px}
+.compass{width:52px;height:52px;flex:0 0 auto}
+.compass .needle{transition:transform 1.1s cubic-bezier(.3,1.4,.4,1);transform-origin:50% 50%}
+.prog{flex:1;min-width:0}
+.prog-top{display:flex;justify-content:space-between;gap:12px;font-size:.88rem;font-weight:600}
+.prog-top span:last-child{color:var(--muted);font-weight:500;white-space:nowrap}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:7px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--sea),var(--pine));border-radius:6px;transition:width .6s ease}
+.phases{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.phases button{border:0;background:none;padding:2px 0;font-size:.75rem;color:var(--muted);cursor:pointer;letter-spacing:.04em}
+.phases button.cur{color:var(--ink);font-weight:700}
+.phases button.done{color:var(--sea)}
+.phases i{color:var(--line);font-style:normal}
+.wz-body{padding-block:clamp(28px,5vw,56px) 40px}
+.qwrap{max-width:860px;margin-inline:auto}
+.q-phase{display:flex;gap:10px;align-items:center}
+.q-title{font-size:clamp(2rem,4.6vw,3.2rem);margin-top:10px}
+.q-help{margin-top:12px;color:var(--muted);max-width:62ch}
+.q-why{margin-top:8px;font-size:.88rem;color:var(--muted)}
+.q-why b{color:var(--ink);font-weight:600}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin-top:28px}
+.opts.scenes{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.opt{position:relative;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:16px;cursor:pointer;display:flex;flex-direction:column;gap:8px;min-height:92px;transition:border-color .2s,transform .2s,box-shadow .2s}
+.opt:hover{border-color:var(--sea);transform:translateY(-2px);box-shadow:var(--shadow)}
+.opt[aria-pressed="true"],.opt[aria-checked="true"]{border-color:var(--sea);box-shadow:0 0 0 1.5px var(--sea) inset,var(--shadow);background:var(--sea-soft)}
+.opt .ic{width:30px;height:30px;color:var(--sea)}
+.opt b{font-weight:600;line-height:1.3}
+.opt small{color:var(--muted);font-size:.86rem;line-height:1.4}
+.opt .tick{position:absolute;top:12px;right:12px;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;background:var(--card)}
+.opt[aria-pressed="true"] .tick,.opt[aria-checked="true"] .tick{background:var(--sea);border-color:var(--sea);color:#fff}
+.opt .tick svg{width:14px;height:14px;opacity:0}
+.opt[aria-pressed="true"] .tick svg,.opt[aria-checked="true"] .tick svg{opacity:1}
+.opt .rank{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:var(--terra);color:#fff;font-weight:700;display:grid;place-items:center;font-size:.9rem}
+.opt.scene{padding:0;overflow:hidden;min-height:0}
+.opt.scene .art{aspect-ratio:16/10;max-width:100%}
+.opt.scene .art svg{width:100%;height:100%;display:block}
+.opt.scene .txt{padding:12px 16px 16px;display:grid;gap:4px}
+.opt.scene .tick{top:10px;right:10px}
+.opt[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+.matrix{display:grid;gap:14px;margin-top:28px}
+.mrow{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;grid-template-columns:180px 1fr;gap:12px;align-items:center}
+.mrow b{font-weight:600}
+.mrow .seg{display:flex;flex-wrap:wrap;gap:8px}
+@media (max-width:640px){.mrow{grid-template-columns:1fr}}
+.seg .chip[aria-checked="true"]{background:var(--sea);color:#fff;border-color:var(--sea)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg .chip[aria-checked="true"]{color:#0b1525}}
+:root[data-theme="dark"] .seg .chip[aria-checked="true"]{color:#0b1525}
+.budget{margin-top:28px;background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:clamp(18px,3vw,28px);display:grid;gap:18px}
+.budget .amt{font-family:var(--f-display);font-size:clamp(2.4rem,6vw,3.6rem);line-height:1;font-variant-numeric:tabular-nums}
+.budget .amt.unset{color:var(--muted)}
+.budget input[type=range]{width:100%;accent-color:var(--sea);height:32px}
+.ticks{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.field{display:grid;gap:6px}
+.field label{font-weight:600;font-size:.95rem}
+.field input,.field textarea{font:inherit;padding:.75em .9em;border-radius:10px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);min-height:50px;width:100%}
+.field input:focus{border-color:var(--sea);outline:none;box-shadow:0 0 0 3px var(--sea-soft)}
+.field .err{color:#b3261e;font-size:.88rem;font-weight:500}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .field .err{color:#ff9a8f}}
+:root[data-theme="dark"] .field .err{color:#ff9a8f}
+.field input[aria-invalid="true"]{border-color:#b3261e}
+.wz-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:36px;padding-top:20px;border-top:1px solid var(--line)}
+.wz-foot .sp{flex:1}
+.hint{margin-top:26px;display:flex;gap:12px;align-items:flex-start;background:var(--sand);border-radius:var(--r);padding:14px 16px;font-size:.95rem}
+.hint svg{flex:0 0 22px;width:22px;height:22px;color:var(--terra);margin-top:2px}
+
+/* Kompas-gesprek */
+#v-wizard{position:relative;isolation:isolate}
+.bgvid{position:fixed;inset:0;z-index:-1;opacity:.16;pointer-events:none;overflow:hidden}
+.bgvid video,.bgvid svg,.bgvid .kbwrap{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.kbwrap{overflow:hidden}
+.kbwrap svg{width:100%;height:100%;display:block;animation:kb 30s ease-in-out infinite alternate}
+.chat{max-width:860px;margin-inline:auto;padding-block:24px 190px;display:grid;gap:14px}
+.thread{display:grid;gap:12px}
+.msg{display:flex;gap:12px;align-items:flex-start;min-width:0;animation:pop .45s cubic-bezier(.2,.7,.2,1) both}
+@keyframes pop{from{opacity:.001;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg .av{flex:0 0 34px;width:34px;height:34px;color:var(--night);margin-top:2px}
+.bubble{background:var(--card);border-radius:4px 18px 18px 18px;padding:11px 16px;box-shadow:var(--shadow);min-width:0;max-width:62ch;font-size:1rem}
+.bubble.q{color:var(--muted);font-size:.95rem}
+.bubble.big{max-width:none;flex:1;padding:16px 20px;color:var(--ink)}
+.bubble.re{font-size:1.02rem}
+.msg.me{justify-content:flex-end}
+.msg.me .bubble{background:var(--night);color:#f3efe7;border-radius:18px 4px 18px 18px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .msg.me .bubble{background:#244064}}
+:root[data-theme="dark"] .msg.me .bubble{background:#244064}
+.msg.me .muted{opacity:.7;font-style:italic}
+.edit{background:none;border:0;color:#9fd7d4;text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-size:.82rem;margin-left:8px;padding:2px}
+.filled{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center;font-size:.85rem;color:var(--muted)}
+.filled .tag{border:0;cursor:pointer}
+.typing{display:inline-flex;gap:4px;padding:4px 0}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:dot 1.1s ease-in-out infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.scene{margin:18px 0 6px;position:relative;border-radius:20px;overflow:hidden;aspect-ratio:21/9;max-width:100%;box-shadow:var(--shadow);background:#1d3557;animation:pop .6s ease both}
+.scene video,.scene .kbwrap{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.scene::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,20,36,.72) 0%,rgba(10,20,36,.2) 65%,rgba(10,20,36,0) 100%)}
+.scene figcaption{position:absolute;inset:auto auto 0 0;z-index:1;padding:clamp(14px,3vw,26px);color:#fff;display:grid;gap:4px;max-width:34ch}
+.scene figcaption .eyebrow{color:#f3c79c}
+.scene figcaption b{font-family:var(--f-display);font-weight:400;font-size:clamp(1.7rem,4vw,2.6rem);line-height:1.05}
+.scene figcaption span:last-child{font-size:.95rem;opacity:.9}
+@media (max-width:560px){.scene{aspect-ratio:4/3}}
+.reveal{background:var(--sand);border-radius:16px;padding:16px 18px;display:grid;gap:10px;animation:pop .5s ease both}
+.rv-top{display:grid;gap:2px}
+.rv-places{display:flex;flex-wrap:wrap;gap:6px}
+.rv-p{font-size:.84rem;padding:.25em .7em;border-radius:999px;border:1px dashed var(--line);color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+.rv-p.on{border:1px solid var(--sea);color:var(--ink);background:var(--card);text-decoration:none;font-weight:600}
+.rv-next{font-size:.9rem;color:var(--muted)}
+.current{display:grid;gap:4px;scroll-margin-top:150px;margin-top:6px}
+.current .q-title{font-size:clamp(1.7rem,3.8vw,2.5rem);margin-top:0}
+.current .opts{margin-top:16px}
+.current .wz-foot{margin-top:22px}
+.finish{background:var(--card);border-radius:18px;padding:clamp(18px,3vw,28px);box-shadow:var(--shadow)}
+.say{position:fixed;inset:auto 0 0 0;z-index:35;background:var(--paper);border-top:1px solid var(--line);padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom,0px))}
+.say-in{max-width:860px;margin-inline:auto;display:flex;gap:10px;align-items:flex-end}
+.say textarea{flex:1;min-width:0;font:inherit;resize:none;height:50px;line-height:1.4;border-radius:14px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:.7em .9em;min-height:50px;max-height:140px}
+.say textarea:focus{outline:none;border-color:var(--sea);box-shadow:0 0 0 3px var(--sea-soft)}
+.say small{display:block;max-width:860px;margin:6px auto 0;color:var(--muted);font-size:.75rem}
+@media (max-width:900px){.say{bottom:calc(62px + env(safe-area-inset-bottom,0px));padding-bottom:10px}.chat{padding-bottom:240px}}
+
+@media (max-width:700px){
+  .wz-head .wrap{gap:12px;padding-block:8px}
+  .compass{width:40px;height:40px}
+  #progMsg{display:none}
+  .phases button:not(.cur),.phases i{display:none}
+  .prog-top{font-size:.82rem}
+  .say small{display:none}
+  .msg .av{flex-basis:28px;width:28px;height:28px}
+  .bubble.big{padding:12px 14px}
+}
+.prog-top span:last-child{overflow:hidden;text-overflow:ellipsis}
+
+/* Result */
+.res-hero{background:var(--night);color:#f2efe8;padding-block:clamp(40px,7vw,80px)}
+.res-hero .wrap{display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,4vw,48px);align-items:center}
+.res-hero .bigc{width:clamp(110px,16vw,170px);height:auto}
+.res-hero h1{font-size:clamp(2.3rem,5.4vw,4rem)}
+.res-hero p{opacity:.85;margin-top:12px;max-width:58ch}
+.res-hero .stat{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px 22px;font-size:.92rem}
+.res-hero .stat b{color:#f6cf9a}
+@media (max-width:600px){.res-hero .wrap{grid-template-columns:1fr}}
+.res-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:18px;padding-block:36px}
+.panel{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:clamp(18px,2.5vw,26px);grid-column:span 6;display:grid;gap:12px;align-content:start;min-width:0}
+.panel.wide{grid-column:span 12}
+.panel.third{grid-column:span 4}
+@media (max-width:900px){.panel,.panel.third{grid-column:span 12}}
+.panel h3{font-size:1.5rem}
+.panel .k{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.kv{display:grid;grid-template-columns:minmax(110px,auto) 1fr;gap:6px 16px;margin:0;font-size:.96rem}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:500}
+.kv dd.open{color:var(--muted);font-weight:400;font-style:italic}
+.pri{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.pri li{display:flex;gap:12px;align-items:center}
+.pri li span{font-family:var(--f-display);font-size:1.8rem;line-height:1;color:var(--terra);width:24px}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{padding:.3em .8em;border-radius:999px;background:var(--sea-soft);font-size:.88rem;font-weight:500}
+.openlist{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.openlist button{background:none;border:0;padding:6px 0;text-align:left;cursor:pointer;color:var(--sea);font-weight:600;text-decoration:underline;text-underline-offset:4px;min-height:36px}
+.suggest{display:grid;gap:14px}
+.sg{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center}
+.sg .art{aspect-ratio:4/3;border-radius:10px;overflow:hidden;max-width:100%}
+.sg .art svg{width:100%;height:100%;display:block}
+.sg b{display:block}
+.sg small{color:var(--muted)}
+.cta-band{grid-column:span 12;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;background:var(--sand);border-radius:var(--r);padding:clamp(18px,3vw,30px)}
+.cta-band p{max-width:58ch;color:var(--muted)}
+.cta-band .row{display:flex;flex-wrap:wrap;gap:12px}
+
+/* Share dialog */
+dialog{border:0;border-radius:18px;padding:0;max-width:min(640px,calc(100vw - 32px));width:100%;background:var(--card);color:var(--ink);box-shadow:0 30px 80px -20px rgba(0,0,0,.45)}
+dialog::backdrop{background:rgba(10,20,36,.55)}
+.dlg{padding:clamp(20px,4vw,32px);display:grid;gap:16px;max-height:85svh;overflow:auto}
+.dlg h2{font-size:clamp(1.8rem,4vw,2.4rem)}
+.dlg p,.dlg li{color:var(--muted);font-size:.96rem}
+.dlg ul{margin:0;padding-left:1.2em;display:grid;gap:4px}
+.check{display:grid;grid-template-columns:24px 1fr;gap:12px;align-items:start;font-size:.95rem}
+.check input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--sea)}
+.dlg .row{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end}
+.box{background:var(--sand);border-radius:12px;padding:14px 16px;font-size:.92rem}
+.box pre{white-space:pre-wrap;font:inherit;margin:8px 0 0;max-height:220px;overflow:auto}
+.addr{user-select:all;font-weight:600;color:var(--ink)}
+.legal h3{font-size:1.25rem;margin-top:8px}
+
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--night);color:#fff;padding:.8em 1.3em;border-radius:999px;font-weight:500;opacity:0;pointer-events:none;transition:.35s;z-index:80;max-width:calc(100vw - 32px);text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%)}
+@media (min-width:901px){.toast{bottom:32px}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  .kb{animation:none;transform:scale(1.04)}
+}
+</style>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="brand logo-intro" href="#top" data-go="home" aria-label="SpanjeKompas, naar de homepage">
+      <svg viewBox="0 0 64 64" aria-hidden="true" data-logo></svg>
+      <b>Spanje<i>Kompas</i></b>
+    </a>
+    <nav class="links" aria-label="Hoofdmenu">
+      <a href="#top" data-go="home">Home</a>
+      <a href="#regio" data-go="regio">Ontdek de Costa Blanca</a>
+      <a href="#kompas" data-go="kompas">Mijn woonkompas</a>
+      <a href="#hoe" data-go="hoe">Hoe het werkt</a>
+      <a href="#over" data-go="over">Over SpanjeKompas</a>
+      <button class="btn btn-primary" data-start>Start jouw woonkompas</button>
+    </nav>
+  </div>
+</header>
+
+<!-- HOME -->
+<main class="view" id="v-home">
+  <section class="hero" id="top" aria-label="Introductie">
+    <div class="hero-media" id="heroMedia" aria-hidden="true"></div>
+    <div class="wrap hero-in">
+      <p class="eyebrow" style="color:#f3c79c">Zuidelijke Costa Blanca</p>
+      <h1>Jouw plek onder de <em>Spaanse zon</em> begint hier.</h1>
+      <p class="sub">Ontdek welke omgeving, woning en levensstijl het beste bij jou passen aan de zuidelijke Costa Blanca.</p>
+      <div class="ctas">
+        <button class="btn btn-primary" data-start>Ontdek jouw woonkompas <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <a class="btn btn-ghost" href="#hoe" data-go="hoe">Ik wil eerst even rondkijken</a>
+      </div>
+      <p class="micro">Vrijblijvend · Persoonlijk · Helemaal op jouw tempo</p>
+      <p class="micro" id="resumeLine" hidden style="margin-top:10px"><button class="btn-quiet" style="color:#fff;padding:0;min-height:32px" data-resume>Verder waar je gebleven was (<span data-resume-pct>0</span>% ingevuld)</button></p>
+    </div>
+    <div class="scrollcue" aria-hidden="true"></div>
+  </section>
+
+  <section class="block" id="hoe">
+    <div class="wrap split">
+      <div>
+        <p class="eyebrow">Hoe het werkt</p>
+        <h2 style="margin-top:12px">Een rustige ontdekkingstocht in plaats van een zoekformulier.</h2>
+      </div>
+      <p class="lead" style="align-self:end">SpanjeKompas toont geen woningaanbod. We helpen je eerst helder krijgen wat je zoekt, waar en waarom. Daarmee wordt elke volgende stap eenvoudiger, ook als je nog lang niet gaat kopen.</p>
+    </div>
+    <div class="wrap steps">
+      <div class="step"><span class="n">1</span><h3>Vertel wat je drijft</h3><p>Een vakantieplek, overwinteren of definitief verhuizen. Je kiest met beeldkaarten, niet met invulvelden.</p></div>
+      <div class="step"><span class="n">2</span><h3>Je kompas krijgt vorm</h3><p>Met elk antwoord wordt je woonprofiel scherper. Je ziet steeds hoeveel je hebt ingevuld en wat de volgende vraag oplevert.</p></div>
+      <div class="step"><span class="n">3</span><h3>Jij beslist wat erna komt</h3><p>Bekijk je persoonlijke overzicht, pas het aan, bewaar het op dit apparaat of bespreek het vrijblijvend met Soltura.</p></div>
+    </div>
+    <div class="wrap" style="margin-top:40px"><button class="btn btn-primary" data-start>Ontdek wat bij jou past <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+  </section>
+
+  <section class="block region" id="regio">
+    <div class="wrap">
+      <p class="eyebrow">Ontdek de Costa Blanca</p>
+      <h2 style="margin-top:12px;max-width:20ch">Negen plaatsen, elk met een eigen karakter.</h2>
+      <p class="lead" style="margin-top:14px">Van de zoutmeren van Torrevieja tot de boomgaarden van de Vega Baja. Bewaar wat je aanspreekt; het komt vanzelf in je woonkompas terecht.</p>
+      <div class="filters" role="group" aria-label="Filter plaatsen">
+        <button class="chip" aria-pressed="true" data-filter="all">Alles</button>
+        <button class="chip" aria-pressed="false" data-filter="kust">Aan de kust</button>
+        <button class="chip" aria-pressed="false" data-filter="achterland">Achterland</button>
+        <button class="chip" aria-pressed="false" data-filter="golf">Golf in de buurt</button>
+        <button class="chip" aria-pressed="false" data-filter="authentiek">Spaans en authentiek</button>
+        <button class="chip" aria-pressed="false" data-filter="internationaal">Internationaal</button>
+      </div>
+      <div class="region-grid">
+        <figure class="map" style="margin:0">
+          <svg viewBox="0 0 400 420" role="img" aria-labelledby="mapT" id="mapSvg"><title id="mapT">Schematische kaart van de zuidelijke Costa Blanca met negen plaatsen</title></svg>
+          <figcaption>Schematisch, niet op schaal. Tik op een plaats om naar de beschrijving te gaan.</figcaption>
+        </figure>
+        <div class="places" id="places"></div>
+      </div>
+      <p class="note">De beschrijvingen zijn algemeen en bedoeld als eerste kennismaking. Voorzieningen, reistijden en regels veranderen; controleer wat voor jou belangrijk is altijd ter plaatse of vraag het na.</p>
+    </div>
+  </section>
+
+  <section class="block" id="over">
+    <div class="wrap split">
+      <div class="about">
+        <p class="eyebrow">Over SpanjeKompas</p>
+        <h2>Een gids die eerst luistert.</h2>
+        <p>SpanjeKompas helpt je ontdekken wat bij je past. Wil je jouw wensen vertalen naar een concrete zoektocht? Dan kan het team van Soltura Real Estate je vrijblijvend verder helpen.</p>
+        <p>SpanjeKompas is een initiatief van Grupo Soltura S.L. (Soltura Real Estate), makelaar in Formentera del Segura. Dat zeggen we liever meteen. Je antwoorden blijven op je eigen apparaat tot jij zelf kiest om ze te delen.</p>
+        <div class="trust">
+          <div><b>Geen account nodig</b><span>Je voortgang staat alleen in deze browser.</span></div>
+          <div><b>Jij kiest wat je deelt</b><span>Pas na een bewuste keuze gaat iets naar Soltura.</span></div>
+          <div><b>Geen nepresultaten</b><span>We tonen geen woningen of matches die er niet zijn.</span></div>
+        </div>
+      </div>
+      <div style="align-self:center">
+        <div class="hint" style="margin-top:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>Je kunt op elk moment stoppen. Wat je hebt ingevuld blijft in deze browser bewaard, en met één knop wis je het weer.</span></div>
+        <div style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" data-start>Start jouw woonkompas</button><button class="btn btn-ghost" data-privacy>Lees hoe we met je gegevens omgaan</button></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- WIZARD -->
+<section class="view app" id="v-wizard" hidden aria-label="Woonwijzer">
+  <div class="wz-head">
+    <div class="wrap">
+      <svg class="compass" viewBox="0 0 64 64" aria-hidden="true" id="wzCompass"></svg>
+      <div class="prog">
+        <div class="prog-top"><span id="progLabel">Jouw woonprofiel: 0% ingevuld</span><span id="progMsg"></span></div>
+        <div class="bar" role="progressbar" aria-label="Voortgang woonprofiel" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progBar"><i style="width:0%"></i></div>
+        <div class="phases" id="phaseNav" aria-label="Fases"></div>
+      </div>
+    </div>
+  </div>
+  <div class="bgvid" id="bgVid" aria-hidden="true"></div>
+  <div class="wrap chat">
+    <div class="thread" id="thread" aria-live="polite"></div>
+    <div id="qwrap" tabindex="-1"></div>
+  </div>
+  <form class="say" id="sayForm" hidden>
+    <div class="say-in">
+      <label class="sr" for="sayIn">Vertel het in je eigen woorden</label>
+      <textarea id="sayIn" rows="1" maxlength="2000" placeholder="Of vertel het in je eigen woorden…"></textarea>
+      <button type="submit" class="btn btn-primary" aria-label="Verstuur">Vertel</button>
+    </div>
+    <small id="aiNote"></small>
+  </form>
+</section>
+
+<!-- RESULT -->
+<section class="view app" id="v-result" hidden aria-label="Mijn woonkompas" style="padding-top:calc(72px + env(safe-area-inset-top,0px))">
+  <div id="result"></div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <a class="brand" href="#top" data-go="home" style="color:#fff"><svg viewBox="0 0 64 64" aria-hidden="true" data-logo="dark" style="width:32px;height:32px"></svg><b style="font-size:1.4rem">Spanje<i style="color:#f3c79c">Kompas</i></b></a>
+      <small style="margin-top:12px">Ontdek waar jij je thuis voelt in Spanje. Een initiatief van Grupo Soltura S.L. (Soltura Real Estate), Formentera del Segura, Alicante.</small>
+    </div>
+    <div style="display:grid;gap:2px">
+      <button data-privacy>Privacy en gegevens</button>
+      <button data-wipe>Wis mijn antwoorden op dit apparaat</button>
+      <small>Deze website gebruikt geen cookies of trackers. Je voortgang staat alleen in je eigen browser.</small>
+    </div>
+  </div>
+</footer>
+
+<nav class="tabbar" aria-label="Snelmenu">
+  <a href="#top" data-go="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7v9H4z"/></svg>Home</a>
+  <a href="#regio" data-go="regio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z M9 4v14M15 6v14"/></svg>Regio</a>
+  <a href="#kompas" data-go="kompas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>Mijn kompas</a>
+  <button class="go" data-start><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Start</button>
+</nav>
+
+<!-- Share dialog -->
+<dialog id="dlgShare" aria-labelledby="shareT">
+  <form class="dlg" id="shareForm" novalidate>
+    <h2 id="shareT">Bespreek je woonwensen vrijblijvend</h2>
+    <p>Soltura Real Estate kan je woonprofiel vertalen naar een concrete zoektocht. Dit wordt gedeeld als je hieronder bevestigt:</p>
+    <ul>
+      <li>je antwoorden uit de woonwijzer en je bewaarde plaatsen;</li>
+      <li>je naam, e-mailadres en, als je dat invult, je telefoonnummer.</li>
+    </ul>
+    <p>Niets anders. Geen documenten, geen financiële gegevens buiten de globale keuzes die je zelf hebt gemaakt.</p>
+    <div class="field"><label for="f-name">Je naam</label><input id="f-name" name="name" autocomplete="name" required><span class="err" id="e-name" hidden></span></div>
+    <div class="field"><label for="f-email">E-mailadres</label><input id="f-email" name="email" type="email" autocomplete="email" required><span class="err" id="e-email" hidden></span></div>
+    <div class="field"><label for="f-phone">Telefoon (optioneel)</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"><span class="err" id="e-phone" hidden></span></div>
+    <label class="check"><input type="checkbox" id="c-share" name="share"><span>Ik wil dat Soltura Real Estate contact met mij opneemt over mijn woonwensen en daarvoor mijn profiel ontvangt. <button type="button" class="btn-quiet" style="min-height:0;padding:0" data-privacy>Hoe ga je met mijn gegevens om?</button></span></label>
+    <span class="err" id="e-share" hidden style="color:#b3261e;font-size:.88rem"></span>
+    <label class="check"><input type="checkbox" id="c-mkt" name="marketing"><span>Optioneel: stuur mij af en toe nieuws over de Costa Blanca. Los van de vorige keuze en altijd op te zeggen.</span></label>
+    <div id="shareResult" hidden></div>
+    <div class="row"><button type="button" class="btn btn-ghost" data-close>Nog niet</button><button type="submit" class="btn btn-primary" id="shareSubmit">Deel mijn woonkompas met Soltura</button></div>
+  </form>
+</dialog>
+
+<!-- Privacy dialog -->
+<dialog id="dlgPrivacy" aria-labelledby="privT">
+  <div class="dlg legal">
+    <h2 id="privT">Privacy en gegevens</h2>
+    <p><b>Wie zijn wij.</b> SpanjeKompas is een initiatief van Grupo Soltura S.L. (Soltura Real Estate), CIF B54286042, Formentera del Segura (Alicante), verwerkingsverantwoordelijke voor gegevens die je met ons deelt.</p>
+    <h3>Zonder delen</h3>
+    <p>Je antwoorden worden alleen in de opslag van je eigen browser bewaard (localStorage), zodat je later verder kunt. Ze verlaten je apparaat niet. We gebruiken geen cookies, analytics of advertentietrackers, daarom zie je ook geen cookiebanner. Via "Wis mijn antwoorden" verwijder je alles.</p>
+    <h3>Als je kiest om te delen</h3>
+    <p>Pas als je het deelvenster invult en het vakje aanvinkt, ontvangt Soltura je profiel, naam, e-mail en eventueel telefoon. Grondslag: jouw toestemming (art. 6.1.a AVG). Doel: je woonwensen begrijpen en je opvolgen over een zoektocht. Marketingberichten alleen met een aparte, vrijwillige toestemming.</p>
+    <h3>Bewaartermijn</h3>
+    <p>Maximaal 24 maanden na het laatste contact, tenzij er een aankoop volgt en de wet langere bewaring vraagt.</p>
+    <h3>Jouw rechten</h3>
+    <p>Inzage, correctie, verwijdering, beperking, bezwaar en overdraagbaarheid. Intrekken van toestemming kan altijd. Mail naar <span class="addr">info@gruposoltura.com</span>. Je kunt ook een klacht indienen bij de Spaanse toezichthouder, de AEPD.</p>
+    <div class="row"><button type="button" class="btn btn-primary" data-close>Sluiten</button></div>
+  </div>
+</dialog>
+
+<!-- Confirm wipe dialog -->
+<dialog id="dlgWipe" aria-labelledby="wipeT">
+  <div class="dlg">
+    <h2 id="wipeT">Antwoorden wissen?</h2>
+    <p>Je woonkompas en je bewaarde plaatsen worden van dit apparaat verwijderd. Wat je eventueel al met Soltura hebt gedeeld, laat je verwijderen via info@gruposoltura.com.</p>
+    <div class="row"><button type="button" class="btn btn-ghost" data-close>Annuleren</button><button type="button" class="btn btn-terra" id="wipeYes">Wis alles</button></div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =========================================================
+   CONFIG: integratiepunten. Niets hiervan is in deze versie gekoppeld.
+   ========================================================= */
+const CONFIG = {
+  lang: 'nl',
+  storageKey: 'spanjekompas.profile.v1',
+  // POST-endpoint dat het profiel ontvangt (bv. n8n-webhook of Supabase Edge Function).
+  // null = niet gekoppeld: de pagina toont dan een werkende alternatieve route (kopiëren + mailen).
+  submitEndpoint: null,
+  contactEmail: 'info@gruposoltura.com',
+  // Claude-gids buiten claude.ai: POST {prompt, json} -> {text} of {json}. Bijv. n8n-webhook die de Anthropic API aanroept.
+  guideEndpoint: null,
+  // Video's (eenmalig gemaakt met Higgsfield). null = getekende scène als terugval.
+  // Video's staan in de repo onder video/ (opgehaald door .github/workflows/fetch-videos.yml). Ontbreekt een bestand, dan blijft de getekende scène staan.
+  videos: {
+    hero: 'video/hero.mp4',
+    heroMobile: 'video/heroMobile.mp4',
+    droom: 'video/droom.mp4',
+    gezin: 'video/gezin.mp4',
+    omgeving: 'video/omgeving.mp4',
+    woning: 'video/woning.mp4',
+    budget: 'video/budget.mp4',
+    ritme: 'video/ritme.mp4',
+    telt: 'video/telt.mp4'
+  },
+  privacyVersion: '2026-10-13'
+};
+
+/* ---------- Iconen (lijnstijl, 24x24) ---------- */
+const IC = {
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  wave:'<path d="M2 15c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 19c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2"/><circle cx="17" cy="7" r="3"/>',
+  home:'<path d="M3 11l9-7 9 7v9H4z"/><path d="M10 20v-5h4v5"/>',
+  building:'<path d="M5 21V4h10v17M15 9h4v12M3 21h18M8 8h3M8 12h3M8 16h3"/>',
+  penthouse:'<path d="M4 21V9h16v12M3 21h18M4 9l3-4h10l3 4M8 13h2M14 13h2M8 17h2M14 17h2"/>',
+  row:'<path d="M2 21V11l5-4 5 4 5-4 5 4v10M2 21h20M7 21v-4M17 21v-4"/>',
+  villa:'<path d="M3 21V10h12v11M15 14h6v7M2 21h20M3 10l6-5 6 5M7 15h3"/>',
+  finca:'<path d="M4 21v-8l7-5 7 5v8M2 21h20M14 21v-4h-6v4"/><path d="M19 8c1.5-2 3-2 3-2s0 3-2 4"/>',
+  sparkle:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/>',
+  key:'<circle cx="8" cy="14" r="4"/><path d="M11 11l9-9M17 5l2 2M15 7l2 2"/>',
+  heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  compass:'<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+  people:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14.2A5 5 0 0 1 21 19"/>',
+  tree:'<path d="M12 22v-6M7 16h10l-3-4h2l-4-5h1.5L12 3 8.5 7H10l-4 5h2z"/>',
+  golf:'<path d="M12 18V3l6 3-6 3M5 21c2-2 12-2 14 0"/>',
+  city:'<path d="M3 21V10l5-3v14M8 21V4h8v17M16 21v-9h5v9M2 21h20M11 8h2M11 12h2M11 16h2"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/>',
+  shop:'<path d="M4 9h16l-1 12H5zM8 9V7a4 4 0 0 1 8 0v2"/>',
+  question:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 0 1 4.8 1c0 1.7-2.3 2-2.3 3.5M12 17h.01"/>',
+  bed:'<path d="M3 18V8M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5M7 11h.01"/>',
+  bath:'<path d="M4 12h16v3a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM6 12V6a2 2 0 0 1 4 0"/>',
+  pool:'<path d="M2 17c2.5 0 2.5-1.5 5-1.5s2.5 1.5 5 1.5 2.5-1.5 5-1.5 2.5 1.5 5 1.5M8 14V5a2 2 0 0 1 4 0M14 14V5a2 2 0 0 1 4 0M8 9h6"/>',
+  car:'<path d="M5 17h14M3 17v-4l2-5h14l2 5v4M7 17v2M17 17v2"/><circle cx="7.5" cy="13.5" r="1"/><circle cx="16.5" cy="13.5" r="1"/>',
+  level:'<path d="M3 20h18M5 20V10h14v10M9 14h6"/>',
+  lift:'<rect x="6" y="3" width="12" height="18" rx="1"/><path d="M10 9l2-2 2 2M10 15l2 2 2-2"/>',
+  mountain:'<path d="M2 20l7-12 4 7 3-4 6 9z"/>',
+  eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  terrace:'<path d="M3 21h18M5 21v-6h14v6M3 15h18M12 15V7M8 7h8l-4-4z"/>',
+  garden:'<path d="M12 21v-7M12 14c-3 0-5-2-5-5 3 0 5 2 5 5zM12 12c0-3 2-5 5-5 0 3-2 5-5 5zM4 21h16"/>',
+  tools:'<path d="M14 7l3-3 3 3-3 3M17 4L9 12M4 20l5-5M7 13l4 4"/>',
+  euro:'<path d="M17 6a7 7 0 1 0 0 12M4 10h10M4 14h10"/>',
+  plane:'<path d="M2 15l20-7-3 9-5-3-3 4-1-5z"/>',
+  medical:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/>',
+  fork:'<path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 3c-2 2-2 6 0 8v10"/>',
+  bus:'<rect x="4" y="3" width="16" height="15" rx="2"/><path d="M4 11h16M7 21v-3M17 21v-3M8 15h.01M16 15h.01"/>',
+  chat:'<path d="M4 5h16v11H9l-5 4z"/>',
+  ball:'<circle cx="12" cy="12" r="9"/><path d="M5 6c3 2 3 10 0 12M19 6c-3 2-3 10 0 12"/>',
+  check:'<path d="M5 12l5 5 9-10"/>',
+  family:'<circle cx="7" cy="6" r="2.5"/><circle cx="17" cy="6" r="2.5"/><circle cx="12" cy="12" r="2"/><path d="M3 20v-4a4 4 0 0 1 8 0M13 20v-4a4 4 0 0 1 8 0M9.5 20v-2a2.5 2.5 0 0 1 5 0v2"/>',
+  book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 5v16M8 7h7"/>',
+  paw:'<circle cx="6" cy="10" r="1.8"/><circle cx="10" cy="6" r="1.8"/><circle cx="14" cy="6" r="1.8"/><circle cx="18" cy="10" r="1.8"/><path d="M12 12c-3 0-5 3-5 5.5 0 1.5 1.5 2.5 3 2l2-.6 2 .6c1.5.5 3-.5 3-2C17 15 15 12 12 12z"/>',
+  laptop:'<rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/>',
+  minus:'<path d="M5 12h14"/>'
+};
+const ico = (k,cls='ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]||IC.compass}</svg>`;
+
+/* ---------- Landschapsgenerator (origineel, geen stockbeeld) ---------- */
+function rnd(seed){let s=seed>>>0||1;return()=>((s=Math.imul(s^s>>>15,s|1),s^=s+Math.imul(s^s>>>7,s|61),((s^s>>>14)>>>0)/4294967296))}
+function houses(r,x0,x1,baseY,slope,scale,count){
+  let out='';
+  for(let i=0;i<count;i++){
+    const x=x0+r()*(x1-x0), w=(14+r()*22)*scale, h=(10+r()*16)*scale, y=baseY-slope*(x-x0)-h+(r()*6-3)*scale;
+    out+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="#f5efe4"/>`+
+         `<rect x="${(x+w*0.68).toFixed(1)}" y="${y.toFixed(1)}" width="${(w*0.32).toFixed(1)}" height="${h.toFixed(1)}" fill="#dccfbd"/>`;
+    if(r()>.45) out+=`<rect x="${(x+w*0.2).toFixed(1)}" y="${(y+h*0.35).toFixed(1)}" width="${(3*scale).toFixed(1)}" height="${(4*scale).toFixed(1)}" fill="#6d5a4a" opacity=".55"/>`;
+  }
+  return out;
+}
+function palm(x,y,s,cls){
+  const fr=[[-40,-6],[-32,-22],[-12,-30],[10,-28],[30,-18],[40,-2],[-22,4],[22,6]];
+  let f='';fr.forEach(([dx,dy])=>{f+=`<path d="M0 0 Q ${dx*0.5} ${dy-14} ${dx} ${dy+8}" stroke="#14231f" stroke-width="${(3.2).toFixed(1)}" fill="none" stroke-linecap="round"/>`});
+  return `<g transform="translate(${x} ${y}) scale(${s})"><g class="${cls||''}" style="transform-origin:0 160px"><path d="M0 160 C 4 110, -6 60, 0 0" stroke="#14231f" stroke-width="7" fill="none" stroke-linecap="round"/>${f}</g></g>`;
+}
+function landscape(kind, seed=7, opts={}){
+  const r=rnd(seed);
+  const P={
+    coast:{sky:['#5d86ad','#f2c38d'],sea:true,hills:'#8d7f8f',land:'#c9b38f',houses:1,palms:true},
+    sunset:{sky:['#33476b','#f0a46c'],sea:true,hills:'#6e5e7a',land:'#b99d7c',houses:1,palms:true},
+    village:{sky:['#7aa2c4','#f4dcb4'],sea:false,hills:'#9c8e8a',land:'#d6c19c',houses:3,palms:false,tower:true},
+    green:{sky:['#88acc9','#efe1c2'],sea:false,hills:'#7f8f7c',land:'#9db083',houses:.4,palms:false,orchard:true},
+    golf:{sky:['#7aa6c9','#f3dfba'],sea:false,hills:'#8f8a96',land:'#93b07a',houses:1,palms:true,golf:true},
+    city:{sky:['#6a8fb6','#f1d1a6'],sea:true,hills:'#857b8a',land:'#c8b494',houses:1.6,palms:true,city:true},
+    modern:{sky:['#6f9bc2','#f6e3c4'],sea:false,hills:'#8f8794',land:'#d2bd99',houses:.5,palms:true,villa:true},
+    lively:{sky:['#41557c','#f2a96f'],sea:true,hills:'#76657e',land:'#c4a684',houses:2.2,palms:true,lights:true},
+    calm:{sky:['#a4bfd3','#f6ead4'],sea:true,hills:'#a3a0ad',land:'#d9c9ab',houses:.4,palms:false},
+    salt:{sky:['#7da0c2','#f3d8bd'],sea:false,hills:'#958aa0',land:'#d8c4a6',houses:.8,palms:false,salt:true},
+    dunes:{sky:['#78a3c6','#f4e2c0'],sea:true,hills:'#8b8c86',land:'#e2cfa6',houses:.3,palms:false,pines:true},
+    mix:{sky:['#5f7fa8','#f1c793'],sea:true,hills:'#857a8e',land:'#c2ad8c',houses:1.2,palms:true,golf:true}
+  }[kind]||{};
+  const id='g'+seed+kind;
+  const W=400,H=250,hor=150;
+  let s=`<defs><linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${P.sky[0]}"/><stop offset="1" stop-color="${P.sky[1]}"/></linearGradient><linearGradient id="${id}w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f8fa0"/><stop offset="1" stop-color="#1e5f76"/></linearGradient></defs>`;
+  s+=`<rect width="${W}" height="${H}" fill="url(#${id}s)"/>`;
+  const sx=240+r()*100; s+=`<circle cx="${sx.toFixed(0)}" cy="${(hor-24).toFixed(0)}" r="22" fill="#fff1cf" opacity=".9"/>`;
+  s+=`<path d="M0 ${hor-8} C 60 ${hor-50}, 120 ${hor-30}, 170 ${hor-44} S 300 ${hor-14}, 400 ${hor-36} V ${H} H0Z" fill="${P.hills}" opacity=".55"/>`;
+  if(P.sea){
+    s+=`<rect y="${hor}" width="${W}" height="${H-hor}" fill="url(#${id}w)"/>`;
+    for(let i=0;i<6;i++) s+=`<rect x="${(sx-30+r()*60).toFixed(0)}" y="${(hor+6+i*9).toFixed(0)}" width="${(18+r()*30).toFixed(0)}" height="1.6" fill="#fff6dc" opacity="${(.3+r()*.4).toFixed(2)}"/>`;
+    s+=`<path d="M0 ${hor+30} C 70 ${hor+18}, 130 ${hor+40}, 190 ${hor+62} L 0 ${H}Z" fill="${P.land}"/>`;
+    if(P.pines){s+=`<path d="M0 ${hor+44} C 60 ${hor+30}, 120 ${hor+52}, 170 ${hor+70} L0 ${H}Z" fill="#e8d6ad"/>`;for(let i=0;i<9;i++){const x=10+i*16+r()*6,y=hor+48+i*2.4;s+=`<ellipse cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" rx="${(10+r()*5).toFixed(0)}" ry="6" fill="#3f5a3f"/>`}}
+    s+=houses(r,10,150,hor+34,0.18,1,Math.round(8*P.houses));
+  } else {
+    s+=`<path d="M0 ${hor} C 80 ${hor-14}, 170 ${hor+8}, 260 ${hor-4} S 380 ${hor+6}, 400 ${hor} V ${H} H0Z" fill="${P.land}"/>`;
+    if(P.golf){s+=`<path d="M60 ${H} C 120 ${hor+30}, 280 ${hor+20}, 400 ${hor+40} V ${H}Z" fill="#7fa565"/><path d="M210 ${hor+50} v-26 l12 5 -12 5" stroke="#f5efe4" stroke-width="1.6" fill="#c2533a"/><ellipse cx="210" cy="${hor+52}" rx="16" ry="3" fill="#6a8f53"/>`}
+    if(P.orchard){for(let row=0;row<4;row++)for(let i=0;i<10;i++){const x=i*42+(row%2)*20+r()*6,y=hor+18+row*22;s+=`<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(7+row*2).toFixed(0)}" fill="#4f6b40"/><circle cx="${(x+3).toFixed(0)}" cy="${(y-2).toFixed(0)}" r="1.6" fill="#e79a3a"/>`}}
+    if(P.salt){s+=`<ellipse cx="230" cy="${hor+40}" rx="150" ry="22" fill="#e9a9b4"/><ellipse cx="230" cy="${hor+40}" rx="120" ry="14" fill="#f1c4c9"/>`}
+    if(P.houses>0) s+=houses(r,20,360,hor+10,-0.02,P.houses>2?1:1.1,Math.round(9*P.houses));
+    if(P.tower){s+=`<rect x="186" y="${hor-58}" width="18" height="58" fill="#efe6d6"/><rect x="198" y="${hor-58}" width="6" height="58" fill="#d8ccb8"/><path d="M182 ${hor-58} Q195 ${hor-84} 208 ${hor-58}Z" fill="#c4774f"/>`}
+    if(P.villa){s+=`<rect x="140" y="${hor-6}" width="120" height="34" fill="#f7f2ea"/><rect x="200" y="${hor-26}" width="60" height="22" fill="#f7f2ea"/><rect x="200" y="${hor-26}" width="60" height="4" fill="#d9cdbb"/><rect x="150" y="${hor+8}" width="38" height="16" fill="#41606e" opacity=".75"/><rect x="120" y="${hor+28}" width="170" height="10" fill="#5fb1c0"/>`}
+  }
+  if(P.city){for(let i=0;i<10;i++){const x=200+i*18+r()*6,h=20+r()*40;s+=`<rect x="${x.toFixed(0)}" y="${(hor-h).toFixed(0)}" width="14" height="${h.toFixed(0)}" fill="#efe7da"/><rect x="${(x+10).toFixed(0)}" y="${(hor-h).toFixed(0)}" width="4" height="${h.toFixed(0)}" fill="#d3c6b2"/>`}}
+  if(P.lights){for(let i=0;i<14;i++)s+=`<circle cx="${(15+r()*140).toFixed(0)}" cy="${(hor+16+r()*40).toFixed(0)}" r="1.4" fill="#ffd98a"/>`}
+  if(P.palms){s+=palm(350,H-150,0.55)+palm(375,H-130,0.45)}
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${s}</svg>`;
+}
+
+/* ---------- Hero-scène: golden hour boven de Costa Blanca ---------- */
+function heroSVG(){
+  const r=rnd(42);
+  const W=1600,H=900,hor=560;
+  let s=`<defs>
+  <linearGradient id="hs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c2f4f"/><stop offset=".45" stop-color="#7b6a8a"/><stop offset=".78" stop-color="#e79a68"/><stop offset="1" stop-color="#f7d29a"/></linearGradient>
+  <radialGradient id="hg" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff2c9" stop-opacity=".95"/><stop offset=".3" stop-color="#ffd38c" stop-opacity=".5"/><stop offset="1" stop-color="#ffb46a" stop-opacity="0"/></radialGradient>
+  <linearGradient id="hw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c98a6f"/><stop offset=".12" stop-color="#4c8597"/><stop offset="1" stop-color="#103a52"/></linearGradient>
+  <linearGradient id="hl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b98d6d"/><stop offset="1" stop-color="#5b4537"/></linearGradient></defs>`;
+  s+=`<rect width="${W}" height="${H}" fill="url(#hs)"/>`;
+  s+=`<g class="sunrise"><circle cx="1080" cy="${hor-30}" r="260" fill="url(#hg)"/><circle cx="1080" cy="${hor-30}" r="58" fill="#fff0c8"/></g>`;
+  s+=`<path d="M0 ${hor-40} C 160 ${hor-140}, 300 ${hor-100}, 430 ${hor-150} S 700 ${hor-70}, 860 ${hor-110} S 1150 ${hor-50}, 1300 ${hor-90} S 1500 ${hor-60}, 1600 ${hor-80} V${hor} H0Z" fill="#6d5b78" opacity=".55"/>`;
+  s+=`<rect y="${hor}" width="${W}" height="${H-hor}" fill="url(#hw)"/>`;
+  for(let i=0;i<26;i++){const y=hor+6+i*11+r()*4,w=30+r()*140*(1-i/40);s+=`<rect class="glint" style="animation-delay:${(r()*4).toFixed(2)}s" x="${(1080-w/2+(r()*80-40)).toFixed(0)}" y="${y.toFixed(0)}" width="${w.toFixed(0)}" height="2.2" fill="#ffe7b3"/>`}
+  // headland with white village
+  s+=`<path d="M0 ${hor-60} C 140 ${hor-120}, 300 ${hor-110}, 430 ${hor-60} C 520 ${hor-20}, 600 ${hor+30}, 700 ${hor+70} C 760 ${hor+100}, 780 ${H}, 780 ${H} H0Z" fill="url(#hl)"/>`;
+  s+=houses(r,30,560,hor-70,-0.05,2.4,46);
+  s+=`<rect x="250" y="${hor-210}" width="34" height="96" fill="#f3ece0"/><rect x="272" y="${hor-210}" width="12" height="96" fill="#d7cab6"/><path d="M244 ${hor-210} Q267 ${hor-258} 290 ${hor-210}Z" fill="#c27a50"/>`;
+  // foreground terrace
+  s+=`<path d="M0 ${H-90} H${W} V${H} H0Z" fill="#2b2420" opacity=".9"/><rect y="${H-104}" width="${W}" height="16" fill="#3a302a"/>`;
+  s+=palm(1390,H-420,1.55,'sway')+palm(1500,H-360,1.25,'sway2')+palm(90,H-400,1.4,'sway2');
+  return `<svg class="kb" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${s}</svg>`;
+}
+
+/* ---------- Logo ---------- */
+function logoSVG(onDark){
+  const ring = onDark ? '#f3e9d8' : 'currentColor';
+  return `<circle cx="32" cy="32" r="29" fill="none" stroke="${ring}" stroke-width="2.2"/>
+  <g stroke="${ring}" stroke-width="1.6" stroke-linecap="round" opacity=".75">${[0,45,90,135,180,225,270,315].map(a=>`<line x1="32" y1="${a%90?7:5}" x2="32" y2="${a%90?10:11}" transform="rotate(${a} 32 32)"/>`).join('')}</g>
+  <path d="M15 42c4 0 4-2.4 8.5-2.4S28 42 32 42s4-2.4 8.5-2.4S45 42 49 42" fill="none" stroke="#2aa3a1" stroke-width="2" stroke-linecap="round"/>
+  <g class="needle"><path d="M32 12l5.2 20H26.8z" fill="#d06a42"/><path d="M32 52l-5.2-20h10.4z" fill="${ring}" opacity=".9"/></g>
+  <circle cx="32" cy="32" r="3.2" fill="#f2b75c"/>`;
+}
+function compassSVG(pct){
+  const a = -150 + Math.min(100,pct)*1.5; // naald draait naar noord naarmate profiel groeit
+  const sat = .35 + pct/100*.65;
+  return `<circle cx="32" cy="32" r="29" fill="var(--card)" stroke="var(--line)" stroke-width="2"/>
+  ${[0,90,180,270].map(d=>`<line x1="32" y1="6" x2="32" y2="11" stroke="var(--muted)" stroke-width="1.6" transform="rotate(${d} 32 32)"/>`).join('')}
+  <text x="32" y="19" text-anchor="middle" font-size="7" font-family="Figtree,sans-serif" font-weight="700" fill="var(--muted)">N</text>
+  <g class="needle" style="transform-origin:32px 32px;transform:rotate(${a}deg)"><path d="M32 12l5 20H27z" fill="#d06a42" opacity="${sat.toFixed(2)}"/><path d="M32 52l-5-20h10z" fill="var(--sea)" opacity="${sat.toFixed(2)}"/></g>
+  <circle cx="32" cy="32" r="3" fill="#f2b75c"/>`;
+}
+
+/* =========================================================
+   VRAGEN: configureerbaar. Nieuwe vraag = object toevoegen.
+   type: single | multi | matrix | budget | scale | pick3
+   ========================================================= */
+const PHASES = [
+  {id:'A', name:'De Spaanse droom', video:'droom', scene:'sunset', intro:'Laten we beginnen bij het begin: waarom Spanje?', gives:'Hiermee weet ik waarom je naar Spanje kijkt en welke sfeer je zoekt.'},
+  {id:'B', name:'Wie gaan er mee', video:'gezin', scene:'coast', intro:'Een huis is pas een thuis met de mensen (en dieren) die erin wonen.', gives:'Wie er meegaat, bepaalt hoeveel ruimte je nodig hebt en welke voorzieningen dichtbij moeten zijn.'},
+  {id:'C', name:'Jouw omgeving', video:'omgeving', scene:'village', intro:'Kust of achterland, dorp of resort: hier wordt je kaart kleiner.', gives:'Hiermee zie je welke plaatsen aan de Costa Blanca bij je passen.'},
+  {id:'D', name:'Jouw woning', video:'woning', scene:'modern', intro:'Nu wordt het concreet: het huis zelf.', gives:'Hiermee wordt duidelijk welk type woning en welke ruimte je zoekt.'},
+  {id:'E', name:'Budget', video:'budget', scene:'calm', intro:'Even nuchter: een globale indicatie maakt je kompas realistisch.', gives:'Een globale indicatie maakt de rest van je profiel realistischer.'},
+  {id:'F', name:'Jouw ritme', video:'ritme', scene:'golf', intro:'Hoe ziet een jaar in Spanje er voor jou uit?', gives:'Zo begrijp ik hoe je de woning gaat gebruiken.'},
+  {id:'G', name:'Wat echt telt', video:'telt', scene:'lively', intro:'Laatste stap. Je hebt al veel gekozen; nu wegen we het.', gives:'Dit maakt zichtbaar wat echt moet en waar ruimte zit.'}
+];
+const has = (a,id,v) => { const x=a[id]; return Array.isArray(x)? x.includes(v) : x===v; };
+const hasKids = a => ['gezin','generaties'].includes(a.household);
+const schoolKids = a => hasKids(a) && (has(a,'kids_ages','4-11')||has(a,'kids_ages','12-17'));
+const livesThere = a => a.reason==='permanent' || a.months==='gt6';
+const QUESTIONS = [
+  /* A — De Spaanse droom */
+  {id:'reason',phase:'A',type:'single',scenes:true,auto:true,title:'Wat brengt jou naar Spanje?',why:'Dit bepaalt welke vervolgvragen je krijgt.',tease:'Nu ben ik benieuwd naar de sfeer waarin jij je het meest thuis voelt.',options:[
+    {v:'vakantie',l:'Een vakantieplek',d:'Voor jezelf en je gezin',scene:'coast'},
+    {v:'overwinteren',l:'Overwinteren in de zon',d:'Een paar maanden per jaar',scene:'sunset'},
+    {v:'permanent',l:'Emigreren',d:'Hier echt gaan wonen',scene:'village'},
+    {v:'pensioen',l:'Genieten van je pensioen',d:'Nu of over een paar jaar',scene:'calm'},
+    {v:'combi',l:'Eigen gebruik en verhuur',d:'Een combinatie',scene:'golf'},
+    {v:'ontdekken',l:'Ik ben nog aan het ontdekken',d:'Alles staat nog open',scene:'mix'}]},
+  {id:'mood',phase:'A',type:'multi',scenes:true,max:3,title:'Waar word jij het gelukkigst van?',help:'Kies maximaal drie sferen.',why:'Je sfeer is de basis van de plaatsen die ik je laat zien.',tease:'En dan de vraag die alles verandert: met wie ga je?',options:[
+    {v:'levendig',l:'Levendig en gezellig',scene:'lively'},
+    {v:'rustig',l:'Rustig en ontspannen',scene:'calm'},
+    {v:'authentiek',l:'Spaans en authentiek',scene:'village'},
+    {v:'groen',l:'Groen en landelijk',scene:'green'},
+    {v:'modern',l:'Modern en comfortabel',scene:'modern'},
+    {v:'mix',l:'Een mix van werelden',scene:'mix'}]},
+
+  /* B — Wie gaan er mee */
+  {id:'household',phase:'B',type:'single',auto:true,title:'Met wie ga je in Spanje wonen of verblijven?',why:'Je huishouden bepaalt hoeveel ruimte je nodig hebt en welke vragen ik je nog stel.',tease:'Daar hoort een paar vragen bij die het verschil maken.',options:[
+    {v:'alleen',l:'Alleen',icon:'heart'},
+    {v:'partner',l:'Met mijn partner',icon:'people'},
+    {v:'gezin',l:'Met ons gezin',d:'Met thuiswonende kinderen',icon:'family'},
+    {v:'generaties',l:'Met meerdere generaties',d:'Bijvoorbeeld met (schoon)ouders',icon:'family'},
+    {v:'vrienden',l:'Samen met vrienden of familie',d:'Bijvoorbeeld samen kopen',icon:'people'}]},
+  {id:'kids_ages',phase:'B',type:'multi',showIf:hasKids,title:'Hoe oud zijn de kinderen die meegaan?',help:'Kies alle leeftijden die van toepassing zijn.',why:'Bij kinderen tussen 4 en 17 vraag ik ook naar school en taal.',tease:'Dat is goed om te weten voor alles wat nog komt.',options:[
+    {v:'0-3',l:'0 tot 3 jaar',icon:'heart'},{v:'4-11',l:'4 tot 11 jaar',d:'Basisschoolleeftijd',icon:'ball'},{v:'12-17',l:'12 tot 17 jaar',d:'Middelbare school',icon:'book'},{v:'18+',l:'18 jaar of ouder',d:'Thuiswonend',icon:'people'}]},
+  {id:'school',phase:'B',type:'single',showIf:a=>schoolKids(a)&&livesThere(a),title:'Aan wat voor school denk je voor de kinderen?',why:'Bij emigratie met schoolgaande kinderen bepaalt de school vaak de woonplaats.',tease:'De taal speelt daarbij een grote rol.',options:[
+    {v:'spaans',l:'Een Spaanse school',d:'Volledig meedoen in het Spaans',icon:'book'},
+    {v:'internationaal',l:'Een internationale school',d:'Vaak Engelstalig',icon:'globe'},
+    {v:'combinatie',l:'Spaanse school plus Nederlands onderwijs op afstand',icon:'chat'},
+    {v:'weetniet',l:'Dat weten we nog niet',icon:'question'}]},
+  {id:'kids_lang',phase:'B',type:'single',showIf:a=>schoolKids(a)&&livesThere(a),title:'Spreken de kinderen al Spaans of Engels?',why:'Dit helpt om de schoolkeuze en de overgang realistisch te bekijken.',tease:'Dan nog even naar wat de kinderen dichtbij nodig hebben.',options:[
+    {v:'spaans',l:'Ja, Spaans',icon:'chat'},{v:'engels',l:'Ja, Engels',icon:'chat'},{v:'geen',l:'Nog geen van beide',icon:'question'},{v:'wisselt',l:'Dat verschilt per kind',icon:'people'}]},
+  {id:'kids_needs',phase:'B',type:'multi',showIf:a=>hasKids(a)&&!(a.kids_ages||[]).every(x=>x==='18+'),title:'Wat hebben de kinderen graag dichtbij?',help:'Kies wat voor jullie belangrijk is.',tease:'Wie komt er verder over de vloer?',options:[
+    {v:'school',l:'School op korte afstand',icon:'book'},{v:'sport',l:'Sportclubs en activiteiten',icon:'ball'},{v:'gezinnen',l:'Andere gezinnen in de buurt',icon:'people'},{v:'park',l:'Park of speelplek',icon:'tree'},{v:'zelfstandig',l:'Zelfstandig kunnen fietsen of lopen',icon:'level'},{v:'strand',l:'Strand dichtbij',icon:'wave'}]},
+  {id:'visitors',phase:'B',type:'multi',title:'Wie komt er bij je logeren?',help:'Kies alles wat past.',why:'Logees bepalen of een extra slaapkamer of een slaapbank genoeg is.',tease:'En dan de huisgenoten op vier poten.',options:[
+    {v:'kinderen',l:'Kinderen',icon:'people'},{v:'kleinkinderen',l:'Kleinkinderen',icon:'family'},{v:'vrienden',l:'Vrienden en familie',icon:'heart'},{v:'zelden',l:'Niet vaak iemand',icon:'minus',exclusive:true}]},
+  {id:'pets',phase:'B',type:'single',auto:true,title:'Gaan er huisdieren mee?',tease:'',options:[
+    {v:'hond',l:'Een hond',icon:'paw'},{v:'kat',l:'Een kat',icon:'paw'},{v:'meer',l:'Meerdere dieren',icon:'paw'},{v:'geen',l:'Geen huisdieren',icon:'minus'}]},
+  {id:'work',phase:'B',type:'single',showIf:a=>a.reason==='permanent',title:'Ga je in Spanje werken?',why:'Wie op afstand werkt, heeft andere eisen aan internet, werkplek en bereikbaarheid.',tease:'Nu de mensen helder zijn, gaan we naar de plek.',options:[
+    {v:'remote',l:'Op afstand voor Nederland of België',icon:'laptop'},{v:'bedrijf',l:'Met een eigen bedrijf in Spanje',icon:'key'},{v:'zoeken',l:'Ik zoek werk in Spanje',icon:'compass'},{v:'niet',l:'Ik werk niet (meer)',icon:'sun'}]},
+
+  /* C — Omgeving */
+  {id:'setting',phase:'C',type:'multi',title:'Hoe ziet jouw ideale omgeving eruit?',help:'Kies alles wat je aanspreekt.',why:'Hiermee kan ik plaatsen in de regio aan je profiel koppelen.',tease:'Laten we kijken hoe dichtbij je alles wilt hebben.',options:[
+    {v:'strand',l:'Aan of vlak bij het strand',icon:'wave'},
+    {v:'dorp',l:'Een gezellig dorp met winkels en restaurants',icon:'shop'},
+    {v:'woonwijk',l:'Een rustige woonwijk',icon:'home'},
+    {v:'golf',l:'Een golfresort',icon:'golf'},
+    {v:'groen',l:'Een groene omgeving met ruimte',icon:'tree'},
+    {v:'stad',l:'Dicht bij een stad',icon:'city'},
+    {v:'internationaal',l:'Internationale voorzieningen',icon:'globe'},
+    {v:'weetniet',l:'Ik weet het nog niet',icon:'question',exclusive:true}]},
+  {id:'distance',phase:'C',type:'matrix',title:'Hoe dichtbij wil je deze dingen hebben?',help:'Dit zijn voorkeuren, geen gegarandeerde reistijden.',why:'Afstanden maken het verschil tussen kust en achterland.',tease:'Nu de plek vorm krijgt: tijd voor het huis.',
+    rows:[{v:'strand',l:'Strand',icon:'wave'},{v:'winkels',l:'Winkels',icon:'shop'},{v:'school',l:'School',icon:'book',showIf:schoolKids},{v:'medisch',l:'Medische voorzieningen',icon:'medical'},{v:'luchthaven',l:'Luchthaven',icon:'plane'}],
+    cols:[{v:'loop',l:'Op loopafstand'},{v:'10',l:'Binnen 10 min rijden'},{v:'20',l:'Binnen 20 min rijden'},{v:'minder',l:'Minder belangrijk'}]},
+
+  /* D — Woning */
+  {id:'ptype',phase:'D',type:'multi',title:'Welk soort woning past bij jou?',help:'Meerdere keuzes zijn prima.',tease:'Dan de vraag hoeveel ruimte je nodig hebt.',options:[
+    {v:'appartement',l:'Appartement',icon:'building'},{v:'penthouse',l:'Penthouse',icon:'penthouse'},{v:'bungalow',l:'Bungalow',icon:'home'},{v:'geschakeld',l:'Geschakelde woning',icon:'row'},{v:'villa',l:'Vrijstaande villa',icon:'villa'},{v:'finca',l:'Finca of landelijke woning',icon:'finca'},{v:'nieuwbouw',l:'Moderne nieuwbouwwoning',icon:'sparkle'},{v:'karakter',l:'Bestaande woning met karakter',icon:'key'},{v:'open',l:'Ik sta open voor verschillende mogelijkheden',icon:'compass',exclusive:true}]},
+  {id:'bedrooms',phase:'D',type:'single',auto:true,title:'Hoeveel slaapkamers heb je nodig?',why:'Tel ook de logees mee die je net noemde.',tease:'',options:[
+    {v:'1',l:'1 slaapkamer',icon:'bed'},{v:'2',l:'2 slaapkamers',icon:'bed'},{v:'3',l:'3 slaapkamers',icon:'bed'},{v:'4',l:'4 of meer',icon:'bed'}]},
+  {id:'bathrooms',phase:'D',type:'single',auto:true,title:'En hoeveel badkamers?',tease:'',options:[
+    {v:'1',l:'1 badkamer',icon:'bath'},{v:'2',l:'2 badkamers',icon:'bath'},{v:'3',l:'3 of meer',icon:'bath'}]},
+  {id:'outdoor',phase:'D',type:'multi',title:'Hoe wil je buiten leven?',help:'Kies wat je graag hebt.',tease:'En het water?',options:[
+    {v:'balkon',l:'Balkon',icon:'building'},{v:'terras',l:'Terras',icon:'terrace'},{v:'dakterras',l:'Dakterras (solarium)',icon:'sun'},{v:'tuin',l:'Tuin',icon:'garden'},{v:'minder',l:'Buitenruimte is niet zo belangrijk',icon:'minus',exclusive:true}]},
+  {id:'pool',phase:'D',type:'single',auto:true,title:'Hoe zit het met een zwembad?',tease:'',options:[
+    {v:'prive',l:'Privézwembad',icon:'pool'},{v:'gemeenschappelijk',l:'Gemeenschappelijk zwembad',icon:'people'},{v:'geen',l:'Geen zwembad nodig',icon:'minus'},{v:'maaktniet',l:'Maakt me niet uit',icon:'question'}]},
+  {id:'musthave',phase:'D',type:'multi',title:'Wat mag jouw toekomstige woning absoluut niet missen?',help:'Kies alleen wat echt belangrijk is.',tease:'Bijna klaar met het huis. Nog het uitzicht.',options:[
+    {v:'parkeren',l:'Eigen parkeerplaats',icon:'car'},{v:'garage',l:'Garage',icon:'car'},{v:'gelijkvloers',l:'Gelijkvloers wonen',icon:'level'},
+    {v:'lift',l:'Lift in het gebouw',icon:'lift',showIf:a=>has(a,'ptype','appartement')||has(a,'ptype','penthouse')},
+    {v:'werkplek',l:'Een werkplek of kantoortje',icon:'laptop',showIf:a=>a.work==='remote'||a.work==='bedrijf'},
+    {v:'omheind',l:'Omheinde tuin voor de hond',icon:'paw',showIf:a=>a.pets==='hond'||a.pets==='meer'},
+    {v:'airco',l:'Airco en verwarming',icon:'sun'},{v:'opslag',l:'Bergruimte',icon:'home'}]},
+  {id:'view',phase:'D',type:'multi',title:'Waar kijk je het liefst op uit?',tease:'Laatste woningvraag.',options:[
+    {v:'zee',l:'Zee',icon:'wave'},{v:'bergen',l:'Bergen',icon:'mountain'},{v:'golfbaan',l:'Golfbaan',icon:'golf'},{v:'natuur',l:'Natuur',icon:'tree'},{v:'geen',l:'Geen voorkeur',icon:'eye',exclusive:true}]},
+  {id:'build',phase:'D',type:'single',auto:true,title:'Nieuwbouw of bestaande bouw?',tease:'',options:[
+    {v:'nieuw',l:'Nieuwbouw',icon:'sparkle'},{v:'bestaand',l:'Bestaande bouw',icon:'key'},{v:'beide',l:'Allebei goed',icon:'compass'}]},
+
+  /* E — Budget */
+  {id:'budget',phase:'E',type:'budget',title:'Welk budget heb je ongeveer in gedachten?',help:'Een globale indicatie is genoeg. Je kunt deze vraag ook overslaan.',why:'Dit is geen kredietbeoordeling of hypotheekadvies.',tease:'Nog één korte vraag over hoe je het wilt betalen.'},
+  {id:'finance',phase:'E',type:'single',auto:true,title:'Hoe wil je de aankoop ongeveer financieren?',help:'Optioneel. Ik vraag geen documenten of bedragen.',tease:'',options:[
+    {v:'eigen',l:'Eigen middelen',icon:'euro'},{v:'hypotheek',l:'Een hypotheek in Spanje',icon:'key'},{v:'combinatie',l:'Combinatie van beide',icon:'compass'},{v:'onbekend',l:'Nog onbekend',icon:'question'}]},
+
+  /* F — Ritme */
+  {id:'months',phase:'F',type:'single',auto:true,showIf:a=>a.reason!=='permanent',title:'Hoeveel maanden per jaar verwacht je in Spanje te zijn?',tease:'',options:[
+    {v:'lt2',l:'Minder dan 2 maanden',icon:'calendar'},{v:'2-4',l:'2 tot 4 maanden',icon:'calendar'},{v:'4-6',l:'4 tot 6 maanden',icon:'calendar'},{v:'gt6',l:'Meer dan 6 maanden of het hele jaar',icon:'home'}]},
+  {id:'season',phase:'F',type:'multi',showIf:a=>a.reason!=='permanent'&&a.months!=='gt6',title:'In welk seizoen ben je er vooral?',tease:'',options:[
+    {v:'lente',l:'Lente',icon:'garden'},{v:'zomer',l:'Zomer',icon:'sun'},{v:'najaar',l:'Najaar',icon:'tree'},{v:'winter',l:'Winter',icon:'wave'}]},
+  {id:'rental',phase:'F',type:'single',auto:true,showIf:a=>a.reason!=='permanent',title:'Is de woning alleen voor jezelf of overweeg je verhuur?',why:'Verhuur aan toeristen is in de Comunitat Valenciana aan registratie en regels gebonden. Soltura kan dat later toelichten.',tease:'',options:[
+    {v:'eigen',l:'Alleen eigen gebruik',icon:'heart'},{v:'soms',l:'Af en toe verhuren',icon:'calendar'},{v:'actief',l:'Actief verhuren als ik er niet ben',icon:'key'},{v:'weetniet',l:'Weet ik nog niet',icon:'question'}]},
+  {id:'daily',phase:'F',type:'multi',showIf:a=>['permanent','pensioen','overwinteren'].includes(a.reason)||['4-6','gt6'].includes(a.months),title:'Wat heb je dagelijks graag in de buurt?',help:'Omdat je er langere tijd woont, vraag ik iets meer.',tease:'',options:[
+    {v:'huisarts',l:'Huisarts en apotheek',icon:'medical'},{v:'supermarkt',l:'Supermarkt op loopafstand',icon:'shop'},{v:'nlgemeenschap',l:'Nederlandstaligen in de buurt',icon:'chat'},{v:'sport',l:'Sportclubs en wandelroutes',icon:'ball'},{v:'ov',l:'Openbaar vervoer',icon:'bus'},{v:'cultuur',l:'Spaanse markt en cultuur',icon:'village'}]},
+  {id:'access',phase:'F',type:'scale',title:'Hoe belangrijk is een snelle reis naar Nederland of België?',tease:''},
+  {id:'timing',phase:'F',type:'single',auto:true,title:'Waar sta je nu in je zoektocht?',tease:'Dan nu de laatste stap: wegen wat je allemaal hebt gekozen.',options:[
+    {v:'orienteren',l:'Ik ben aan het oriënteren',icon:'compass'},{v:'jaar',l:'Ik wil binnen een jaar kopen',icon:'calendar'},{v:'halfjaar',l:'Binnen zes maanden',icon:'calendar'},{v:'direct',l:'Ik wil zo snel mogelijk kopen',icon:'key'}]},
+
+  /* G — Wat echt telt */
+  {id:'priorities',phase:'G',type:'pick3',title:'Wat weegt voor jou het zwaarst?',help:'Dit zijn de wensen die uit je eigen antwoorden komen. Kies er drie, in volgorde. Tik nog eens om te wissen.',why:'Wie veel wil, moet weten wat voorgaat als het ooit concreet wordt.',tease:'Laatste vraag: waar zit ruimte?',dynamicOptions:priorityOptions},
+  {id:'flex',phase:'G',type:'multi',title:'Waar zou je eventueel een beetje op willen inleveren?',why:'Wie weet waar ruimte zit, vindt vaak sneller iets passends.',tease:'',options:[
+    {v:'verderzee',l:'Iets verder van zee wonen voor meer ruimte',icon:'wave'},{v:'kleiner',l:'Een kleinere woning op een betere locatie',icon:'home'},{v:'bestaand',l:'Bestaande bouw in plaats van nieuwbouw',icon:'key'},{v:'renovatie',l:'Een woning met renovatiemogelijkheden',icon:'tools'},{v:'budget',l:'Een iets ruimer budget overwegen',icon:'euro'},{v:'geen',l:'Liever geen concessies aan mijn belangrijkste wensen',icon:'heart',exclusive:true}]}
+];
+/* Prioriteiten komen uit eerdere antwoorden, zodat ze herhalen met een reden: nu wegen in plaats van opnieuw kiezen. */
+const PRIORITY_POOL = [
+  {v:'zee',l:'Dicht bij zee',icon:'wave',when:a=>has(a,'setting','strand')||has(a,'view','zee')},
+  {v:'school',l:'Een goede school voor de kinderen',icon:'book',when:schoolKids},
+  {v:'ruimte',l:'Ruimte en een tuin',icon:'garden',when:a=>has(a,'outdoor','tuin')||has(a,'ptype','villa')||has(a,'ptype','finca')||a.pets==='hond'},
+  {v:'zwembad',l:'Een zwembad',icon:'pool',when:a=>a.pool==='prive'||a.pool==='gemeenschappelijk'},
+  {v:'rust',l:'Rust',icon:'heart',when:a=>has(a,'mood','rustig')||has(a,'setting','woonwijk')},
+  {v:'sfeer',l:'Spaanse sfeer',icon:'village',when:a=>has(a,'mood','authentiek')||has(a,'setting','dorp')},
+  {v:'voorzieningen',l:'Voorzieningen dichtbij',icon:'shop',when:a=>(a.daily||[]).length||has(a,'setting','stad')||has(a,'setting','dorp')},
+  {v:'golf',l:'Golf in de buurt',icon:'golf',when:a=>has(a,'setting','golf')||has(a,'view','golfbaan')},
+  {v:'uitzicht',l:'Mooi uitzicht',icon:'eye',when:a=>(a.view||[]).some(v=>v!=='geen')},
+  {v:'logeren',l:'Ruimte voor logees',icon:'people',when:a=>(a.visitors||[]).some(v=>v!=='zelden')},
+  {v:'werkplek',l:'Een goede werkplek',icon:'laptop',when:a=>a.work==='remote'||a.work==='bedrijf'},
+  {v:'bereikbaar',l:'Snel bereikbaar vanuit huis',icon:'plane',when:a=>+a.access>=3},
+  {v:'nieuw',l:'Nieuw en onderhoudsarm',icon:'sparkle',when:a=>a.build==='nieuw'||has(a,'ptype','nieuwbouw')},
+  {v:'budget',l:'Binnen budget blijven',icon:'euro',when:a=>!!(a.budget&&a.budget.amount)}
+];
+function priorityOptions(a){
+  let o=PRIORITY_POOL.filter(p=>p.when(a));
+  if(o.length<5) o=o.concat(PRIORITY_POOL.filter(p=>!o.includes(p)&&['rust','voorzieningen','budget','uitzicht','zee'].includes(p.v))).slice(0,6);
+  return o.slice(0,9);
+}
+const optionsOf = q => q.dynamicOptions ? q.dynamicOptions(P.answers) : (q.options||[]);
+const rowsOf = q => (q.rows||[]).filter(r=>!r.showIf||r.showIf(P.answers));
+IC.village = IC.home;
+
+/* ---------- Plaatsen ---------- */
+const PLACES = [
+  {id:'rojales',name:'Rojales',zone:'achterland',scene:'village',x:200,y:150,tags:['dorp','authentiek','rustig'],
+   sfeer:'Historisch dorp aan de rivier de Segura, met een oude stenen brug en grotwoningen in de heuvel.',
+   omgeving:'Achterland, tussen de boomgaarden van de Vega Baja en de kust bij Guardamar.',
+   voorzieningen:'Dagelijkse voorzieningen in het dorp; voor meer keuze ben je snel in grotere plaatsen in de buurt.',
+   voor:'Wie Spaans dorpsleven zoekt met de kust binnen bereik.', let:'Aan de rand van het dorp liggen grote urbanisaties met een heel ander karakter dan de oude kern.'},
+  {id:'quesada',name:'Ciudad Quesada',zone:'achterland',scene:'golf',x:212,y:180,tags:['woonwijk','internationaal','golf','levendig','modern','gezin'],
+   sfeer:'Grote, internationale woonwijk binnen de gemeente Rojales, met veel Noord-Europese bewoners.',
+   omgeving:'Glooiend terrein met villa’s en bungalows, een golfbaan en uitzicht richting de zoutmeren.',
+   voorzieningen:'Veel restaurants, winkels en diensten in meerdere talen.',
+   voor:'Wie een internationale omgeving en golf dichtbij wil.', let:'Minder Spaans dorpskarakter; de sfeer verschilt per deel van de wijk.'},
+  {id:'benijofar',name:'Benijófar',zone:'achterland',scene:'calm',x:178,y:168,tags:['dorp','rustig','internationaal'],
+   sfeer:'Klein en rustig dorp met een gemengde Spaanse en internationale bevolking.',
+   omgeving:'Aan de rand van de Vega Baja, tussen Rojales en de kustplaatsen.',
+   voorzieningen:'Basisvoorzieningen en een aantal restaurants; grotere boodschappen in de omgeving.',
+   voor:'Wie rust zoekt in een overzichtelijke gemeenschap.', let:'Een klein dorp: kijk of het aanbod aan voorzieningen past bij hoe lang je er per jaar bent.'},
+  {id:'formentera',name:'Formentera del Segura',zone:'achterland',scene:'green',x:168,y:138,tags:['dorp','authentiek','rustig','groen'],
+   sfeer:'Echt Spaans dorp in de vruchtbare huerta van de Segura, met citrus- en groentevelden rondom.',
+   omgeving:'Vlak, groen achterland, iets verder van de kust dan de buurdorpen.',
+   voorzieningen:'Dorpsvoorzieningen; voor uitgebreide winkels ga je naar de omliggende plaatsen.',
+   voor:'Wie het platteland en het Spaanse leven van alledag zoekt.', let:'Weinig toerisme, dus ook minder internationale voorzieningen.'},
+  {id:'guardamar',name:'Guardamar del Segura',zone:'kust',scene:'dunes',x:282,y:132,tags:['strand','dorp','groen','levendig','gezin'],
+   sfeer:'Kustplaats met een echte dorpskern, waar de Segura in zee uitmondt.',
+   omgeving:'Lange zandstranden met een beschermd duingebied en dennenbos.',
+   voorzieningen:'Winkels, restaurants en een boulevard; in de zomer drukker.',
+   voor:'Wie strand en natuur wil combineren met een Spaanse dorpskern.', let:'Seizoensdrukte in de zomermaanden.'},
+  {id:'torrevieja',name:'Torrevieja',zone:'kust',scene:'city',x:262,y:252,tags:['stad','strand','levendig','internationaal','gezin'],
+   sfeer:'Levendige kuststad met een haven, boulevards en een zeer gemengde bevolking.',
+   omgeving:'Ingeklemd tussen zee en twee zoutmeren, waarvan er één roze kleurt.',
+   voorzieningen:'Alle stedelijke voorzieningen: winkels, horeca, cultuur en zorg.',
+   voor:'Wie alles op loopafstand wil en van stadsleven houdt.', let:'Drukker en dichter bebouwd; de sfeer verschilt sterk per wijk.'},
+  {id:'orihuela',name:'Orihuela Costa',zone:'kust',scene:'mix',x:232,y:332,tags:['strand','golf','internationaal','modern','woonwijk','gezin'],
+   sfeer:'Kuststrook van de gemeente Orihuela met baaien, urbanisaties en een internationaal publiek.',
+   omgeving:'Kleine strandjes en kliffen, met meerdere golfbanen in het achterland.',
+   voorzieningen:'Groot winkelcentrum, veel horeca en internationale diensten.',
+   voor:'Wie zee en golf wil met moderne voorzieningen.', let:'Het bestuurscentrum ligt in Orihuela-stad, ver landinwaarts.'},
+  {id:'dolores',name:'Dolores',zone:'achterland',scene:'village',x:130,y:96,tags:['authentiek','groen','rustig','dorp'],
+   sfeer:'Spaanse plattelandsgemeente met een levendig dorpsplein en weinig toerisme.',
+   omgeving:'Vlakke landbouwgrond in de Vega Baja, landinwaarts.',
+   voorzieningen:'Spaanse dorpsvoorzieningen.',
+   voor:'Wie volledig wil opgaan in het Spaanse leven.', let:'Spaans spreken helpt hier echt; de kust ligt verder weg.'},
+  {id:'sanmiguel',name:'San Miguel de Salinas',zone:'achterland',scene:'salt',x:178,y:268,tags:['rustig','golf','groen','dorp','authentiek'],
+   sfeer:'Dorp op een heuvel met uitzicht over de zoutmeren, rustig maar met eigen karakter.',
+   omgeving:'Achterland met heuvels, met golfbanen en de kust in de omgeving.',
+   voorzieningen:'Dorpsvoorzieningen en een wekelijkse markt.',
+   voor:'Wie rust en uitzicht zoekt met golf en kust in de buurt.', let:'Heuvelachtig: let op hellingen als gelijkvloers wonen belangrijk is.'}
+];
+const TAG_LABEL = {gezin:'meer keuze in scholen en voorzieningen voor gezinnen',strand:'strand',dorp:'dorpsleven',woonwijk:'rustige woonwijk',golf:'golf',groen:'groen en ruimte',stad:'stad dichtbij',internationaal:'internationale voorzieningen',authentiek:'Spaans en authentiek',rustig:'rust',levendig:'levendigheid',modern:'modern comfort'};
+
+/* =========================================================
+   STATE en opslag (alleen localStorage van dit apparaat)
+   ========================================================= */
+function uuid(){return (crypto.randomUUID?crypto.randomUUID():'p-'+Date.now().toString(36)+Math.random().toString(36).slice(2))}
+function newProfile(){const t=new Date().toISOString();return{id:uuid(),created_at:t,updated_at:t,lang:CONFIG.lang,status:'anonymous',answers:{},skipped:[],favorites:[],shared:null,reactions:{},chat:[]}}
+let P = load() || newProfile();
+P.reactions=P.reactions||{};P.chat=(P.chat||[]).filter(c=>!c.pending);
+let qIndex = 0;
+function load(){try{const s=localStorage.getItem(CONFIG.storageKey);return s?JSON.parse(s):null}catch(e){return null}}
+function save(){P.updated_at=new Date().toISOString();try{localStorage.setItem(CONFIG.storageKey,JSON.stringify(P))}catch(e){}}
+function wipe(){try{localStorage.removeItem(CONFIG.storageKey)}catch(e){}P=newProfile();qIndex=0}
+
+/* =========================================================
+   KOMPAS-GESPREK: gids + vragen + reacties (Claude of vaste tekst)
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const euro = n => '€ '+Math.round(n).toLocaleString('nl-NL');
+const tickSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
+const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Claude-koppeling: artifact-sample, eigen endpoint, of niets ---------- */
+let AI = null; // {ask(prompt,{json}) -> Promise}
+(async()=>{
+  try{
+    if(window.claude && typeof window.claude.use==='function'){
+      const s = await window.claude.use('sample');
+      if(s){ AI = { label:'Claude', ask:(p,o={})=> o.json ? s.json(p,{modelTier:'quick'}) : s(p,{modelTier:'quick',onText:o.onText}).then(r=>r.text) }; }
+    }
+    if(!AI && CONFIG.guideEndpoint){
+      AI = { label:'Claude', ask:async(p,o={})=>{ const r=await fetch(CONFIG.guideEndpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:p,json:!!o.json})}); if(!r.ok) throw {code:'upstream_error'}; const d=await r.json(); return o.json? d.json : d.text; } };
+    }
+  }catch(e){ AI=null }
+  syncSay();
+})();
+function aiFailed(e){
+  if(e && ['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed'].includes(e.code)){ AI=null; syncSay(); }
+}
+
+/* ---------- Voortgang ---------- */
+const relevant = () => QUESTIONS.filter(q=>!q.showIf||q.showIf(P.answers));
+function answeredFrac(q){
+  const a=P.answers[q.id];
+  if(a==null) return 0;
+  if(q.type==='matrix'){const rs=rowsOf(q);const n=rs.filter(r=>a[r.v]).length;return rs.length?n/rs.length:0}
+  if(q.type==='budget') return a.amount?1:0;
+  if(Array.isArray(a)) return a.length?1:0;
+  return 1;
+}
+function progress(){const rq=relevant();const s=rq.reduce((t,q)=>t+answeredFrac(q),0);return Math.round(s/rq.length*100)}
+function openQuestions(){return relevant().filter(q=>answeredFrac(q)<1)}
+function progMsg(p){
+  if(p===0) return 'Elke vraag mag je overslaan.';
+  if(p<25) return 'Je kompas begint vorm te krijgen.';
+  if(p<50) return 'Je hebt al een mooie eerste richting gekozen.';
+  if(p<80) return 'Je profiel wordt steeds scherper.';
+  if(p<100) return 'Je profiel is bijna compleet.';
+  return 'Je woonprofiel is compleet.';
+}
+function renderHead(){
+  const p=progress();
+  $('#progLabel').textContent=`Jouw woonprofiel: ${p}% ingevuld`;
+  $('#progMsg').textContent=progMsg(p);
+  const bar=$('#progBar');bar.setAttribute('aria-valuenow',p);bar.querySelector('i').style.width=p+'%';
+  $('#wzCompass').innerHTML=compassSVG(p);
+  const rq=relevant(), cur=rq[qIndex];
+  $('#phaseNav').innerHTML=PHASES.map((ph,i)=>{
+    const qs=rq.filter(q=>q.phase===ph.id);const done=qs.length&&qs.every(q=>answeredFrac(q)===1);
+    const isCur=cur&&cur.phase===ph.id;
+    return (i?'<i aria-hidden="true">·</i>':'')+`<button type="button" class="${isCur?'cur':''} ${done?'done':''}" data-phase="${ph.id}" ${isCur?'aria-current="step"':''}>${ph.name}</button>`;
+  }).join('');
+  $('#phaseNav').querySelectorAll('[data-phase]').forEach(b=>b.onclick=()=>{qIndex=relevant().findIndex(x=>x.phase===b.dataset.phase);renderChat(true)});
+}
+
+/* ---------- Labels ---------- */
+const Q = id => QUESTIONS.find(q=>q.id===id);
+function lbl(id,v){const q=Q(id);if(!q||v==null)return null;
+  if(q.type==='scale') return ({1:'Niet belangrijk',2:'Prettig',3:'Belangrijk',4:'Zeer belangrijk'})[v];
+  if(q.type==='budget') return v.amount?euro(v.amount)+(v.meaning?' ('+({indicatie:'globale indicatie',totaal:'maximaal totaalbudget',prijs:'alleen aankoopprijs'})[v.meaning]+')':''):null;
+  if(q.type==='matrix') { const rs=rowsOf(q).filter(r=>v[r.v]); return rs.length? rs.map(r=>r.l+': '+lc(q.cols.find(c=>c.v===v[r.v]).l)).join(' · ') : null }
+  const pool=q.dynamicOptions?PRIORITY_POOL:q.options;
+  const f=x=>(pool.find(o=>o.v===x)||{}).l||x;
+  if(q.type==='pick3') return v.map((x,i)=>(i+1)+'. '+f(x)).join('  ');
+  return Array.isArray(v)? v.map(f).join(', ') : f(v)}
+function lc(s){return s?s.charAt(0).toLowerCase()+s.slice(1):s}
+function digest(){
+  return relevant().filter(q=>answeredFrac(q)>0).map(q=>`- ${q.title} ${lbl(q.id,P.answers[q.id])}`).join('\n') || '(nog niets)';
+}
+
+/* ---------- Media: video als die er is, anders getekende scène ---------- */
+function media(key, scene, seed){
+  const url = CONFIG.videos[key];
+  const art=`<div class="kbwrap">${landscape(scene, seed||9)}</div>`;
+  // De getekende scène ligt eronder: laadt de video niet (geen netwerk, blokkade), dan blijft die zichtbaar.
+  if(url && !reduceMotion()) return art+`<video src="${url}" autoplay muted loop playsinline preload="metadata" aria-hidden="true" onerror="this.remove()"></video>`;
+  return art;
+}
+function setBg(ph){
+  const box=$('#bgVid'); if(box.dataset.ph===ph.id) return;
+  box.dataset.ph=ph.id; box.innerHTML=media(ph.video, ph.scene, 3);
+}
+
+/* ---------- Vaste reacties (werken ook zonder Claude) ---------- */
+const TPL = {
+  reason:{vakantie:'Een eigen plek voor de vakanties, waar je niet meer hoeft te zoeken naar een appartement.',overwinteren:'Wie overwintert, kiest anders dan wie alleen in de zomer komt: dagelijkse voorzieningen tellen dan zwaarder.',permanent:'Emigreren is een grote stap; dan kijk ik verder dan alleen het huis.',pensioen:'Een plek om van je pensioen te genieten vraagt om gemak en goede voorzieningen dichtbij.',combi:'Eigen gebruik en verhuur combineren, dan telt de ligging dubbel.',ontdekken:'Prima. Juist dan helpt een kompas.'},
+  household:{gezin:'Met het gezin naar Spanje: dan gaat het ook over school, vriendjes en ruimte om te spelen.',generaties:'Meerdere generaties onder één dak vraagt om slim ingedeelde ruimte, en soms gelijkvloers.',partner:'Met z\'n tweeën geeft vaak de meeste vrijheid in de keuze.',alleen:'Alleen gaan betekent dat de buurt en de mensen om je heen extra belangrijk zijn.',vrienden:'Samen kopen of verblijven: dan moet de woning voor iedereen werken.'},
+  school:{spaans:'Een Spaanse school betekent snel meedoen in het dorp en vrienden in de straat.',internationaal:'Een internationale school maakt de afstand tot school vaak bepalend voor de woonplaats.',combinatie:'Spaans op school en Nederlands op afstand houdt beide talen levend.',weetniet:'Dat is heel normaal; het is een van de eerste dingen om samen uit te zoeken.'},
+  pets:{hond:'Een hond wil buiten zijn; een tuin of een wandelgebied dichtbij scheelt veel.',kat:'Een kat voelt zich het best met een rustige plek en een dichte buitenruimte.',meer:'Meerdere dieren: ruimte buiten wordt dan bijna een vereiste.',geen:'Dan heb je meer vrijheid in woningtype.'},
+  work:{remote:'Op afstand werken vraagt om een stille werkplek en goed internet.',bedrijf:'Een eigen bedrijf beginnen geeft je de vrijheid om de woonplaats daarop af te stemmen.',zoeken:'Werk zoeken in Spanje maakt de nabijheid van grotere plaatsen belangrijker.',niet:'Dan draait alles om hoe je je dagen wilt vullen.'},
+  timing:{orienteren:'Oriënteren is precies waar dit kompas voor is.',jaar:'Binnen een jaar: dan loont het om je wensen nu scherp te krijgen.',halfjaar:'Binnen zes maanden is een mooie termijn om gericht te gaan kijken.',direct:'Zo snel mogelijk: dan is een helder profiel goud waard.'}
+};
+const GENERIC=['Genoteerd.','Helder, dat helpt.','Duidelijk.','Mooi, dat neem ik mee.'];
+function templateReaction(q,next){
+  const a=P.answers[q.id];
+  let s = (TPL[q.id]&&typeof a==='string'&&TPL[q.id][a]) || (answeredFrac(q)===0?'Geen probleem, die vraag kan later nog.':GENERIC[q.id.length%GENERIC.length]);
+  if(q.id==='kids_ages'&&schoolKids(P.answers)&&livesThere(P.answers)) s='Schoolgaande kinderen en emigreren: dan wordt de school een van de belangrijkste keuzes.';
+  const t = q.tease || (next? '' : '');
+  return (s+' '+t).trim();
+}
+function reactionPrompt(q,next){
+  return `Je bent "Kompas", de vriendelijke gids van SpanjeKompas, een Nederlandstalige woonwijzer voor de zuidelijke Costa Blanca in Spanje. Een bezoeker beantwoordt vragen om zijn woonwensen te ontdekken.
+
+Wat de bezoeker tot nu toe heeft gekozen:
+${digest()}
+
+Laatste vraag: "${q.title}"
+Antwoord: "${answeredFrac(q)?lbl(q.id,P.answers[q.id]):'overgeslagen'}"
+${next?`Volgende vraag (niet stellen, alleen nieuwsgierig naar maken): "${next.title}"`:'Hierna volgt het persoonlijke overzicht.'}
+
+Schrijf maximaal 2 korte zinnen, samen hooguit 40 woorden, in het Nederlands, in de je-vorm, warm en concreet:
+1. Reageer persoonlijk op dit antwoord en verbind het met een eerder antwoord als dat iets toevoegt (bijvoorbeeld: gezin plus emigreren maakt school belangrijk).
+2. Maak de bezoeker nieuwsgierig naar wat hierna komt, zonder de volgende vraag letterlijk te herhalen.
+Regels: geen feiten over prijzen, belastingen, reistijden, wetten of beschikbaarheid van woningen; noem geen plaatsnamen; geen verkooppraat; geen emoji; noem geen makelaar. Geef alleen de twee zinnen, zonder aanhalingstekens.`;
+}
+async function react(q){
+  const rq=relevant(), next=rq[rq.indexOf(q)+1];
+  const key=JSON.stringify(P.answers[q.id]??null);
+  const prev=P.reactions[q.id];
+  if(prev&&prev.key===key&&prev.text) return;
+  P.reactions[q.id]={key,text:'',pending:true};
+  updateBubble(q.id);
+  let text=null;
+  if(AI){
+    try{ text = await AI.ask(reactionPrompt(q,next),{onText:t=>{P.reactions[q.id].text=t.text;updateBubble(q.id)}}); }
+    catch(e){ aiFailed(e); text=null; }
+  }
+  if(!text) text=templateReaction(q,next);
+  P.reactions[q.id]={key,text:String(text).trim(),ai:!!AI};
+  save(); updateBubble(q.id);
+}
+function updateBubble(qid){
+  const el=document.getElementById('re-'+qid); if(!el) return;
+  const r=P.reactions[qid];
+  el.innerHTML = r&&r.text ? esc(r.text) : '<span class="typing" aria-label="Kompas typt"><i></i><i></i><i></i></span>';
+}
+
+/* ---------- Eigen woorden: Claude zet tekst om in antwoorden ---------- */
+function extractPrompt(text){
+  const qs=relevant().concat(QUESTIONS.filter(q=>!relevant().includes(q))).filter(q=>q.type!=='matrix'&&q.type!=='pick3');
+  const spec=qs.map(q=>{
+    if(q.type==='budget') return `${q.id} (budget): {"amount": getal in euro, "meaning": "indicatie"|"totaal"|"prijs"}`;
+    if(q.type==='scale') return `${q.id} (${q.title}): "1"|"2"|"3"|"4" (1 = niet belangrijk, 4 = zeer belangrijk)`;
+    const opts=optionsOf(q).map(o=>`"${o.v}" = ${o.l}`).join('; ');
+    return `${q.id} (${q.title}) ${q.type==='multi'?'lijst van':'één van'}: ${opts}`;
+  }).join('\n');
+  return `Je bent "Kompas", de gids van SpanjeKompas (woonwijzer zuidelijke Costa Blanca). Een bezoeker vertelt in eigen woorden over zijn wensen. Zet alleen wat hij duidelijk zegt om in antwoorden op de vragen hieronder. Raad niets: wat niet gezegd is, laat je weg.
+
+Vragen en toegestane waarden:
+${spec}
+
+Wat de bezoeker al eerder koos:
+${digest()}
+
+Tekst van de bezoeker:
+"""${text.slice(0,2000)}"""
+
+Antwoord met alleen JSON in deze vorm:
+{"answers": {"vraag_id": waarde}, "reply": "maximaal 2 korte warme zinnen in het Nederlands (je-vorm) die laten merken dat je het begrepen hebt en nieuwsgierig maken naar de volgende stap. Geen feiten over prijzen, wetten of reistijden, geen plaatsnamen, geen emoji."}`;
+}
+function applyExtracted(ans){
+  const filled=[];
+  if(!ans||typeof ans!=='object') return filled;
+  for(const [id,val] of Object.entries(ans)){
+    const q=Q(id); if(!q||val==null) continue;
+    if(q.type==='budget'){const n=Math.round(+((val&&val.amount)??val));if(n>=20000&&n<=20000000){P.answers.budget={amount:n,meaning:['indicatie','totaal','prijs'].includes(val.meaning)?val.meaning:(P.answers.budget||{}).meaning};filled.push(id)}continue}
+    if(q.type==='scale'){const s=String(val);if(['1','2','3','4'].includes(s)){P.answers[id]=s;filled.push(id)}continue}
+    const ok=new Set(optionsOf(q).map(o=>o.v));
+    if(q.type==='single'){ if(ok.has(String(val))){P.answers[id]=String(val);filled.push(id)} }
+    else if(q.type==='multi'){ const arr=(Array.isArray(val)?val:[val]).map(String).filter(v=>ok.has(v)); if(arr.length){P.answers[id]=q.max?arr.slice(0,q.max):arr;filled.push(id)} }
+  }
+  return filled;
+}
+function syncSay(){
+  const f=$('#sayForm'); if(!f) return;
+  f.hidden=!AI;
+  $('#aiNote').textContent = AI ? 'Bijvoorbeeld: "we zijn met z\'n vieren, de kinderen zijn 9 en 13 en we willen volgend jaar emigreren". Reacties en het lezen van je woorden komen van Claude (AI); controleer wat er is ingevuld.' : '';
+}
+$('#sayForm').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const ta=$('#sayIn'), text=ta.value.trim(); if(!text||!AI) return;
+  ta.value=''; autoGrow();
+  const rq=relevant(); const after = qIndex>0 ? rq[qIndex-1].id : null;
+  const item={id:'c'+Date.now(),after,user:text,reply:'',filled:[],pending:true};
+  P.chat.push(item); save(); renderChat();
+  try{
+    const out = await AI.ask(extractPrompt(text),{json:true});
+    item.filled = applyExtracted(out&&out.answers);
+    item.reply = (out&&typeof out.reply==='string'&&out.reply.trim()) || (item.filled.length?'Dank je, dat heb ik verwerkt.':'Dank je. Ik kon er nog geen antwoord op een vraag uit halen; kies hieronder gewoon verder.');
+  }catch(e){
+    aiFailed(e);
+    item.reply='Dat lukte nu niet. Je antwoorden staan nog; kies hieronder gewoon verder.';
+  }
+  item.pending=false;
+  item.filled.forEach(id=>{P.reactions[id]={key:JSON.stringify(P.answers[id]),text:''}; P.skipped=P.skipped.filter(x=>x!==id)});
+  const r2=relevant(); const i=r2.findIndex(q=>answeredFrac(q)<1&&!P.skipped.includes(q.id)); qIndex=i<0?r2.length:i;
+  save(); renderChat();
+});
+function autoGrow(){const t=$('#sayIn');t.style.height='';if(t.value)t.style.height=Math.min(140,Math.max(50,t.scrollHeight))+'px'}
+$('#sayIn').addEventListener('input',autoGrow);
+$('#sayIn').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#sayForm').requestSubmit()}});
+
+/* ---------- Plaatsen die nog passen (voor de onthulling per fase) ---------- */
+function wantedTags(){
+  const a=P.answers, want=new Set();
+  (a.mood||[]).forEach(v=>{if(v!=='mix')want.add(v)});
+  (a.setting||[]).forEach(v=>{if(v!=='weetniet')want.add(v)});
+  if(schoolKids(a)) want.add('gezin');
+  return want;
+}
+function matchingPlaces(){
+  const want=wantedTags(); if(!want.size) return PLACES.map(p=>({p,why:[]}));
+  return PLACES.map(p=>({p,why:p.tags.filter(t=>want.has(t))})).filter(x=>x.why.length).sort((x,y)=>y.why.length-x.why.length);
+}
+function revealCard(ph,nextPh){
+  const m=matchingPlaces(), all=PLACES.length;
+  const want=wantedTags();
+  const head = !want.size ? `Alle ${all} plaatsen zijn nog in beeld.` : `${m.length} van de ${all} plaatsen passen bij wat je tot nu toe koos.`;
+  return `<div class="reveal" role="note">
+    <div class="rv-top"><span class="eyebrow">Je kompas na ${esc(ph.name.toLowerCase())}</span><b>${head}</b></div>
+    <div class="rv-places">${PLACES.map(p=>{const hit=!want.size||m.some(x=>x.p===p);return `<span class="rv-p ${hit?'on':''}">${p.name}</span>`}).join('')}</div>
+    ${nextPh?`<p class="rv-next">Na <b>${esc(nextPh.name.toLowerCase())}</b>: ${esc(nextPh.gives)}</p>`:''}
+  </div>`;
+}
+
+/* ---------- Gesprek tekenen ---------- */
+const AV = () => `<svg class="av" viewBox="0 0 64 64" aria-hidden="true">${logoSVG(false)}</svg>`;
+function answerText(q){
+  if(answeredFrac(q)===0) return '<span class="muted">Overgeslagen</span>';
+  return esc(lbl(q.id,P.answers[q.id]));
+}
+function phaseIntro(ph,i){
+  return `<figure class="scene" aria-label="Fase ${i+1}: ${esc(ph.name)}">${media(ph.video,ph.scene,i*17+4)}<figcaption><span class="eyebrow">Fase ${i+1} van ${PHASES.length}</span><b>${esc(ph.name)}</b><span>${esc(ph.intro)}</span></figcaption></figure>`;
+}
+function chatItemsAfter(qid){
+  return P.chat.filter(c=>c.after===qid).map(c=>`
+    <div class="msg me"><div class="bubble">${esc(c.user)}</div></div>
+    <div class="msg">${AV()}<div class="bubble">${c.pending?'<span class="typing" aria-label="Kompas leest mee"><i></i><i></i><i></i></span>':esc(c.reply)}${c.filled&&c.filled.length?`<div class="filled"><span>Ingevuld:</span>${c.filled.map(id=>`<button type="button" class="tag" data-jump="${id}">${esc(Q(id).title.replace(/\?$/,''))}</button>`).join('')}</div>`:''}</div></div>`).join('');
+}
+function renderChat(focus){
+  const rq=relevant();
+  if(qIndex>rq.length) qIndex=rq.length;
+  const cur=rq[qIndex];
+  const curPh=cur?PHASES.find(p=>p.id===cur.phase):PHASES[PHASES.length-1];
+  setBg(curPh);
+  let html=chatItemsAfter(null), lastPh=null;
+  rq.slice(0,qIndex).forEach((q,i)=>{
+    const ph=PHASES.find(p=>p.id===q.phase);
+    if(ph!==lastPh){ html+=phaseIntro(ph,PHASES.indexOf(ph)); lastPh=ph; }
+    html+=`<div class="msg">${AV()}<div class="bubble q">${esc(q.title)}</div></div>
+      <div class="msg me"><div class="bubble">${answerText(q)} <button type="button" class="edit" data-jump="${q.id}" aria-label="Wijzig antwoord op: ${esc(q.title)}">wijzig</button></div></div>`;
+    const r=P.reactions[q.id];
+    if(r) html+=`<div class="msg">${AV()}<div class="bubble re" id="re-${q.id}">${r.text?esc(r.text):'<span class="typing" aria-label="Kompas typt"><i></i><i></i><i></i></span>'}</div></div>`;
+    html+=chatItemsAfter(q.id);
+    const nq=rq[i+1];
+    if(!nq || nq.phase!==q.phase){ const nph=nq?PHASES.find(p=>p.id===nq.phase):null; if(qIndex>i) html+=revealCard(ph,nph); }
+  });
+  if(cur && curPh!==lastPh) html+=phaseIntro(curPh,PHASES.indexOf(curPh));
+  $('#thread').innerHTML=html;
+  $('#qwrap').innerHTML = cur ? currentQ(cur) : finishCard();
+  bindThread(); if(cur) bindQ(cur); else bindFinish();
+  renderHead();
+  requestAnimationFrame(()=>{
+    const target=$('#qwrap');
+    target.scrollIntoView({behavior:(focus||reduceMotion())?'auto':'smooth',block:'end'});
+    if(focus){const h=$('#qT')||$('#qwrap');h.setAttribute('tabindex','-1');h.focus({preventScroll:true})}
+  });
+}
+function bindThread(){
+  document.querySelectorAll('#thread [data-jump]').forEach(b=>b.onclick=()=>{qIndex=relevant().findIndex(q=>q.id===b.dataset.jump);renderChat(true)});
+}
+function finishCard(){
+  return `<div class="current finish"><h2 class="q-title" id="qT">Je kompas staat klaar.</h2><p class="q-help">Je hebt ${progress()}% van je profiel ingevuld. Bekijk je persoonlijke overzicht, met de plaatsen die bij je passen.</p><div class="wz-foot"><span class="sp"></span><button class="btn btn-primary" id="bFinish">Bekijk mijn kompas <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div></div>`;
+}
+function bindFinish(){ $('#bFinish').onclick=()=>showResult(); }
+
+function optCard(q,o,selected,extra=''){
+  const role = q.type==='single'?'role="radio" aria-checked="'+selected+'"':'aria-pressed="'+selected+'"';
+  if(o.scene) return `<button type="button" class="opt scene" data-v="${o.v}" ${role} ${extra}><span class="art">${landscape(o.scene, o.v.length*13+7)}</span><span class="txt"><b>${esc(o.l)}</b>${o.d?`<small>${esc(o.d)}</small>`:''}</span><span class="tick">${tickSvg}</span></button>`;
+  return `<button type="button" class="opt" data-v="${o.v}" ${role} ${extra}>${ico(o.icon)}<b>${esc(o.l)}</b>${o.d?`<small>${esc(o.d)}</small>`:''}<span class="tick">${tickSvg}</span></button>`;
+}
+function currentQ(q){
+  const a=P.answers[q.id];
+  let body='';
+  if(q.type==='single'||q.type==='multi'){
+    const opts=optionsOf(q).filter(o=>!o.showIf||o.showIf(P.answers));
+    body=`<div class="opts ${q.scenes?'scenes':''}" ${q.type==='single'?'role="radiogroup"':'role="group"'} aria-labelledby="qT">${opts.map(o=>{
+      const sel=q.type==='single'?a===o.v:(a||[]).includes(o.v);
+      const full=q.max&&(a||[]).length>=q.max&&!sel;
+      return optCard(q,o,sel,full?'disabled':'');
+    }).join('')}</div>`;
+  } else if(q.type==='pick3'){
+    const arr=a||[];
+    body=`<div class="opts" role="group" aria-labelledby="qT">${optionsOf(q).map(o=>{
+      const i=arr.indexOf(o.v), sel=i>-1, full=arr.length>=3&&!sel;
+      return `<button type="button" class="opt" data-v="${o.v}" aria-pressed="${sel}" ${full?'disabled':''} aria-label="${esc(o.l)}${sel?', keuze '+(i+1):''}">${ico(o.icon)}<b>${esc(o.l)}</b>${sel?`<span class="rank" aria-hidden="true">${i+1}</span>`:''}</button>`}).join('')}</div>`;
+  } else if(q.type==='scale'){
+    const opts=[{v:'1',l:'Niet belangrijk'},{v:'2',l:'Prettig'},{v:'3',l:'Belangrijk'},{v:'4',l:'Zeer belangrijk'}];
+    body=`<div class="opts" role="radiogroup" aria-labelledby="qT" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${opts.map(o=>`<button type="button" class="opt" data-v="${o.v}" role="radio" aria-checked="${a===o.v}" style="min-height:70px"><b>${o.l}</b><span class="tick">${tickSvg}</span></button>`).join('')}</div>`;
+  } else if(q.type==='matrix'){
+    const m=a||{};
+    body=`<div class="matrix">${rowsOf(q).map(r=>`<div class="mrow" role="radiogroup" aria-label="${esc(r.l)}"><b>${esc(r.l)}</b><div class="seg">${q.cols.map(c=>`<button type="button" class="chip" role="radio" aria-checked="${m[r.v]===c.v}" data-row="${r.v}" data-v="${c.v}">${c.l}</button>`).join('')}</div></div>`).join('')}</div>`;
+  } else if(q.type==='budget'){
+    const b=a||{}, amt=b.amount||350000;
+    body=`<div class="budget">
+      <div><span class="k" style="font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600">Jouw indicatie</span><div class="amt ${b.amount?'':'unset'}" id="bAmt" aria-live="polite">${b.amount?euro(b.amount):'Nog niet ingevuld'}</div></div>
+      <div><label class="sr" for="bRange">Budget</label><input id="bRange" type="range" min="100000" max="1500000" step="25000" value="${Math.min(1500000,amt)}" aria-valuetext="${euro(amt)}">
+      <div class="ticks" aria-hidden="true"><span>€ 100.000</span><span>€ 500.000</span><span>€ 1.000.000</span><span>€ 1.500.000+</span></div></div>
+      <div class="field" style="max-width:280px"><label for="bNum">Of typ een bedrag</label><input id="bNum" inputmode="numeric" placeholder="bijv. 325000" value="${b.amount||''}" aria-describedby="bErr"><span class="err" id="bErr" hidden></span></div>
+      <div><b style="display:block;margin-bottom:10px">Wat betekent dit bedrag voor jou?</b>
+      <div class="opts" role="radiogroup" aria-label="Betekenis van het budget" style="margin-top:0;grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">${[
+        {v:'indicatie',l:'Een globale indicatie'},{v:'totaal',l:'Mijn maximale totaalbudget',d:'Inclusief belastingen en kosten'},{v:'prijs',l:'Alleen de aankoopprijs',d:'Kosten komen er nog bij'}].map(o=>`<button type="button" class="opt" data-meaning="${o.v}" role="radio" aria-checked="${b.meaning===o.v}" style="min-height:70px"><b>${o.l}</b>${o.d?`<small>${o.d}</small>`:''}<span class="tick">${tickSvg}</span></button>`).join('')}</div></div>
+      <p style="font-size:.9rem;color:var(--muted)">Bovenop de aankoopprijs komen in Spanje belastingen en aankoopkosten. Soltura kan die voor jouw situatie precies voorrekenen.</p>
+    </div>`;
+  }
+  const answered=answeredFrac(q)>0, rq=relevant(), last=qIndex===rq.length-1;
+  return `<div class="current">
+    <div class="msg">${AV()}<div class="bubble q big"><h2 class="q-title" id="qT">${esc(q.title)}</h2>${q.help?`<p class="q-help">${esc(q.help)}</p>`:''}${q.why?`<p class="q-why"><b>Waarom ik dit vraag:</b> ${esc(q.why)}</p>`:''}</div></div>
+    ${body}
+    <div class="wz-foot">
+      <button type="button" class="btn btn-ghost" id="bBack">${qIndex===0?'Naar de homepage':'Terug'}</button>
+      <button type="button" class="btn-quiet" id="bLater">Later verder</button>
+      <button type="button" class="btn-quiet" id="bOverview">Bekijk mijn overzicht</button>
+      <span class="sp"></span>
+      <button type="button" class="btn btn-primary" id="bNext">${answered?(last?'Bekijk mijn kompas':'Verder'):'Sla deze vraag over'} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div></div>`;
+}
+function setAnswer(q,val){ P.answers[q.id]=val; P.skipped=P.skipped.filter(x=>x!==q.id); save(); }
+let autoT=null;
+function advance(q){
+  clearTimeout(autoT);
+  if(answeredFrac(q)===0&&!P.skipped.includes(q.id)) P.skipped.push(q.id);
+  const rq=relevant(); qIndex=rq.indexOf(q)+1; save();
+  P.reactions[q.id] = P.reactions[q.id] && P.reactions[q.id].key===JSON.stringify(P.answers[q.id]??null) ? P.reactions[q.id] : {key:'',text:''};
+  renderChat(true);
+  react(q);
+}
+function refreshCurrent(q,key){
+  $('#qwrap').innerHTML=currentQ(q); bindQ(q); renderHead();
+  const el=$('#qwrap').querySelector(`[data-v="${CSS.escape(key)}"]`)||(key.includes(':')&&$('#qwrap').querySelector(`[data-row="${CSS.escape(key.split(':')[0])}"][data-v="${CSS.escape(key.split(':')[1])}"]`));
+  if(el&&!el.disabled) el.focus({preventScroll:true});
+}
+function bindQ(q){
+  const wrap=$('#qwrap');
+  wrap.querySelectorAll('.opt[data-v]').forEach(btn=>btn.addEventListener('click',()=>{
+    const v=btn.dataset.v;
+    if(q.type==='single'||q.type==='scale'){
+      setAnswer(q,v); refreshCurrent(q,v);
+      if(q.auto!==false){ autoT=setTimeout(()=>advance(q), reduceMotion()?0:420); }
+      return;
+    }
+    let arr=[...(P.answers[q.id]||[])];
+    const opt=optionsOf(q).find(o=>o.v===v)||{};
+    if(arr.includes(v)) arr=arr.filter(x=>x!==v);
+    else{
+      if(opt.exclusive) arr=[v];
+      else{arr=arr.filter(x=>!(optionsOf(q).find(o=>o.v===x)||{}).exclusive);
+        const lim=q.type==='pick3'?3:q.max; if(lim&&arr.length>=lim) return; arr.push(v)}
+    }
+    setAnswer(q,arr.length?arr:null); refreshCurrent(q,v);
+  }));
+  wrap.querySelectorAll('.chip[data-row]').forEach(btn=>btn.addEventListener('click',()=>{
+    const m={...(P.answers[q.id]||{})};m[btn.dataset.row]=btn.dataset.v;setAnswer(q,m);refreshCurrent(q,btn.dataset.row+':'+btn.dataset.v);
+  }));
+  if(q.type==='budget'){
+    const rng=$('#bRange'),num=$('#bNum'),amt=$('#bAmt'),err=$('#bErr');
+    const setAmt=(n)=>{const b={...(P.answers.budget||{})};b.amount=n;setAnswer(q,b);amt.textContent=euro(n);amt.classList.remove('unset');rng.setAttribute('aria-valuetext',euro(n));renderHead();$('#bNext').firstChild.textContent='Verder '};
+    rng.addEventListener('input',()=>{const n=+rng.value;num.value=n;err.hidden=true;num.removeAttribute('aria-invalid');setAmt(n)});
+    num.addEventListener('input',()=>{
+      const raw=num.value.replace(/[^\d]/g,'');
+      if(!raw){err.hidden=true;return}
+      const n=parseInt(raw,10);
+      if(n<20000||n>20000000){err.textContent='Vul een bedrag in tussen € 20.000 en € 20.000.000, alleen cijfers.';err.hidden=false;num.setAttribute('aria-invalid','true');return}
+      err.hidden=true;num.removeAttribute('aria-invalid');rng.value=Math.min(1500000,Math.max(100000,n));setAmt(n);
+    });
+    wrap.querySelectorAll('[data-meaning]').forEach(b=>b.addEventListener('click',()=>{const x={...(P.answers.budget||{})};x.meaning=b.dataset.meaning;setAnswer(q,x);wrap.querySelectorAll('[data-meaning]').forEach(y=>y.setAttribute('aria-checked',y===b))}));
+  }
+  $('#bBack').onclick=()=>{clearTimeout(autoT);if(qIndex===0){go('home');return}qIndex--;renderChat(true)};
+  $('#bNext').onclick=()=>advance(q);
+  $('#bLater').onclick=()=>{clearTimeout(autoT);save();toast('Bewaard op dit apparaat. Je kunt later verdergaan.');go('home')};
+  $('#bOverview').onclick=()=>{clearTimeout(autoT);showResult()};
+}
+
+/* =========================================================
+   RESULTAAT: persoonlijk kompas (alleen wat echt is ingevuld)
+   ========================================================= */
+function styleSentence(){
+  const a=P.answers;
+  const r={vakantie:'een vakantieplek',overwinteren:'een plek om te overwinteren',permanent:'een nieuw thuis',pensioen:'een plek om van je pensioen te genieten',combi:'een woning voor eigen gebruik en verhuur',ontdekken:'je mogelijkheden in Spanje'}[a.reason];
+  const adj={levendig:'levendige',rustig:'rustige',authentiek:'Spaanse',groen:'groene',modern:'moderne'};
+  const m=(a.mood||[]).map(v=>adj[v]).filter(Boolean);
+  const zee=(a.mood||[]).includes('zee');
+  const set={strand:'aan of vlak bij het strand',dorp:'in een gezellig dorp',woonwijk:'in een rustige woonwijk',golf:'bij een golfresort',groen:'in een groene omgeving',stad:'dicht bij een stad',internationaal:'met internationale voorzieningen'}[(a.setting||[]).find(v=>v!=='weetniet')];
+  if(!r&&!m.length&&!set&&!zee&&!a.household) return null;
+  const hh={partner:' voor jullie tweeën',gezin:' voor je gezin',generaties:' voor meerdere generaties',vrienden:' om te delen met vrienden of familie'}[a.household]||'';
+  let s='Je zoekt '+(r||'een plek in Spanje')+hh;
+  if(m.length) s+=' met een '+m.join(', ').replace(/, ([^,]*)$/,' en $1')+' sfeer';
+  if(zee) s+=(m.length?', dicht bij zee':' dicht bij zee');
+  if(set) s+=', het liefst '+set;
+  return s+'.';
+}
+function suggestions(){
+  const want=wantedTags(); if(!want.size) return [];
+  return PLACES.map(p=>({p,why:p.tags.filter(t=>want.has(t))})).filter(x=>x.why.length).sort((x,y)=>y.why.length-x.why.length).slice(0,4);
+}
+function row(k,v){return `<dt>${k}</dt>`+(v?`<dd>${esc(v)}</dd>`:`<dd class="open">nog open</dd>`)}
+
+function showResult(){
+  go('kompas',true);
+  const a=P.answers, p=progress(), open=openQuestions();
+  const sty=styleSentence(), sg=suggestions(), favs=PLACES.filter(x=>P.favorites.includes(x.id));
+  const dist=a.distance?lbl('distance',a.distance):null;
+  const budget=a.budget&&a.budget.amount?euro(a.budget.amount)+(a.budget.meaning?' ('+({indicatie:'globale indicatie',totaal:'maximaal totaalbudget',prijs:'alleen aankoopprijs'})[a.budget.meaning]+')':''):null;
+  const pri=a.priorities||[];
+  const date=new Date(P.updated_at).toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'});
+  $('#result').innerHTML=`
+  <div class="res-hero"><div class="wrap">
+    <svg class="bigc" viewBox="0 0 64 64" aria-hidden="true">${compassSVG(p).replace(/var\(--card\)/,'#1c2d47').replace(/var\(--line\)/,'rgba(255,255,255,.25)').replace(/var\(--muted\)/g,'#c9d2dc')}</svg>
+    <div>
+      <p class="eyebrow" style="color:#f3c79c">Jouw persoonlijke kompas</p>
+      <h1>${p===0?'Je kompas wacht op je eerste antwoord.':(sty?esc(sty):'Je eerste richting.')}</h1>
+      <p>Een eerste richting op basis van wat je zelf hebt ingevuld. Geen test en geen score: pas je antwoorden aan wanneer je wilt.</p>
+      <div class="stat"><span><b>${p}%</b> ingevuld</span><span><b>${open.length}</b> ${open.length===1?'vraag':'vragen'} nog open</span><span>Bijgewerkt ${date}</span></div>
+    </div></div></div>
+  <div class="wrap res-grid">
+    <div class="panel"><span class="k">Je woning</span><h3>Wat je zoekt</h3><dl class="kv">
+      ${row('Type',lbl('ptype',a.ptype))}${row('Slaapkamers',lbl('bedrooms',a.bedrooms))}${row('Badkamers',lbl('bathrooms',a.bathrooms))}
+      ${row('Buiten',lbl('outdoor',a.outdoor))}${row('Zwembad',lbl('pool',a.pool))}${row('Onmisbaar',lbl('musthave',a.musthave))}${row('Uitzicht',lbl('view',a.view))}${row('Bouw',lbl('build',a.build))}</dl></div>
+    <div class="panel"><span class="k">Je omgeving</span><h3>Waar je je thuis voelt</h3><dl class="kv">
+      ${row('Reden',lbl('reason',a.reason))}${row('Sfeer',lbl('mood',a.mood))}${row('Omgeving',lbl('setting',a.setting))}${row('Afstanden',dist)}</dl></div>
+    <div class="panel wide"><span class="k">Wie gaan er mee</span><h3>${a.household?esc(lbl('household',a.household)):'Nog open'}</h3><dl class="kv">
+      ${hasKids(a)?row('Kinderen',lbl('kids_ages',a.kids_ages)):''}${relevant().includes(Q('school'))?row('School',lbl('school',a.school))+row('Taal kinderen',lbl('kids_lang',a.kids_lang)):''}${relevant().includes(Q('kids_needs'))?row('Voor de kinderen',lbl('kids_needs',a.kids_needs)):''}
+      ${row('Logees',lbl('visitors',a.visitors))}${row('Huisdieren',lbl('pets',a.pets))}${relevant().includes(Q('work'))?row('Werk',lbl('work',a.work)):''}</dl></div>
+    <div class="panel third"><span class="k">Budget</span><h3>${budget?esc(euro(a.budget.amount)):'Nog open'}</h3><dl class="kv">${row('Betekenis',a.budget&&a.budget.meaning?({indicatie:'Globale indicatie',totaal:'Maximaal totaalbudget',prijs:'Alleen aankoopprijs'})[a.budget.meaning]:null)}${row('Financiering',lbl('finance',a.finance))}</dl></div>
+    <div class="panel third"><span class="k">Gebruik</span><h3>Hoe je Spanje gebruikt</h3><dl class="kv">${relevant().includes(Q('months'))?row('Per jaar',lbl('months',a.months)):row('Per jaar','Het hele jaar (emigratie)')}${relevant().includes(Q('season'))?row('Seizoen',lbl('season',a.season)):''}${relevant().includes(Q('rental'))?row('Verhuur',lbl('rental',a.rental)):''}${relevant().includes(Q('daily'))?row('Dagelijks',lbl('daily',a.daily)):''}${row('Snelle reis NL/BE',lbl('access',a.access))}</dl></div>
+    <div class="panel third"><span class="k">Fase</span><h3>${a.timing?esc(lbl('timing',a.timing)):'Nog open'}</h3>
+      ${pri.length?`<span class="k" style="margin-top:6px">Belangrijkste wensen</span><ol class="pri">${pri.map((v,i)=>`<li><span>${i+1}</span>${esc(lbl('priorities',v))}</li>`).join('')}</ol>`:'<p style="color:var(--muted)">Je belangrijkste wensen staan nog open.</p>'}
+      ${a.flex?`<span class="k" style="margin-top:6px">Hier ben je flexibel</span><div class="tags">${a.flex.map(v=>`<span class="tag">${esc(lbl('flex',v))}</span>`).join('')}</div>`:''}</div>
+    <div class="panel"><span class="k">Plaatsen die passen bij je keuzes</span><h3>Waar je eens kunt rondkijken</h3>
+      ${sg.length?`<div class="suggest">${sg.map(x=>`<div class="sg"><span class="art">${landscape(x.p.scene,x.p.name.length*7)}</span><div><b>${x.p.name}</b><small>Past bij je keuze voor ${x.why.map(t=>TAG_LABEL[t]).join(', ').replace(/, ([^,]*)$/,' en $1')}.</small></div></div>`).join('')}</div><p style="font-size:.85rem;color:var(--muted)">Gebaseerd op de sfeer en omgeving die je koos, niet op woningaanbod.</p>`
+      :`<p style="color:var(--muted)">Kies een sfeer en omgeving, dan laten we zien welke plaatsen daarbij passen.</p>`}
+      ${favs.length?`<span class="k" style="margin-top:6px">Door jou bewaard</span><div class="tags">${favs.map(f=>`<span class="tag">${f.name}</span>`).join('')}</div>`:''}</div>
+    <div class="panel"><span class="k">Nog open</span><h3>${open.length?'Maak je profiel scherper':'Alles ingevuld'}</h3>
+      ${open.length?`<p style="color:var(--muted)">Elke vraag hieronder maakt je kompas nauwkeuriger. Tik om meteen te beantwoorden.</p><ul class="openlist">${open.slice(0,8).map(q=>`<li><button type="button" data-jump="${q.id}">${esc(q.title)}</button></li>`).join('')}</ul>${open.length>8?`<p style="color:var(--muted);font-size:.9rem">en nog ${open.length-8} meer</p>`:''}`:'<p style="color:var(--muted)">Je kunt je antwoorden altijd nog aanpassen.</p>'}</div>
+    <div class="cta-band">
+      <div><h3>Wat wil je nu doen?</h3><p>SpanjeKompas helpt je ontdekken wat bij je past. Wil je jouw wensen vertalen naar een concrete zoektocht? Dan kan het team van Soltura Real Estate je vrijblijvend verder helpen.</p></div>
+      <div class="row">
+        ${open.length?'<button class="btn btn-primary" id="rComplete">Maak mijn woonkompas compleet</button>':'<button class="btn btn-primary" id="rEdit">Pas mijn antwoorden aan</button>'}
+        <button class="btn btn-ghost" id="rShare">Bespreek mijn woonwensen vrijblijvend</button>
+        <button class="btn-quiet" id="rCopy">Kopieer mijn overzicht</button>
+        ${open.length?'<button class="btn-quiet" id="rEdit2">Antwoorden wijzigen</button>':''}
+      </div>
+    </div>
+  </div>`;
+  const toFirst=()=>{const rq=relevant();const i=rq.findIndex(q=>answeredFrac(q)<1);qIndex=i<0?0:i;go('wizard')};
+  $('#rComplete')&&($('#rComplete').onclick=toFirst);
+  $('#rEdit')&&($('#rEdit').onclick=()=>{qIndex=0;go('wizard')});
+  $('#rEdit2')&&($('#rEdit2').onclick=()=>{qIndex=0;go('wizard')});
+  $('#rShare').onclick=openShare;
+  $('#rCopy').onclick=()=>copyText(summaryText(),'Overzicht gekopieerd.');
+  document.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>{qIndex=relevant().findIndex(q=>q.id===b.dataset.jump);go('wizard')});
+}
+
+function summaryText(){
+  const a=P.answers, L=[];
+  L.push('Mijn woonkompas (SpanjeKompas)');L.push('Profiel-ID: '+P.id);L.push('Ingevuld: '+progress()+'%');L.push('');
+  relevant().forEach(q=>{ L.push(q.title+'\n  '+(answeredFrac(q)?lbl(q.id,a[q.id]):'nog open')); });
+  const favs=PLACES.filter(x=>P.favorites.includes(x.id)).map(x=>x.name);
+  if(favs.length){L.push('');L.push('Bewaarde plaatsen: '+favs.join(', '))}
+  return L.join('\n');
+}
+function copyText(t,msg){
+  const done=()=>toast(msg);
+  try{navigator.clipboard.writeText(t).then(done).catch(()=>fallbackCopy(t,msg))}catch(e){fallbackCopy(t,msg)}
+}
+function fallbackCopy(t,msg){
+  const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+  let ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();
+  toast(ok?msg:'Kopiëren lukte niet. Selecteer de tekst handmatig.');
+}
+
+/* =========================================================
+   DELEN met Soltura: payload + integratiepunt
+   ========================================================= */
+function buildPayload(form){
+  return {
+    profile_id:P.id, created_at:P.created_at, updated_at:P.updated_at, lang:P.lang,
+    completeness_pct:progress(), answers:P.answers, skipped:P.skipped, favorites:P.favorites,
+    open_questions:openQuestions().map(q=>q.id),
+    contact:{name:form.name.trim(), email:form.email.trim(), phone:form.phone.trim()||null},
+    consents:{
+      share_with_soltura:{given:true, at:new Date().toISOString(), privacy_version:CONFIG.privacyVersion},
+      marketing:{given:form.marketing, at:form.marketing?new Date().toISOString():null}
+    },
+    source:'spanjekompas-web'
+  };
+}
+async function submitProfile(payload){
+  if(!CONFIG.submitEndpoint) return {ok:false, reason:'not_configured'};
+  try{
+    const r=await fetch(CONFIG.submitEndpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    return r.ok?{ok:true}:{ok:false,reason:'http_'+r.status};
+  }catch(e){return {ok:false,reason:'network'}}
+}
+function openShare(){
+  const d=$('#dlgShare');$('#shareResult').hidden=true;$('#shareSubmit').hidden=false;
+  ['name','email','phone','share'].forEach(k=>{const e=$('#e-'+k);if(e)e.hidden=true});
+  d.showModal();setTimeout(()=>$('#f-name').focus(),50);
+}
+function validate(){
+  let ok=true;const set=(k,msg)=>{const e=$('#e-'+k),i=$('#f-'+k);if(msg){e.textContent=msg;e.hidden=false;i&&i.setAttribute('aria-invalid','true');ok=false}else{e.hidden=true;i&&i.removeAttribute('aria-invalid')}};
+  const name=$('#f-name').value.trim(),email=$('#f-email').value.trim(),phone=$('#f-phone').value.trim();
+  set('name',name.length<2?'Vul je naam in, zodat Soltura weet wie je bent.':'');
+  set('email',!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)?'Vul een geldig e-mailadres in, bijvoorbeeld naam@voorbeeld.nl.':'');
+  set('phone',phone&&!/^\+?[\d\s()-]{8,20}$/.test(phone)?'Gebruik alleen cijfers, spaties en eventueel een + vooraan.':'');
+  const e=$('#e-share');if(!$('#c-share').checked){e.textContent='Vink dit aan als je wilt dat Soltura je profiel ontvangt. Zonder vinkje wordt er niets gedeeld.';e.hidden=false;ok=false}else e.hidden=true;
+  if(!ok){const first=$('#shareForm').querySelector('[aria-invalid="true"]')||$('#c-share');first.focus()}
+  return ok;
+}
+$('#shareForm').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  if(!validate()) return;
+  const payload=buildPayload({name:$('#f-name').value,email:$('#f-email').value,phone:$('#f-phone').value,marketing:$('#c-mkt').checked});
+  const btn=$('#shareSubmit');btn.disabled=true;btn.textContent='Bezig…';
+  const res=await submitProfile(payload);
+  btn.disabled=false;btn.textContent='Deel mijn woonkompas met Soltura';
+  const box=$('#shareResult');box.hidden=false;
+  if(res.ok){
+    P.status='shared';P.shared={at:new Date().toISOString(),marketing:payload.consents.marketing.given};save();
+    box.innerHTML='<div class="box"><b>Je woonkompas is gedeeld met Soltura.</b> Je hoort binnenkort van het team. Je antwoorden blijven ook op dit apparaat staan.</div>';btn.hidden=true;
+  } else {
+    const txt=summaryText()+'\n\nNaam: '+payload.contact.name+'\nE-mail: '+payload.contact.email+(payload.contact.phone?'\nTelefoon: '+payload.contact.phone:'')+'\nNieuws ontvangen: '+(payload.consents.marketing.given?'ja':'nee');
+    box.innerHTML=`<div class="box"><b>${res.reason==='not_configured'?'Rechtstreeks doorsturen is in deze versie nog niet gekoppeld.':'Doorsturen lukte nu niet.'}</b> Er is niets verstuurd. Je kunt je overzicht kopiëren en zelf mailen naar <span class="addr">${CONFIG.contactEmail}</span>.<pre id="shareTxt">${esc(txt)}</pre><div style="margin-top:10px"><button type="button" class="btn btn-primary" id="cpShare">Kopieer mijn overzicht</button></div></div>`;
+    $('#cpShare').onclick=()=>copyText(txt,'Gekopieerd. Plak het in een e-mail aan '+CONFIG.contactEmail);
+    btn.hidden=true;
+  }
+});
+
+/* =========================================================
+   REGIO: kaart + kaarten + favorieten
+   ========================================================= */
+function renderMap(){
+  const svg=$('#mapSvg');
+  let s=`<rect width="400" height="420" fill="var(--sand)" rx="10"/>
+  <path d="M300 0 C 296 60, 300 110, 286 132 C 276 160, 280 210, 268 246 C 258 280, 250 320, 236 350 C 228 372, 226 400, 222 420 H400 V0Z" fill="#2e7f93" opacity=".85"/>
+  <path d="M300 0 C 296 60, 300 110, 286 132 C 276 160, 280 210, 268 246 C 258 280, 250 320, 236 350 C 228 372, 226 400, 222 420" fill="none" stroke="#f6e7c8" stroke-width="3"/>
+  <ellipse cx="236" cy="232" rx="20" ry="30" fill="#e9a9b4" opacity=".8"/><ellipse cx="214" cy="292" rx="16" ry="20" fill="#d9cfe0" opacity=".8"/>
+  <path d="M40 120 C 100 128, 150 140, 210 130 C 240 126, 270 130, 286 132" fill="none" stroke="#5b9bb0" stroke-width="2.5" stroke-dasharray="1 0"/>
+  <text x="70" y="114" font-size="11" font-style="italic" fill="var(--muted)" font-family="Figtree,sans-serif">rivier Segura</text>
+  <text x="340" y="200" font-size="12" fill="#e9f3f5" font-family="Figtree,sans-serif" text-anchor="middle" letter-spacing="2">MIDDELLANDSE</text><text x="340" y="216" font-size="12" fill="#e9f3f5" font-family="Figtree,sans-serif" text-anchor="middle" letter-spacing="2">ZEE</text>
+  <text x="236" y="236" font-size="9" fill="var(--muted)" text-anchor="middle" font-family="Figtree,sans-serif">zoutmeren</text>
+  <g transform="translate(40 380)"><path d="M0 -14 L5 0 L0 -3 L-5 0Z" fill="var(--terra)"/><text y="14" font-size="10" text-anchor="middle" fill="var(--muted)" font-family="Figtree,sans-serif">N</text></g>`;
+  PLACES.forEach(p=>{
+    const left=p.x<160;
+    s+=`<g class="mapdot" data-place="${p.id}" tabindex="0" role="link" aria-label="${p.name}"><circle class="d" cx="${p.x}" cy="${p.y}" r="6" fill="${p.zone==='kust'?'#0d7473':'#b45d3a'}" stroke="#fff" stroke-width="2"/><text x="${p.x+(left?-10:10)}" y="${p.y+4}" font-size="12" font-weight="600" fill="var(--ink)" text-anchor="${left?'end':'start'}" font-family="Figtree,sans-serif" paint-order="stroke" stroke="var(--sand)" stroke-width="3">${p.name}</text></g>`;
+  });
+  svg.insertAdjacentHTML('beforeend',s);
+  svg.querySelectorAll('.mapdot').forEach(g=>{const act=()=>{const el=document.getElementById('pl-'+g.dataset.place);el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});el.querySelector('h3').focus({preventScroll:true})};g.addEventListener('click',act);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();act()}})});
+}
+let filter='all';
+function renderPlaces(){
+  $('#places').innerHTML=PLACES.filter(p=>filter==='all'||p.zone===filter||p.tags.includes(filter)).map((p,i)=>{
+    const fav=P.favorites.includes(p.id);
+    return `<article class="place" id="pl-${p.id}">
+      <div class="art">${landscape(p.scene,i*31+5)}</div>
+      <div class="bd">
+        <span class="meta">${p.zone==='kust'?'Aan de kust':'Achterland'}</span>
+        <h3 tabindex="-1">${p.name}</h3>
+        <p>${p.sfeer}</p>
+        <details class="more"><summary>Meer over ${p.name}</summary>
+          <dl><dt>Omgeving</dt><dd>${p.omgeving}</dd><dt>Voorzieningen</dt><dd>${p.voorzieningen}</dd><dt>Past bij</dt><dd>${p.voor}</dd><dt>Let op</dt><dd>${p.let}</dd></dl>
+        </details>
+        <div class="act"><button type="button" class="fav" data-fav="${p.id}" aria-pressed="${fav}">${ico('heart','')}${fav?'Bewaard in je kompas':'Zou je hier graag eens rondkijken?'}</button></div>
+      </div></article>`}).join('');
+  document.querySelectorAll('[data-fav]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.fav;const on=!P.favorites.includes(id);
+    P.favorites=on?[...P.favorites,id]:P.favorites.filter(x=>x!==id);save();renderPlaces();
+    const nb=document.querySelector(`[data-fav="${id}"]`);nb&&nb.focus();
+    toast(on?'Bewaard in je woonkompas.':'Verwijderd uit je woonkompas.');
+  });
+}
+document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderPlaces()});
+
+/* =========================================================
+   NAVIGATIE tussen schermen
+   ========================================================= */
+function show(id){['v-home','v-wizard','v-result'].forEach(v=>document.getElementById(v).hidden=v!==id);syncNav()}
+function go(where,noRender){
+  if(where==='wizard'){show('v-wizard');renderChat(true);return}
+  if(where==='kompas'){show('v-result');if(!noRender)showResult();window.scrollTo(0,0);return}
+  show('v-home');updateResume();
+  if(where==='home'){window.scrollTo(0,0);return}
+  const el=document.getElementById(where);if(el) requestAnimationFrame(()=>el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}));
+}
+function startWizard(){
+  const rq=relevant();
+  if(progress()>0){const i=rq.findIndex(q=>answeredFrac(q)<1&&!P.skipped.includes(q.id));qIndex=i<0?0:i}else qIndex=0;
+  go('wizard');
+}
+document.addEventListener('click',e=>{
+  const s=e.target.closest('[data-start]');if(s){e.preventDefault();startWizard();return}
+  const r=e.target.closest('[data-resume]');if(r){e.preventDefault();startWizard();return}
+  const g=e.target.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go);return}
+  const pv=e.target.closest('[data-privacy]');if(pv){e.preventDefault();$('#dlgPrivacy').showModal();return}
+  const w=e.target.closest('[data-wipe]');if(w){e.preventDefault();$('#dlgWipe').showModal();return}
+  const c=e.target.closest('[data-close]');if(c){c.closest('dialog').close();return}
+});
+$('#wipeYes').onclick=()=>{wipe();$('#dlgWipe').close();renderPlaces();updateResume();toast('Je antwoorden zijn van dit apparaat gewist.');go('home')};
+function updateResume(){const p=progress();$('#resumeLine').hidden=!(p>0);document.querySelector('[data-resume-pct]').textContent=p}
+
+/* Nav: transparant boven de hero, rustig solide daarna of buiten de homepage */
+const nav=$('#nav');
+function syncNav(){const onHome=!$('#v-home').hidden;nav.classList.toggle('solid',!onHome||window.scrollY>window.innerHeight*0.55)}
+window.addEventListener('scroll',syncNav,{passive:true});
+
+/* Toast */
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),3200)}
+
+/* Hero-media: video als die geconfigureerd is en beweging is toegestaan, anders de getekende scène */
+function initHero(){
+  const box=$('#heroMedia');box.innerHTML=heroSVG();
+  const v=CONFIG.videos, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const src=innerWidth<760?(v.heroMobile||v.hero):(v.hero||v.heroMobile);
+  if(src&&!reduce){
+    const el=document.createElement('video');Object.assign(el,{muted:true,loop:true,playsInline:true,autoplay:true,preload:'metadata'});
+    if(v.poster) el.poster=v.poster; el.src=src; el.setAttribute('aria-hidden','true');
+    el.addEventListener('canplay',()=>{box.querySelector('svg')&&box.querySelector('svg').remove()},{once:true});
+    box.appendChild(el);
+  }
+}
+
+/* Logo's */
+document.querySelectorAll('[data-logo]').forEach(s=>s.innerHTML=logoSVG(s.dataset.logo==='dark'));
+
+/* Init */
+initHero();renderMap();renderPlaces();updateResume();syncNav();
+const h=(location.hash||'').slice(1);
+if(h==='kompas') go('kompas'); else if(h==='woonwijzer') startWizard(); else if(['regio','hoe','over'].includes(h)) go(h);
+</script>
