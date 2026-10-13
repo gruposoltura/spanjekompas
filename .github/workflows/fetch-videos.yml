@@ -1,0 +1,27 @@
+name: Fetch videos
+on:
+  workflow_dispatch:
+  push:
+    paths: [video-sources.txt]
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download clips listed in video-sources.txt
+        run: |
+          mkdir -p video
+          while read -r name url; do
+            [ -z "$name" ] && continue
+            curl -fsSL "$url" -o "video/$name.mp4"
+            echo "$name: $(stat -c%s video/$name.mp4) bytes"
+          done < video-sources.txt
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add video
+          git diff --cached --quiet || git commit -m "Video's ophalen uit Higgsfield"
+          git push
