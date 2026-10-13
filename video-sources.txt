@@ -1,3 +1,4 @@
+# naam url  (Higgsfield, Kling 3.0 Turbo, 13-10-2026)
 hero https://d8j0ntlcm91z4.cloudfront.net/user_3FRm5hPQWnlHJfCXWIG0XzXvS5y/hf_20261013_180759_1a15a954-dd09-4f57-9cdd-8f3652f1afe0.mp4
 heroMobile https://d8j0ntlcm91z4.cloudfront.net/user_3FRm5hPQWnlHJfCXWIG0XzXvS5y/hf_20261013_180714_79761caa-c28c-4326-b249-950f64907f4a.mp4
 droom https://d8j0ntlcm91z4.cloudfront.net/user_3FRm5hPQWnlHJfCXWIG0XzXvS5y/hf_20261013_180759_b5d63e64-04b4-40ca-8572-faf107326517.mp4
