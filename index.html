@@ -672,7 +672,7 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
     <h3>Kompas, je digitale woongids</h3>
     <p>De reacties in het gesprek worden gemaakt door een AI-taalmodel (Claude van Anthropic). Daarvoor sturen we je antwoorden, zonder naam of e-mailadres, naar onze eigen server en van daaruit naar dat model. Ze worden alleen gebruikt om de reactie te schrijven en niet aan jou gekoppeld of bewaard. Controleer bij tekst die je zelf typt even wat er is ingevuld.</p>
     <h3>Als je je woonkompas laat mailen</h3>
-    <p>Pas als je het formulier invult en het vakje aanvinkt, versturen we je antwoorden met je naam, e-mailadres en eventueel telefoonnummer. Daarmee maken we je woonkompas als PDF en mailen we het, samen met de gids, via onze e-maildienst Brevo. Soltura Real Estate bewaart je profiel en kan vrijblijvend contact met je opnemen over je woonwensen. Grondslag: jouw toestemming (art. 6.1.a AVG). Het wekelijkse Marktrapport, de nieuwsbrief en passende woningen ontvang je alleen als je dat apart aanvinkt. Je wordt dan opgenomen in het klantenbestand van Soltura Real Estate; afmelden kan per mailing via de link onderaan elke mail.</p>
+    <p>Pas als je het formulier invult en het vakje aanvinkt, versturen we je antwoorden met je naam, e-mailadres en eventueel telefoonnummer. Kwam je via een advertentie of link met een campagnelabel (zoals utm_source in het webadres), dan sturen we dat label mee, zodat we weten welke campagne werkt. Dat label zit alleen in het webadres en wordt niet via cookies of trackers gevolgd. Daarmee maken we je woonkompas als PDF en mailen we het, samen met de gids, via onze e-maildienst Brevo. Soltura Real Estate bewaart je profiel en kan vrijblijvend contact met je opnemen over je woonwensen. Grondslag: jouw toestemming (art. 6.1.a AVG). Het wekelijkse Marktrapport, de nieuwsbrief en passende woningen ontvang je alleen als je dat apart aanvinkt. Je wordt dan opgenomen in het klantenbestand van Soltura Real Estate; afmelden kan per mailing via de link onderaan elke mail.</p>
     <h3>Bewaartermijn</h3>
     <p>Maximaal 24 maanden na het laatste contact, tenzij er een aankoop volgt en de wet langere bewaring vraagt.</p>
     <h3>Jouw rechten</h3>
@@ -727,7 +727,7 @@ const CONFIG = {
     ritme: 'video/ritme.mp4',
     telt: 'video/telt.mp4'
   },
-  privacyVersion: '2026-10-13'
+  privacyVersion: '2026-10-14'
 };
 
 /* ---------- Iconen (lijnstijl, 24x24) ---------- */
@@ -1083,6 +1083,24 @@ function uuid(){return (crypto.randomUUID?crypto.randomUUID():'p-'+Date.now().to
 function newProfile(){const t=new Date().toISOString();return{id:uuid(),created_at:t,updated_at:t,lang:CONFIG.lang,status:'anonymous',answers:{},skipped:[],favorites:[],shared:null,reactions:{},chat:[]}}
 let P = load() || newProfile();
 P.reactions=P.reactions||{};P.chat=(P.chat||[]).filter(c=>!c.pending);
+/* Campagnebron: alleen de UTM-labels uit het webadres (geen cookies, geen klik-ID's).
+   Eerste bezoek met labels telt; wordt pas na toestemming meegestuurd met het formulier. */
+function captureAttribution(){
+  try{
+    const u=new URL(location.href), keys=['utm_source','utm_medium','utm_campaign','utm_content','utm_term'], a={};
+    keys.forEach(k=>{const v=u.searchParams.get(k);if(v)a[k.slice(4)]=v.slice(0,80)});
+    const hadClickId=u.searchParams.has('fbclid')||u.searchParams.has('gclid');
+    if(Object.keys(a).length||hadClickId){
+      if(!P.attribution){
+        if(!Object.keys(a).length&&u.searchParams.has('fbclid'))a.source='facebook_instagram';
+        a.landed_at=new Date().toISOString();P.attribution=a;save();
+      }
+      ['fbclid','gclid',...keys].forEach(k=>u.searchParams.delete(k));
+      history.replaceState(history.state,'',u.pathname+(u.search?u.search:'')+u.hash);
+    }
+  }catch(e){}
+}
+captureAttribution();
 let qIndex = 0;
 function load(){try{const s=localStorage.getItem(CONFIG.storageKey);return s?JSON.parse(s):null}catch(e){return null}}
 function save(){P.updated_at=new Date().toISOString();try{localStorage.setItem(CONFIG.storageKey,JSON.stringify(P))}catch(e){}}
@@ -1785,6 +1803,7 @@ function buildPdfPayload(contact,marketing){
     v:1, source:'spanjekompas-web', lang:P.lang, profile_id:P.id, completeness:progress(),
     contact, consent:{share:true, marketing:!!marketing, privacy_version:CONFIG.privacyVersion, at:new Date().toISOString()},
     website:$('#f-website')?$('#f-website').value:'',
+    attribution:P.attribution||{source:'direct'},
     sentence:styleSentence()||'',
     sections:[
       {title:'Wie gaan er mee',rows:rowsFor(['household','kids_ages','school','kids_lang','kids_needs','visitors','pets','work'])},
