@@ -1165,7 +1165,7 @@ function lbl(id,v){const q=Q(id);if(!q||v==null)return null;
   if(q.type==='matrix') { const rs=rowsOf(q).filter(r=>v[r.v]); return rs.length? rs.map(r=>r.l+': '+lc(q.cols.find(c=>c.v===v[r.v]).l)).join(' · ') : null }
   const pool=q.dynamicOptions?PRIORITY_POOL:q.options;
   const f=x=>(pool.find(o=>o.v===x)||{}).l||x;
-  if(q.type==='pick3') return v.map((x,i)=>(i+1)+'. '+f(x)).join('  ');
+  if(q.type==='pick3') return Array.isArray(v) ? v.map((x,i)=>(i+1)+'. '+f(x)).join('  ') : f(v);
   return Array.isArray(v)? v.map(f).join(', ') : f(v)}
 function lc(s){return s?s.charAt(0).toLowerCase()+s.slice(1):s}
 function digest(){
