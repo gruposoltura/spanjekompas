@@ -251,6 +251,9 @@ footer button{background:none;border:0;color:#e6ebf2;text-decoration:underline;t
 .opt.scene .art svg{position:absolute;inset:0}
 .opt>*{flex:none}
 .opt.scene .art svg{width:100%;height:100%;display:block}
+.opt.scene .art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.opt.scene:hover .art img{transform:scale(1.04)}
+.opt.scene[aria-pressed="true"] .art img,.opt.scene[aria-checked="true"] .art img{filter:saturate(1.08)}
 .opt.scene .txt{padding:12px 16px 16px;display:grid;gap:4px}
 .opt.scene .tick{top:10px;right:10px}
 .opt[disabled]{opacity:.45;cursor:not-allowed;transform:none}
@@ -1522,7 +1525,7 @@ function bindFinish(){ $('#bFinish').onclick=()=>showResult(); bindSendForm(); }
 
 function optCard(q,o,selected,extra=''){
   const role = q.type==='single'?'role="radio" aria-checked="'+selected+'"':'aria-pressed="'+selected+'"';
-  if(o.scene) return `<button type="button" class="opt scene" data-v="${o.v}" ${role} ${extra}><span class="art">${landscape(o.scene, o.v.length*13+7)}</span><span class="txt"><b>${esc(o.l)}</b>${o.d?`<small>${esc(o.d)}</small>`:''}</span><span class="tick">${tickSvg}</span></button>`;
+  if(o.scene) return `<button type="button" class="opt scene" data-v="${o.v}" ${role} ${extra}><span class="art">${landscape(o.scene, o.v.length*13+7)}<img src="img/opties/${o.v}.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"></span><span class="txt"><b>${esc(o.l)}</b>${o.d?`<small>${esc(o.d)}</small>`:''}</span><span class="tick">${tickSvg}</span></button>`;
   return `<button type="button" class="opt" data-v="${o.v}" ${role} ${extra}>${ico(o.icon)}<b>${esc(o.l)}</b>${o.d?`<small>${esc(o.d)}</small>`:''}<span class="tick">${tickSvg}</span></button>`;
 }
 function currentQ(q){
