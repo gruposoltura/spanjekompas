@@ -1112,6 +1112,9 @@ function captureAttribution(){
 }
 captureAttribution();
 let qIndex = 0;
+/* ---------- GA4-meting van het kompasgebruik ---------- */
+const TRK={seen:new Set(),phases:new Set()};
+function track(name,params){try{if(typeof gtag==='function')gtag('event',name,params||{})}catch(e){}}
 function load(){try{const s=localStorage.getItem(CONFIG.storageKey);return s?JSON.parse(s):null}catch(e){return null}}
 function save(){P.updated_at=new Date().toISOString();try{localStorage.setItem(CONFIG.storageKey,JSON.stringify(P))}catch(e){}}
 function wipe(){try{localStorage.removeItem(CONFIG.storageKey)}catch(e){}P=newProfile();qIndex=0}
@@ -1396,6 +1399,7 @@ $('#sayForm').addEventListener('submit',async ev=>{
   const rq=relevant(); const after = qIndex>0 ? rq[qIndex-1].id : null;
   const item={id:'c'+Date.now(),after,user:text,reply:'',filled:[],pending:true};
   P.chat.push(item); save(); ARRIVE=true; renderChat();
+  track('kompas_chat',{after_question:after||'start',progress:progress()});
   try{
     const out = await AI.ask(extractPrompt(text),{json:true,payload:{kind:'extract',text,spec:extractSpec(),history:historyPairs(null)}});
     item.filled = applyExtracted(out&&out.answers);
@@ -1609,6 +1613,12 @@ function advance(q){
   clearTimeout(autoT);
   if(answeredFrac(q)===0&&!P.skipped.includes(q.id)) P.skipped.push(q.id);
   const rq=relevant(); qIndex=rq.indexOf(q)+1; save();
+  if(!TRK.seen.has(q.id)){ TRK.seen.add(q.id);
+    track('kompas_question',{question_id:q.id,question_no:qIndex,question_total:rq.length,phase:q.phase,answer_status:answeredFrac(q)>0?'beantwoord':'overgeslagen',progress:progress()});
+    const nq=rq[qIndex];
+    if(!nq) track('kompas_last_question',{progress:progress()});
+    else if(nq.phase!==q.phase && !TRK.phases.has(nq.phase)){ TRK.phases.add(nq.phase); track('kompas_phase',{phase:nq.phase,phase_no:PHASES.findIndex(x=>x.id===nq.phase)+1,progress:progress()}); }
+  }
   P.reactions[q.id] = P.reactions[q.id] && P.reactions[q.id].key===JSON.stringify(P.answers[q.id]??null) ? P.reactions[q.id] : {key:'',text:''};
   ARRIVE=true;
   renderChat(true);
@@ -1656,7 +1666,7 @@ function bindQ(q){
   }
   $('#bBack').onclick=()=>{clearTimeout(autoT);if(qIndex===0){go('home');return}qIndex--;renderChat(true)};
   $('#bNext').onclick=()=>advance(q);
-  $('#bLater').onclick=()=>{clearTimeout(autoT);save();toast('Bewaard op dit apparaat. Je kunt later verdergaan.');go('home')};
+  $('#bLater').onclick=()=>{clearTimeout(autoT);save();track('kompas_later',{progress:progress()});toast('Bewaard op dit apparaat. Je kunt later verdergaan.');go('home')};
   $('#bOverview').onclick=()=>{clearTimeout(autoT);showResult()};
 }
 
@@ -1687,6 +1697,7 @@ function row(k,v){return `<dt>${k}</dt>`+(v?`<dd>${esc(v)}</dd>`:`<dd class="ope
 function showResult(){
   go('kompas',true);
   const a=P.answers, p=progress(), open=openQuestions();
+  track('kompas_result',{progress:p,open_questions:open.length});
   const sty=styleSentence(), sg=suggestions(), favs=PLACES.filter(x=>P.favorites.includes(x.id));
   const dist=a.distance?lbl('distance',a.distance):null;
   const budget=a.budget&&a.budget.amount?euro(a.budget.amount)+(a.budget.meaning?' ('+({indicatie:'globale indicatie',totaal:'maximaal totaalbudget',prijs:'alleen aankoopprijs'})[a.budget.meaning]+')':''):null;
@@ -1850,6 +1861,7 @@ function bindSendForm(){
     const res=await submitProfile(payload);
     btn.disabled=false;btn.textContent='Stuur mij mijn gratis woonkompas';
     const box=$('#sendResult');box.hidden=false;
+    track(res.ok?'generate_lead':'kompas_submit_error',res.ok?{progress:progress(),marktrapport:payload.consent.marketing?'ja':'nee'}:{error:String(res.error||'onbekend')});
     if(res.ok){
       P.status='shared';P.shared={at:new Date().toISOString(),marketing:payload.consent.marketing};save();
       box.innerHTML=`<div class="box ok"><b>Verstuurd naar ${esc(contact.email)}.</b> Je woonkompas en de gratis gids staan binnen een paar minuten in je mailbox. Niets ontvangen? Kijk ook even in je spammap.</div>`;
@@ -1935,6 +1947,7 @@ function go(where,noRender){
 }
 function startWizard(){
   const rq=relevant();
+  track('kompas_start',{resumed:progress()>0?'ja':'nee',progress:progress()});
   if(progress()>0){const i=rq.findIndex(q=>answeredFrac(q)<1&&!P.skipped.includes(q.id));qIndex=i<0?0:i}else qIndex=0;
   go('wizard');
 }
