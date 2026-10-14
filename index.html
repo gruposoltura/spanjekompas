@@ -112,6 +112,16 @@ button{font:inherit;color:inherit}
 .hero h1{font-size:clamp(2.7rem,7.2vw,6rem);max-width:13ch;animation:rise 1.4s cubic-bezier(.2,.7,.1,1) .35s both}
 .hero h1 em{font-style:italic;color:#f6cf9a}
 .hero .sub{font-size:clamp(1.05rem,1.6vw,1.25rem);max-width:46ch;margin-top:18px;opacity:.92;animation:rise 1.4s cubic-bezier(.2,.7,.1,1) .6s both}
+.time-bubble{position:relative;display:inline-flex;align-items:center;gap:12px;margin-left:10px;background:#fffdf8;color:#14243a;border-radius:18px;padding:10px 16px 10px 10px;box-shadow:0 14px 34px -14px rgba(0,0,0,.55);max-width:100%;animation:bob 4s ease-in-out 2.4s infinite}
+.time-bubble::after{content:"";position:absolute;left:-10px;top:50%;margin-top:-8px;width:12px;height:16px;background:#fffdf8;clip-path:polygon(100% 0,0 50%,100% 100%)}
+@media (max-width:1060px){.time-bubble{order:-1;margin:0 0 6px;border-radius:18px 18px 18px 6px}.time-bubble::after{left:22px;top:auto;bottom:-9px;margin-top:0;width:16px;height:12px;clip-path:polygon(0 0,100% 0,15% 100%)}}
+.tb-av{flex:0 0 38px;width:38px;height:38px;border-radius:50%;background:#14243a;display:grid;place-items:center}
+.tb-av svg{width:28px;height:28px}
+.tb-txt{display:grid;gap:1px;line-height:1.3}
+.tb-txt b{font-size:1.02rem}
+.tb-txt small{font-size:.8rem;color:#5a6370}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media (prefers-reduced-motion:reduce){.time-bubble{animation:none}}
 .hero .ctas{display:flex;flex-wrap:wrap;gap:12px 16px;margin-top:30px;align-items:center;animation:rise 1.4s cubic-bezier(.2,.7,.1,1) .85s both}
 .hero .btn-ghost{color:#fff}
 .micro{margin-top:14px;font-size:.88rem;letter-spacing:.04em;opacity:.85;animation:rise 1.4s ease 1s both}
@@ -498,6 +508,7 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
       <div class="ctas">
         <button class="btn btn-primary" data-start>Ontdek jouw woonkompas <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
         <a class="btn btn-ghost" href="#hoe" data-go="hoe">Ik wil eerst even rondkijken</a>
+        <div class="time-bubble" aria-live="polite"><span class="tb-av" aria-hidden="true"><svg viewBox="0 0 64 64" id="tbLogo"></svg></span><span class="tb-txt"><b>Je kompas is klaar in ± <span data-mins>6</span> minuten</b><small><span data-qcount>24</span> korte vragen in een gesprek · elke vraag mag je overslaan</small></span></div>
       </div>
       <p class="micro">Vrijblijvend · Persoonlijk · Helemaal op jouw tempo</p>
       <p class="gift"><span>Gratis</span> Ontvang je persoonlijke woonkompas als PDF, samen met onze woon- en emigratiegids.</p>
@@ -1134,7 +1145,7 @@ function progMsg(p){
 function renderHead(){
   const p=progress();
   $('#progLabel').textContent=`Jouw woonprofiel: ${p}% ingevuld`;
-  $('#progMsg').textContent=progMsg(p);
+  { const left=relevant().slice(qIndex).filter(q=>answeredFrac(q)<1).length; $('#progMsg').textContent=progMsg(p)+(left>1?` Nog ± ${minutesFor(left)} min.`:''); }
   const bar=$('#progBar');bar.setAttribute('aria-valuenow',p);bar.querySelector('i').style.width=p+'%';
   $('#wzCompass').innerHTML=compassSVG(p);
   const rq=relevant(), cur=rq[qIndex];
@@ -1874,6 +1885,14 @@ document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.da
 /* =========================================================
    NAVIGATIE tussen schermen
    ========================================================= */
+function minutesFor(n){return Math.max(1,Math.round(n*15/60))}
+function fillTimeBubble(){
+  const n=relevant().length, left=openQuestions().length;
+  document.querySelectorAll('[data-qcount]').forEach(e=>e.textContent=n);
+  document.querySelectorAll('[data-mins]').forEach(e=>e.textContent=minutesFor(progress()>0?left:n));
+  const l=$('#tbLogo'); if(l&&!l.innerHTML) l.innerHTML=logoSVG(true);
+  const b=document.querySelector('.time-bubble b'); if(b) b.innerHTML = progress()>0&&left>0 ? `Nog ± ${minutesFor(left)} minuten tot je kompas klaar is` : `Je kompas is klaar in ± ${minutesFor(n)} minuten`;
+}
 function show(id){['v-home','v-wizard','v-result'].forEach(v=>document.getElementById(v).hidden=v!==id);document.body.classList.toggle('in-chat',id==='v-wizard');syncNav()}
 function go(where,noRender){
   if(where==='wizard'){show('v-wizard');renderChat(true);return}
@@ -1898,7 +1917,7 @@ document.addEventListener('click',e=>{
 $('#bRestart').onclick=()=>{clearTimeout(autoT);$('#dlgRestart').showModal()};
 $('#restartYes').onclick=()=>{const fav=P.favorites.slice();(choreograph.timers||[]).forEach(clearTimeout);wipe();P.favorites=fav;save();prevThreadLen=0;$('#dlgRestart').close();updateResume();window.scrollTo({top:0});renderChat(true);toast('Je begint opnieuw. Fijn dat je er weer bent!')};
 $('#wipeYes').onclick=()=>{wipe();$('#dlgWipe').close();renderPlaces();updateResume();toast('Je antwoorden zijn van dit apparaat gewist.');go('home')};
-function updateResume(){const p=progress();$('#resumeLine').hidden=!(p>0);document.querySelector('[data-resume-pct]').textContent=p}
+function updateResume(){fillTimeBubble();const p=progress();$('#resumeLine').hidden=!(p>0);document.querySelector('[data-resume-pct]').textContent=p}
 
 /* Nav: transparant boven de hero, rustig solide daarna of buiten de homepage */
 const nav=$('#nav');
