@@ -683,7 +683,7 @@ const CONFIG = {
   submitEndpoint: 'https://gruposoltura.app.n8n.cloud/webhook/spanjekompas-send',
   contactEmail: 'info@gruposoltura.com',
   // Claude-gids buiten claude.ai: POST {prompt, json} -> {text} of {json}. Bijv. n8n-webhook die de Anthropic API aanroept.
-  guideEndpoint: null,
+  guideEndpoint: 'https://gruposoltura.app.n8n.cloud/webhook/spanjekompas-guide',
   // Video's (eenmalig gemaakt met Higgsfield). null = getekende scène als terugval.
   // Video's staan in de repo onder video/ (opgehaald door .github/workflows/fetch-videos.yml). Ontbreekt een bestand, dan blijft de getekende scène staan.
   videos: {
@@ -1076,7 +1076,17 @@ let AI = null; // {ask(prompt,{json}) -> Promise}
       if(s){ AI = { label:'Claude', ask:(p,o={})=> o.json ? s.json(p,{modelTier:'quick'}) : s(p,{modelTier:'quick',onText:o.onText}).then(r=>r.text) }; }
     }
     if(!AI && CONFIG.guideEndpoint){
-      AI = { label:'Claude', ask:async(p,o={})=>{ const r=await fetch(CONFIG.guideEndpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:p,json:!!o.json})}); if(!r.ok) throw {code:'upstream_error'}; const d=await r.json(); return o.json? d.json : d.text; } };
+      // Eigen n8n-endpoint: de site stuurt alleen gestructureerde gegevens; de prompt wordt server-side gebouwd.
+      AI = { label:'Claude', remote:true, ask:async(p,o={})=>{
+        if(!o.payload) throw {code:'no_payload'};
+        const ctl=new AbortController(); const tm=setTimeout(()=>ctl.abort(),12000);
+        try{
+          const r=await fetch(CONFIG.guideEndpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({pid:P.id},o.payload)),signal:ctl.signal});
+          const d=await r.json().catch(()=>({}));
+          if(!r.ok||!d.ok) throw {code:d.error||'upstream_error'};
+          return o.json? d.json : d.text;
+        } finally { clearTimeout(tm); }
+      } };
     }
   }catch(e){ AI=null }
   syncSay();
@@ -1148,23 +1158,89 @@ function setBg(ph){
   box.dataset.ph=ph.id; box.innerHTML=media(ph.video, ph.scene, 3);
 }
 
-/* ---------- Vaste reacties (werken ook zonder Claude) ---------- */
-const TPL = {
-  reason:{vakantie:'Een eigen plek voor de vakanties, waar je niet meer hoeft te zoeken naar een appartement.',overwinteren:'Wie overwintert, kiest anders dan wie alleen in de zomer komt: dagelijkse voorzieningen tellen dan zwaarder.',permanent:'Emigreren is een grote stap; dan kijk ik verder dan alleen het huis.',pensioen:'Een plek om van je pensioen te genieten vraagt om gemak en goede voorzieningen dichtbij.',combi:'Eigen gebruik en verhuur combineren, dan telt de ligging dubbel.',ontdekken:'Prima. Juist dan helpt een kompas.'},
-  household:{gezin:'Met het gezin naar Spanje: dan gaat het ook over school, vriendjes en ruimte om te spelen.',generaties:'Meerdere generaties onder één dak vraagt om slim ingedeelde ruimte, en soms gelijkvloers.',partner:'Met z\'n tweeën geeft vaak de meeste vrijheid in de keuze.',alleen:'Alleen gaan betekent dat de buurt en de mensen om je heen extra belangrijk zijn.',vrienden:'Samen kopen of verblijven: dan moet de woning voor iedereen werken.'},
-  school:{spaans:'Een Spaanse school betekent snel meedoen in het dorp en vrienden in de straat.',internationaal:'Een internationale school maakt de afstand tot school vaak bepalend voor de woonplaats.',combinatie:'Spaans op school en Nederlands op afstand houdt beide talen levend.',weetniet:'Dat is heel normaal; het is een van de eerste dingen om samen uit te zoeken.'},
-  pets:{hond:'Een hond wil buiten zijn; een tuin of een wandelgebied dichtbij scheelt veel.',kat:'Een kat voelt zich het best met een rustige plek en een dichte buitenruimte.',meer:'Meerdere dieren: ruimte buiten wordt dan bijna een vereiste.',geen:'Dan heb je meer vrijheid in woningtype.'},
-  work:{remote:'Op afstand werken vraagt om een stille werkplek en goed internet.',bedrijf:'Een eigen bedrijf beginnen geeft je de vrijheid om de woonplaats daarop af te stemmen.',zoeken:'Werk zoeken in Spanje maakt de nabijheid van grotere plaatsen belangrijker.',niet:'Dan draait alles om hoe je je dagen wilt vullen.'},
-  timing:{orienteren:'Oriënteren is precies waar dit kompas voor is.',jaar:'Binnen een jaar: dan loont het om je wensen nu scherp te krijgen.',halfjaar:'Binnen zes maanden is een mooie termijn om gericht te gaan kijken.',direct:'Zo snel mogelijk: dan is een helder profiel goud waard.'}
+/* ---------- Vaste reacties (werken ook zonder Claude): per antwoord een persoonlijke zin ---------- */
+const OPEN = {
+  warm:['Mooi!','Wat fijn.','Dat klinkt goed.','Herkenbaar.','Leuk om te lezen.'],
+  smart:['Verstandig!','Slim gekozen.','Goed dat je daar nu al aan denkt.','Heel praktisch.'],
+  calm:['Duidelijk.','Helder.','Dat neem ik mee.','Genoteerd.']
 };
-const GENERIC=['Genoteerd.','Helder, dat helpt.','Duidelijk.','Mooi, dat neem ik mee.'];
+const OPT = {
+  reason:{vakantie:['warm','Een eigen plek voor de vakanties: geen gezoek meer naar een appartement, maar thuiskomen in je eigen huis met je spullen al klaar.'],
+    overwinteren:['warm','Overwinteren in de zon. Dan ben je er in de maanden dat het hier stil is, en dat maakt dagelijkse voorzieningen en een warm huis belangrijker dan een plek vol strandtenten.'],
+    permanent:['smart','Emigreren is een grote, mooie stap. Dan kijk ik verder dan alleen het huis: ook naar je dagritme, de mensen om je heen en wat je nodig hebt om je echt thuis te voelen.'],
+    pensioen:['warm','Genieten van je pensioen: tijd voor jezelf, de zon en een rustiger tempo. Dan wil je vooral gemak, en alles wat je nodig hebt op een prettige afstand.'],
+    combi:['smart','Eigen gebruik én verhuur. Dan moet de woning twee dingen goed doen: voor jou fijn voelen en voor gasten aantrekkelijk zijn. De ligging telt dan dubbel.'],
+    ontdekken:['warm','Nog aan het ontdekken, dat is precies waar dit kompas voor is. Kies gewoon wat goed voelt; je kunt alles later nog veranderen.']},
+  mood:{levendig:'je houdt van reuring, terrasjes en mensen om je heen',rustig:'rust en ontspanning staan voor jou bovenaan',authentiek:'je wilt het echte Spanje proeven, met Spaanse buren en lokale gewoontes',groen:'je zoekt groen, ruimte en het buitenleven',modern:'comfort en een modern huis vind je belangrijk',mix:'je wilt het beste van verschillende werelden'},
+  household:{gezin:['warm','Met het gezin naar Spanje. Dan gaat het niet alleen over het huis, maar ook over school, vriendjes in de straat en ruimte om te spelen.'],
+    generaties:['warm','Meerdere generaties onder één dak, wat bijzonder. Dan wordt de indeling belangrijk: ieder een eigen plek, en voor de oudsten liefst gelijkvloers.'],
+    partner:['warm','Met z\'n tweeën. Dat geeft vaak de meeste vrijheid: je kunt kiezen puur op wat jullie samen het fijnst vinden.'],
+    alleen:['calm','Alleen gaan betekent dat de buurt en de mensen om je heen extra belangrijk worden. Een plek waar je makkelijk contact maakt, kan het verschil maken.'],
+    vrienden:['warm','Samen met vrienden of familie, gezellig. Dan moet de woning voor iedereen werken, met genoeg privacy om het ook gezellig te houden.']},
+  kids_ages:{'0-3':'met de allerkleinsten is rust en een veilige buitenruimte goud waard','4-11':'basisschoolkinderen willen spelen, vriendjes en liefst alles op fietsafstand','12-17':'tieners willen vooral zelfstandig zijn en vrienden kunnen opzoeken','18+':'jongvolwassenen komen en gaan, dus een flexibele logeerplek is handig'},
+  school:{spaans:['smart','Een Spaanse school. Kinderen pikken de taal vaak verrassend snel op en hebben dan meteen vriendjes in het dorp.'],
+    internationaal:['smart','Een internationale school. Dan wordt de afstand tot school vaak bepalend voor waar je gaat wonen, want je rijdt die route elke dag.'],
+    combinatie:['smart','Spaans op school en Nederlands op afstand. Zo blijven beide talen levend, en dat geeft de kinderen later alle opties.'],
+    weetniet:['calm','Dat is heel normaal. Het is een van de eerste dingen om samen goed uit te zoeken, en ik zet het op je lijstje voor het eerste gesprek.']},
+  kids_lang:{spaans:['warm','Ze spreken al Spaans, wat een voorsprong! Dan zijn ze waarschijnlijk snel gewend.'],engels:['warm','Engels is een mooie basis; Spaans komt er dan vaak vanzelf bij.'],geen:['calm','Nog geen van beide, dat is heel gewoon. Jonge kinderen leren een taal meestal sneller dan hun ouders.'],wisselt:['calm','Het verschilt per kind; dan is een school die daar ervaring mee heeft extra waardevol.']},
+  kids_needs:{school:'school op korte afstand, dat scheelt elke ochtend reistijd',sport:'sportclubs, zodat ze snel vriendjes maken',gezinnen:'andere gezinnen in de buurt, voor speelmaatjes om de hoek',park:'een park of speelplek, voor buiten spelen zonder auto',zelfstandig:'zelfstandig kunnen fietsen of lopen, wat ook jou veel rijden scheelt',strand:'het strand dichtbij, voor eindeloze zomers'},
+  visitors:{kinderen:'de kinderen komen logeren',kleinkinderen:'de kleinkinderen komen over',vrienden:'vrienden en familie komen langs',zelden:'er komt niet vaak iemand logeren'},
+  pets:{hond:['warm','Een hond gaat mee! Dan wil je een tuin of een wandelgebied in de buurt, en liefst een omheining zodat hij veilig los kan.'],kat:['warm','Een kat. Die voelt zich het best met een rustige plek en een buitenruimte die een beetje beschut is.'],meer:['warm','Meerdere dieren, gezellig. Ruimte buiten wordt dan bijna een vereiste.'],geen:['calm','Geen huisdieren. Dan heb je meer vrijheid in woningtype, ook een appartement kan dan prima.']},
+  work:{remote:['smart','Op afstand werken vanuit de zon, mooi. Dan zijn een stille werkplek en goed internet net zo belangrijk als het uitzicht.'],bedrijf:['smart','Een eigen bedrijf in Spanje. Dan kun je de woonplaats ook laten afhangen van waar je klanten of je werkplek zitten.'],zoeken:['calm','Werk zoeken in Spanje. Dan helpt het om niet te ver van de grotere plaatsen te wonen.'],niet:['warm','Niet (meer) werken. Dan draait alles om hoe je je dagen het fijnst vult.']},
+  setting:{strand:'aan of vlak bij het strand',dorp:'een gezellig dorp met winkels en restaurants',woonwijk:'een rustige woonwijk',golf:'een golfresort',groen:'een groene omgeving met ruimte',stad:'dicht bij een stad',internationaal:'internationale voorzieningen',weetniet:'je weet het nog niet precies'},
+  ptype:{appartement:'een appartement',penthouse:'een penthouse',bungalow:'een bungalow',geschakeld:'een geschakelde woning',villa:'een vrijstaande villa',finca:'een finca',nieuwbouw:'moderne nieuwbouw',karakter:'een woning met karakter',open:'je staat open voor verschillende mogelijkheden'},
+  bedrooms:{'1':['calm','Eén slaapkamer: compact en makkelijk te onderhouden.'],'2':['calm','Twee slaapkamers: één voor jezelf en een voor gasten of als werkkamer.'],'3':['calm','Drie slaapkamers geeft ruimte voor het gezin of voor logees.'],'4':['calm','Vier of meer: ruimte genoeg voor een groot gezin of veel bezoek.']},
+  bathrooms:{'1':['calm','Eén badkamer, helder.'],'2':['smart','Twee badkamers. Met logees of een gezin is dat geen luxe maar rust in huis.'],'3':['smart','Drie of meer badkamers, dan hoeft er nooit iemand te wachten.']},
+  outdoor:{balkon:'een balkon voor je ochtendkoffie',terras:'een terras om buiten te eten',dakterras:'een dakterras om van de zon en de avondlucht te genieten',tuin:'een tuin',minder:'buitenruimte is voor jou niet het belangrijkst'},
+  pool:{prive:['warm','Een eigen zwembad, heerlijk! Wel goed om te weten dat het ook wat onderhoud vraagt.'],gemeenschappelijk:['smart','Een gemeenschappelijk zwembad. Je geniet van het water zonder er zelf naar om te hoeven kijken.'],geen:['calm','Geen zwembad nodig. Dat maakt de keuze breder.'],maaktniet:['calm','Maakt je niet uit, dan houden we die optie open.']},
+  musthave:{parkeren:'een eigen parkeerplaats',garage:'een garage',gelijkvloers:'gelijkvloers wonen',lift:'een lift',werkplek:'een werkplek',omheind:'een omheinde tuin voor de hond',airco:'airco en verwarming',opslag:'bergruimte'},
+  view:{zee:'de zee',bergen:'de bergen',golfbaan:'de golfbaan',natuur:'de natuur',geen:'geen vaste voorkeur'},
+  build:{nieuw:['calm','Nieuwbouw: modern, energiezuinig en alles nog nieuw.'],bestaand:['warm','Bestaande bouw: vaak meer karakter en een buurt die al ingeleefd is.'],beide:['calm','Allebei goed, dat geeft je de meeste keus.']},
+  finance:{eigen:['calm','Eigen middelen, dat maakt het traject overzichtelijk.'],hypotheek:['smart','Een Spaanse hypotheek. Goed om dat vroeg te weten, want het bepaalt mee hoe snel je kunt schakelen als je iets moois vindt.'],combinatie:['calm','Een combinatie van beide, helder.'],onbekend:['calm','Nog onbekend, geen probleem. Dat is iets voor het eerste gesprek.']},
+  months:{lt2:['calm','Minder dan twee maanden per jaar. Dan is een woning die weinig onderhoud vraagt extra fijn.'],'2-4':['calm','Twee tot vier maanden, een mooi stuk van het jaar.'],'4-6':['warm','Vier tot zes maanden, dan ben je eigenlijk half Spanjaard.'],gt6:['warm','Meer dan een half jaar of het hele jaar: dan wordt dit echt je thuis, en dan tellen de dagelijkse dingen het zwaarst.']},
+  season:{lente:'de lente',zomer:'de zomer',najaar:'het najaar',winter:'de winter'},
+  rental:{eigen:['calm','Alleen voor jezelf. Dan kies je puur op je eigen smaak.'],soms:['smart','Af en toe verhuren. Dan helpt een ligging die ook gasten aanspreekt.'],actief:['smart','Actief verhuren als je er niet bent. Dan telt de ligging dubbel, en is het slim om dat vooraf goed uit te zoeken.'],weetniet:['calm','Weet je nog niet, prima. Dat kan later.']},
+  daily:{huisarts:'een huisarts en apotheek dichtbij geeft rust, zeker als er eens iets is',supermarkt:'een supermarkt op loopafstand scheelt je elke dag de auto',nlgemeenschap:'Nederlandstaligen in de buurt maken het landen een stuk makkelijker',sport:'sportclubs en wandelroutes houden je fit en zijn een makkelijke manier om mensen te leren kennen',ov:'openbaar vervoer houdt je onafhankelijk van de auto',cultuur:'een Spaanse markt en cultuur zorgen dat je echt in Spanje woont, niet alleen ernaast'},
+  timing:{orienteren:['warm','Oriënteren, precies waar dit kompas voor is. Rustig verkennen wat bij je past is de beste start.'],jaar:['smart','Binnen een jaar. Dan loont het om je wensen nu scherp te krijgen, zodat je straks gericht kunt kijken.'],halfjaar:['smart','Binnen zes maanden, mooi concreet! Dan is een helder profiel echt goud waard.'],direct:['smart','Zo snel mogelijk. Dan is dit kompas je snelste route naar een gericht eerste gesprek.']},
+  flex:{verderzee:'iets verder van zee wonen voor meer ruimte',kleiner:'een kleinere woning op een betere plek',bestaand:'bestaande bouw in plaats van nieuwbouw',renovatie:'een woning met renovatiemogelijkheden',budget:'een iets ruimer budget',geen:'liever geen concessies'}
+};
+function pickOpen(kind,seed){const a=OPEN[kind]||OPEN.calm;return a[seed%a.length]}
+function listNl(arr){arr=arr.filter(Boolean);if(arr.length<2)return arr[0]||'';return arr.slice(0,-1).join(', ')+' en '+arr[arr.length-1]}
+function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s}
 function templateReaction(q,next){
-  const a=P.answers[q.id];
-  let s = (TPL[q.id]&&typeof a==='string'&&TPL[q.id][a]) || (answeredFrac(q)===0?'Geen probleem, die vraag kan later nog.':GENERIC[q.id.length%GENERIC.length]);
-  if(q.id==='kids_ages'&&schoolKids(P.answers)&&livesThere(P.answers)) s='Schoolgaande kinderen en emigreren: dan wordt de school een van de belangrijkste keuzes.';
-  const t = q.tease || (next? '' : '');
-  return (s+' '+t).trim();
+  const a=P.answers[q.id], A=P.answers, seed=(q.id.length*7+(Array.isArray(a)?a.length:1)*3+Object.keys(A).length)%5;
+  if(answeredFrac(q)===0) return 'Geen probleem, die vraag kan later nog. Ik neem het mee als open punt voor je kompas.';
+  const o=OPT[q.id]||{};
+  let s='';
+  if(typeof a==='string' && Array.isArray(o[a])){ s=pickOpen(o[a][0],seed)+' '+o[a][1]; }
+  else if(Array.isArray(a) && a.length){
+    const parts=a.map(v=>typeof o[v]==='string'?o[v]:null).filter(Boolean);
+    if(q.id==='daily'){ s=(a.length>2?pickOpen('smart',seed)+' ':'Verstandig! ')+cap(parts.slice(0,2).join(', en ')) + '.' + (a.length>2?' Fijn dat ik zo goed weet wat je dagelijks nodig hebt; dat zegt veel over welke plek bij je past.':''); }
+    else if(q.id==='mood'){ s=pickOpen('warm',seed)+' Ik lees dat '+listNl(parts.slice(0,3))+'. '+(a.includes('rustig')&&a.includes('levendig')?'Rust én gezelligheid, dat kan prima samen: een rustige straat op wandelafstand van het plein.':'Daarmee wordt het kompas al een stuk persoonlijker.'); }
+    else if(q.id==='kids_needs'){ s='Wat fijn dat je zo vanuit de kinderen denkt. '+cap(listNl(parts.slice(0,2)))+'.'+(a.includes('zelfstandig')?' Kinderen die zelf op pad kunnen, geven het hele gezin meer vrijheid.':''); }
+    else if(q.id==='kids_ages'){ s=cap(parts[0])+'.'+(a.length>1?' Met kinderen van verschillende leeftijden zoeken we een plek die voor iedereen iets heeft.':''); }
+    else if(q.id==='visitors'){ s=a.includes('zelden')?'Weinig logees, dan kan de woning compacter en hoef je geen extra kamers te onderhouden.':'Gezellig, '+listNl(parts)+'. Dan is een extra slaapkamer met een eigen badkamer echt een cadeautje voor je gasten, en voor je eigen rust.'; }
+    else if(q.id==='setting'){ s=pickOpen('warm',seed)+' Je ziet jezelf wonen in '+listNl(parts.slice(0,3))+'. '+(a.length>2?'Dat zijn meerdere werelden; ik ga zoeken waar ze elkaar raken.':'Daarmee valt al een deel van de kaart af en wordt de rest interessanter.'); }
+    else if(q.id==='ptype'){ s=a.includes('open')?'Open voor verschillende mogelijkheden, slim: dan laten we de omgeving en je wensen het woningtype bepalen.':pickOpen('calm',seed)+' '+cap(listNl(parts))+'. Dat zegt ook veel over hoe je wilt leven: meer gemak of meer ruimte.'; }
+    else if(q.id==='outdoor'){ s=a.includes('minder')?'Buitenruimte is niet het belangrijkst, helder. Dan kan het budget naar andere dingen.':'Buiten leven, daar kom je voor naar Spanje. '+cap(listNl(parts))+': '+(a.includes('dakterras')?'met een dakterras heb je je eigen stukje zon en uitzicht.':'je zult er meer tijd doorbrengen dan je nu denkt.'); }
+    else if(q.id==='musthave'){ s=pickOpen('smart',seed)+' '+cap(listNl(parts))+' staat vast. '+(a.includes('gelijkvloers')||a.includes('lift')?'Gelijkvloers of met een lift houdt je woning ook op de lange termijn comfortabel.':'Dit soort dingen merk je pas als ze ontbreken, dus goed dat je ze nu noemt.'); }
+    else if(q.id==='view'){ s=a.includes('geen')?'Geen vaste voorkeur voor uitzicht, dat geeft ruimte.':pickOpen('warm',seed)+' Uitkijken op '+listNl(parts)+'. Elke ochtend dat uitzicht, daar doe je het voor.'; }
+    else if(q.id==='season'){ s='Vooral in '+listNl(parts)+'. '+(a.includes('winter')?'In de winter is het rustiger aan de kust; dan tellen voorzieningen die het hele jaar open zijn.':'Dan weet ik ook wanneer de omgeving voor jou moet kloppen.'); }
+    else if(q.id==='flex'){ s=a.includes('geen')?'Liever geen concessies, helder. Dan zoeken we scherp naar wat écht moet.':'Mooi dat je flexibel bent op '+listNl(parts)+'. Daar zit vaak precies de ruimte om je belangrijkste wens wél waar te maken.'; }
+    else s=pickOpen('calm',seed)+' '+cap(listNl(parts))+'.';
+  } else if(q.id==='access'){ s=({'1':'Niet zo belangrijk, dan kijken we vrijer naar de kaart.','2':'Prettig, maar geen eis. Dat neem ik mee.','3':'Belangrijk: snel heen en weer kunnen geeft rust, zeker met familie in Nederland of België.','4':'Zeer belangrijk. Dan wil je dicht bij de luchthaven zitten, zodat een bezoekje aan huis altijd binnen bereik is.'})[a]||'Genoteerd.'; }
+  else if(q.id==='budget'){ s='Dank je, dat helpt enorm om gericht te kijken. Bovenop de prijs komen in Spanje nog belastingen en kosten; in de gratis gids lees je hoe dat zit.'; }
+  else if(q.id==='priorities'){ s='Dit is misschien wel de belangrijkste vraag. Met deze drie weet ik waar het voor jou écht om draait.'; }
+  else if(q.id==='distance'){ s='Heel bruikbaar. Afstanden bepalen meer dan je denkt hoe je dagen eruitzien.'; }
+  if(!s) s=pickOpen('calm',seed);
+  // Verbanden met eerdere antwoorden
+  if(q.id==='kids_ages'&&schoolKids(A)&&livesThere(A)) s+=' En omdat jullie emigreren, wordt de school een van de belangrijkste keuzes.';
+  if(q.id==='daily'&&A.reason==='pensioen'&&(a||[]).includes('huisarts')) s+=' Zeker na je pensioen is zorg dichtbij iets wat je niet wilt hoeven zoeken.';
+  if(q.id==='pets'&&a==='hond'&&(A.outdoor||[]).includes('tuin')) s+=' En die tuin had je al genoemd, mooi.';
+  if(q.id==='work'&&a==='remote') s+=(A.household==='gezin'?' Met kinderen thuis is een aparte werkkamer extra fijn.':'');
+  return s.trim();
 }
+function historyPairs(except){return relevant().filter(x=>x.id!==except&&answeredFrac(x)>0).map(x=>[x.title,lbl(x.id,P.answers[x.id])]).slice(-40)}
 function reactionPrompt(q,next){
   return `Je bent "Kompas", de vriendelijke gids van SpanjeKompas, een Nederlandstalige woonwijzer voor de zuidelijke Costa Blanca in Spanje. Een bezoeker beantwoordt vragen om zijn woonwensen te ontdekken.
 
@@ -1189,7 +1265,8 @@ async function react(q){
   updateBubble(q.id);
   let text=null;
   if(AI){
-    try{ text = await AI.ask(reactionPrompt(q,next),{onText:t=>{P.reactions[q.id].text=t.text;updateBubble(q.id)}}); }
+    const payload={kind:'react',q:q.title,answer:answeredFrac(q)?lbl(q.id,P.answers[q.id]):'overgeslagen',next:next?next.title:'',history:historyPairs(q.id),recent:Object.values(P.reactions).map(r=>r&&r.text).filter(Boolean).slice(-3)};
+    try{ text = await AI.ask(reactionPrompt(q,next),{payload,onText:t=>{P.reactions[q.id].text=t.text;updateBubble(q.id)}}); }
     catch(e){ aiFailed(e); text=null; }
   }
   if(!text) text=templateReaction(q,next);
@@ -1205,6 +1282,15 @@ function updateBubble(qid){
 }
 
 /* ---------- Eigen woorden: Claude zet tekst om in antwoorden ---------- */
+function extractSpec(){
+  const qs=relevant().concat(QUESTIONS.filter(q=>!relevant().includes(q))).filter(q=>q.type!=='matrix'&&q.type!=='pick3');
+  return qs.map(q=>{
+    if(q.type==='budget') return `${q.id} (budget): {"amount": getal in euro, "meaning": "indicatie"|"totaal"|"prijs"}`;
+    if(q.type==='scale') return `${q.id} (${q.title}): "1"|"2"|"3"|"4" (1 = niet belangrijk, 4 = zeer belangrijk)`;
+    const opts=optionsOf(q).map(o=>`"${o.v}" = ${o.l}`).join('; ');
+    return `${q.id} (${q.title}) ${q.type==='multi'?'lijst van':'één van'}: ${opts}`;
+  }).join('\n');
+}
 function extractPrompt(text){
   const qs=relevant().concat(QUESTIONS.filter(q=>!relevant().includes(q))).filter(q=>q.type!=='matrix'&&q.type!=='pick3');
   const spec=qs.map(q=>{
@@ -1253,7 +1339,7 @@ $('#sayForm').addEventListener('submit',async ev=>{
   const item={id:'c'+Date.now(),after,user:text,reply:'',filled:[],pending:true};
   P.chat.push(item); save(); ARRIVE=true; renderChat();
   try{
-    const out = await AI.ask(extractPrompt(text),{json:true});
+    const out = await AI.ask(extractPrompt(text),{json:true,payload:{kind:'extract',text,spec:extractSpec(),history:historyPairs(null)}});
     item.filled = applyExtracted(out&&out.answers);
     item.reply = (out&&typeof out.reply==='string'&&out.reply.trim()) || (item.filled.length?'Dank je, dat heb ik verwerkt.':'Dank je. Ik kon er nog geen antwoord op een vraag uit halen; kies hieronder gewoon verder.');
   }catch(e){
