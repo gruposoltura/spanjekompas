@@ -1,3 +1,9 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14243a">
 <title>SpanjeKompas</title>
 <meta name="description" content="Ontdek welke omgeving, woning en levensstijl het beste bij jou passen aan de zuidelijke Costa Blanca. Vrijblijvend, persoonlijk en helemaal op jouw tempo.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -150,6 +156,13 @@ section.block{padding-block:clamp(64px,9vw,120px)}
 .place{background:var(--card);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;scroll-margin-top:96px}
 .place .art{aspect-ratio:16/9;max-width:100%;display:block}
 .place .art svg{width:100%;height:100%;display:block}
+.place .art{position:relative;overflow:hidden;background:#cfd8de}
+.place .art img,.sg .art img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.place:hover .art img{transform:scale(1.04)}
+.credit{position:absolute;right:8px;bottom:8px;max-width:calc(100% - 16px);font-size:.62rem;line-height:1.3;background:rgba(10,20,36,.55);color:#fff;padding:2px 7px;border-radius:6px;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.85}
+.credit:hover{opacity:1;text-decoration:underline}
+.rv-p img{width:20px;height:20px;border-radius:50%;object-fit:cover;vertical-align:-5px;margin:0 6px 0 -4px}
+
 .place .bd{padding:16px 18px 18px;display:grid;gap:10px;flex:1;align-content:start}
 .place .meta{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .place p{font-size:.95rem;color:var(--muted)}
@@ -261,19 +274,46 @@ footer button{background:none;border:0;color:#e6ebf2;text-decoration:underline;t
 .kbwrap svg{width:100%;height:100%;display:block;animation:kb 30s ease-in-out infinite alternate}
 .chat{max-width:860px;margin-inline:auto;padding-block:24px 190px;display:grid;gap:14px}
 .thread{display:grid;gap:12px}
-.msg{display:flex;gap:12px;align-items:flex-start;min-width:0;animation:pop .45s cubic-bezier(.2,.7,.2,1) both}
+.msg{display:flex;gap:10px;align-items:flex-end;min-width:0;animation:popL .38s cubic-bezier(.2,.8,.2,1) both;transform-origin:left bottom}
+.msg.me{justify-content:flex-end;animation-name:popR;transform-origin:right bottom}
 @keyframes pop{from{opacity:.001;transform:translateY(8px)}to{opacity:1;transform:none}}
-.msg .av{flex:0 0 34px;width:34px;height:34px;color:var(--night);margin-top:2px}
-.bubble{background:var(--card);border-radius:4px 18px 18px 18px;padding:11px 16px;box-shadow:var(--shadow);min-width:0;max-width:62ch;font-size:1rem}
-.bubble.q{color:var(--muted);font-size:.95rem}
+@keyframes popL{from{opacity:.001;transform:translate(-6px,6px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes popR{from{opacity:.001;transform:translate(6px,6px) scale(.94)}to{opacity:1;transform:none}}
+.msg .av{flex:0 0 36px;width:36px;height:36px;border-radius:50%;background:var(--night);display:grid;place-items:center;box-shadow:0 3px 10px -4px rgba(20,36,58,.5)}
+.msg .av svg{width:26px;height:26px}
+.msg.cont .av{visibility:hidden;height:0}
+.thread .msg+.msg.cont{margin-top:-8px}
+.bubble{position:relative;background:var(--card);border-radius:18px 18px 18px 6px;padding:10px 15px;box-shadow:0 1px 1px rgba(20,36,58,.06),0 6px 18px -10px rgba(20,36,58,.35);min-width:0;max-width:min(62ch,82%);font-size:1rem;line-height:1.45;color:var(--ink)}
+.msg:not(.me):not(.cont) .bubble{border-radius:6px 18px 18px 18px}
+.msg:not(.me):not(.cont) .bubble::before{content:"";position:absolute;left:-7px;top:0;width:12px;height:13px;background:inherit;clip-path:polygon(100% 0,0 0,100% 100%)}
+.msg.cont .bubble{border-radius:18px}
+.bubble.q{font-size:1rem}
 .bubble.big{max-width:none;flex:1;padding:16px 20px;color:var(--ink)}
-.bubble.re{font-size:1.02rem}
-.msg.me{justify-content:flex-end}
-.msg.me .bubble{background:var(--night);color:#f3efe7;border-radius:18px 4px 18px 18px}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .msg.me .bubble{background:#244064}}
-:root[data-theme="dark"] .msg.me .bubble{background:#244064}
-.msg.me .muted{opacity:.7;font-style:italic}
-.edit{background:none;border:0;color:#9fd7d4;text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-size:.82rem;margin-left:8px;padding:2px}
+.bubble.re{font-size:1rem}
+.msg.me .bubble{background:linear-gradient(150deg,#118783,#0b6670);color:#fff;border-radius:18px 6px 18px 18px;max-width:min(52ch,78%)}
+.msg.me .bubble::after{content:"";position:absolute;right:-7px;top:0;width:12px;height:13px;background:#118783;clip-path:polygon(0 0,100% 0,0 100%)}
+.msg.me .muted{opacity:.8;font-style:italic}
+.bmeta{display:flex;justify-content:flex-end;align-items:center;gap:6px;margin:3px -4px -3px 12px;font-size:.72rem;opacity:.85;float:right;position:relative;top:6px}
+.bmeta svg{width:16px;height:11px}
+.edit{background:none;border:0;color:#d6f2ef;text-decoration:underline;text-underline-offset:2px;cursor:pointer;font-size:.72rem;padding:0 0 0 4px;min-height:0}
+.chat-top{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:18px;padding:12px 16px;box-shadow:0 6px 18px -12px rgba(20,36,58,.4);margin-bottom:4px}
+.chat-top .av{position:relative;flex:0 0 46px;width:46px;height:46px;border-radius:50%;background:var(--night);display:grid;place-items:center}
+.chat-top .av svg{width:34px;height:34px}
+.chat-top .av::after{content:"";position:absolute;right:1px;bottom:1px;width:11px;height:11px;border-radius:50%;background:#2fbf71;border:2px solid var(--card)}
+.chat-top b{display:block;font-size:1.02rem}
+.chat-top small{display:block;color:var(--muted);font-size:.82rem}
+.chat-top small i{font-style:normal;color:#1f9d5c;font-weight:600}
+.chat-top .by{margin-left:auto;text-align:right;font-size:.75rem;color:var(--muted);line-height:1.3}
+.daychip{justify-self:center;background:rgba(20,36,58,.08);color:var(--muted);font-size:.74rem;font-weight:600;letter-spacing:.04em;padding:.3em .9em;border-radius:999px;margin:4px 0}
+.bubble.is-typing{padding:13px 16px;flex:0 0 auto!important}
+.bubble.is-typing .typing i{width:8px;height:8px}
+.wait{display:none!important}
+.current>.later{opacity:0;visibility:hidden;pointer-events:none}
+.current>*{transition:opacity .4s ease}
+.opts .opt{animation:pop .4s cubic-bezier(.2,.8,.2,1) both}
+.opts .opt:nth-child(2){animation-delay:.04s}.opts .opt:nth-child(3){animation-delay:.08s}.opts .opt:nth-child(4){animation-delay:.12s}.opts .opt:nth-child(5){animation-delay:.16s}.opts .opt:nth-child(n+6){animation-delay:.2s}
+.reply-hint{display:flex;align-items:center;gap:8px;justify-content:flex-end;color:var(--muted);font-size:.82rem;margin:14px 2px -14px}
+.reply-hint::before{content:"";width:22px;height:1px;background:var(--line)}
 .filled{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center;font-size:.85rem;color:var(--muted)}
 .filled .tag{border:0;cursor:pointer}
 .typing{display:inline-flex;gap:4px;padding:4px 0}
@@ -313,7 +353,7 @@ footer button{background:none;border:0;color:#e6ebf2;text-decoration:underline;t
   .phases button:not(.cur),.phases i{display:none}
   .prog-top{font-size:.82rem}
   .say small{display:none}
-  .msg .av{flex-basis:28px;width:28px;height:28px}
+  .msg .av{flex-basis:30px;width:30px;height:30px}.msg .av svg{width:22px;height:22px}.chat-top .by{display:none}
   .bubble.big{padding:12px 14px}
 }
 .prog-top span:last-child{overflow:hidden;text-overflow:ellipsis}
@@ -606,7 +646,7 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
     <h3>Zonder delen</h3>
     <p>Je antwoorden worden alleen in de opslag van je eigen browser bewaard (localStorage), zodat je later verder kunt. Ze verlaten je apparaat niet. We gebruiken geen cookies, analytics of advertentietrackers, daarom zie je ook geen cookiebanner. Via "Wis mijn antwoorden" verwijder je alles.</p>
     <h3>Als je je woonkompas laat mailen</h3>
-    <p>Pas als je het formulier invult en het vakje aanvinkt, versturen we je antwoorden met je naam, e-mailadres en eventueel telefoonnummer. Daarmee maken we je woonkompas als PDF en mailen we het, samen met de gids, via onze e-maildienst Brevo. Soltura Real Estate bewaart je profiel en kan vrijblijvend contact met je opnemen over je woonwensen. Grondslag: jouw toestemming (art. 6.1.a AVG). Het wekelijkse Marktrapport ontvang je alleen als je dat apart aanvinkt; afmelden kan via de link onderaan elk rapport.</p>
+    <p>Pas als je het formulier invult en het vakje aanvinkt, versturen we je antwoorden met je naam, e-mailadres en eventueel telefoonnummer. Daarmee maken we je woonkompas als PDF en mailen we het, samen met de gids, via onze e-maildienst Brevo. Soltura Real Estate bewaart je profiel en kan vrijblijvend contact met je opnemen over je woonwensen. Grondslag: jouw toestemming (art. 6.1.a AVG). Het wekelijkse Marktrapport, de nieuwsbrief en passende woningen ontvang je alleen als je dat apart aanvinkt. Je wordt dan opgenomen in het klantenbestand van Soltura Real Estate; afmelden kan per mailing via de link onderaan elke mail.</p>
     <h3>Bewaartermijn</h3>
     <p>Maximaal 24 maanden na het laatste contact, tenzij er een aankoop volgt en de wet langere bewaring vraagt.</p>
     <h3>Jouw rechten</h3>
@@ -1154,8 +1194,10 @@ async function react(q){
 }
 function updateBubble(qid){
   const el=document.getElementById('re-'+qid); if(!el) return;
+  if(el.dataset.hold) return;
   const r=P.reactions[qid];
-  el.innerHTML = r&&r.text ? esc(r.text) : '<span class="typing" aria-label="Kompas typt"><i></i><i></i><i></i></span>';
+  el.classList.toggle('is-typing',!(r&&r.text));
+  el.innerHTML = r&&r.text ? esc(r.text) : TYPING;
 }
 
 /* ---------- Eigen woorden: Claude zet tekst om in antwoorden ---------- */
@@ -1205,7 +1247,7 @@ $('#sayForm').addEventListener('submit',async ev=>{
   ta.value=''; autoGrow();
   const rq=relevant(); const after = qIndex>0 ? rq[qIndex-1].id : null;
   const item={id:'c'+Date.now(),after,user:text,reply:'',filled:[],pending:true};
-  P.chat.push(item); save(); renderChat();
+  P.chat.push(item); save(); ARRIVE=true; renderChat();
   try{
     const out = await AI.ask(extractPrompt(text),{json:true});
     item.filled = applyExtracted(out&&out.answers);
@@ -1241,13 +1283,66 @@ function revealCard(ph,nextPh){
   const head = !want.size ? `Alle ${all} plaatsen zijn nog in beeld.` : `${m.length} van de ${all} plaatsen passen bij wat je tot nu toe koos.`;
   return `<div class="reveal" role="note">
     <div class="rv-top"><span class="eyebrow">Je kompas na ${esc(ph.name.toLowerCase())}</span><b>${head}</b></div>
-    <div class="rv-places">${PLACES.map(p=>{const hit=!want.size||m.some(x=>x.p===p);return `<span class="rv-p ${hit?'on':''}">${p.name}</span>`}).join('')}</div>
+    <div class="rv-places">${PLACES.map(p=>{const hit=!want.size||m.some(x=>x.p===p);return `<span class="rv-p ${hit?'on':''}">${hit&&PHOTO[p.id]?`<img src="img/plaatsen/${p.id}.jpg" alt="" loading="lazy">`:''}${p.name}</span>`}).join('')}</div>
     ${nextPh?`<p class="rv-next">Na <b>${esc(nextPh.name.toLowerCase())}</b>: ${esc(nextPh.gives)}</p>`:''}
   </div>`;
 }
 
 /* ---------- Gesprek tekenen ---------- */
-const AV = () => `<svg class="av" viewBox="0 0 64 64" aria-hidden="true">${logoSVG(false)}</svg>`;
+const AV = () => `<span class="av" aria-hidden="true"><svg viewBox="0 0 64 64">${logoSVG(true)}</svg></span>`;
+const TYPING = '<span class="typing" aria-label="Kompas typt"><i></i><i></i><i></i></span>';
+const TICKS = '<svg viewBox="0 0 16 11" aria-label="gelezen"><path d="M1 6l3 3 6-7M6 9l1 1 7-8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const hhmm = t => { try { return new Date(t).toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'}); } catch(e){ return ''; } };
+let ARRIVE=false, prevThreadLen=0;
+function chatTop(){
+  return `<div class="chat-top"><span class="av" aria-hidden="true"><svg viewBox="0 0 64 64">${logoSVG(true)}</svg></span><div><b>Kompas</b><small><i>online</i> · je digitale woongids</small></div><div class="by">SpanjeKompas<br>met Soltura Real Estate</div></div><div class="daychip">Vandaag</div>`;
+}
+function groupBubbles(){
+  const all=[...$('#thread').children, ...$('#qwrap').querySelectorAll('.current > .msg')];
+  let prevBot=false;
+  all.forEach(el=>{
+    const isMsg=el.classList&&el.classList.contains('msg'), bot=isMsg&&!el.classList.contains('me');
+    if(bot) el.classList.toggle('cont',prevBot);
+    prevBot=bot;
+  });
+}
+function choreograph(from){
+  const seq=[...$('#thread').children].slice(from);
+  const cur=$('#qwrap').querySelector('.current');
+  const qb=cur&&cur.querySelector(':scope > .msg');
+  if(qb) seq.push(qb);
+  const rest=cur?[...cur.children].filter(e=>e!==qb):[];
+  rest.forEach(e=>e.classList.add('later'));
+  if(seq[0]){ const head=($('.wz-head').getBoundingClientRect().bottom||150)+16; window.scrollTo({top:Math.max(0,seq[0].getBoundingClientRect().top+window.scrollY-head),behavior:'auto'}); }
+  let t=0; const timers=[];
+  const at=(ms,fn)=>timers.push(setTimeout(fn,ms));
+  seq.forEach(el=>{
+    const b0=el.querySelector&&el.querySelector('.bubble');
+    const bot=el.classList.contains('msg')&&!el.classList.contains('me')&&!(b0&&b0.classList.contains('q')&&!b0.classList.contains('big'));
+    if(!bot){ if(t>0){ el.classList.add('wait'); at(t,()=>{el.classList.remove('wait');keepInView(el)}); } t+=el.classList.contains('me')?250:(el.classList.contains('msg')?120:380); return; }
+    const b=el.querySelector('.bubble'); const html=b.innerHTML; const len=b.textContent.length;
+    el.classList.add('wait'); b.dataset.hold='1';
+    at(t,()=>{ el.classList.remove('wait'); b.innerHTML=TYPING; b.classList.add('is-typing'); keepInView(el); });
+    const dur=Math.min(1100,380+len*8);
+    at(t+dur,()=>{ b.classList.remove('is-typing'); delete b.dataset.hold;
+      if(b.id&&b.id.indexOf('re-')===0) updateBubble(b.id.slice(3)); else b.innerHTML=html;
+      el.style.animation='none'; void el.offsetWidth; el.style.animation=''; keepInView(el); });
+    t+=dur+180;
+  });
+  at(t,()=>{ rest.forEach(e=>e.classList.remove('later')); scrollToCurrent('smooth'); });
+  choreograph.timers=(choreograph.timers||[]).concat(timers);
+}
+function keepInView(el){
+  const r=el.getBoundingClientRect(), vh=window.innerHeight, pad=(window.innerWidth<900?260:200);
+  if(r.bottom>vh-pad) window.scrollBy({top:r.bottom-(vh-pad),behavior:reduceMotion()?'auto':'smooth'});
+}
+function scrollToCurrent(behavior){
+  const last=$('#thread').lastElementChild;
+  const target=(last&&last.classList.contains('phase-scene'))?last:$('#qwrap');
+  const head=($('.wz-head').getBoundingClientRect().bottom||150)+12;
+  const y=target.getBoundingClientRect().top+window.scrollY-head;
+  window.scrollTo({top:Math.max(0,y),behavior});
+}
 function answerText(q){
   if(answeredFrac(q)===0) return '<span class="muted">Overgeslagen</span>';
   return esc(lbl(q.id,P.answers[q.id]));
@@ -1257,8 +1352,8 @@ function phaseIntro(ph,i){
 }
 function chatItemsAfter(qid){
   return P.chat.filter(c=>c.after===qid).map(c=>`
-    <div class="msg me"><div class="bubble">${esc(c.user)}</div></div>
-    <div class="msg">${AV()}<div class="bubble">${c.pending?'<span class="typing" aria-label="Kompas leest mee"><i></i><i></i><i></i></span>':esc(c.reply)}${c.filled&&c.filled.length?`<div class="filled"><span>Ingevuld:</span>${c.filled.map(id=>`<button type="button" class="tag" data-jump="${id}">${esc(Q(id).title.replace(/\?$/,''))}</button>`).join('')}</div>`:''}</div></div>`).join('');
+    <div class="msg me"><div class="bubble">${esc(c.user)}<span class="bmeta">${TICKS}</span></div></div>
+    <div class="msg">${AV()}<div class="bubble">${c.pending?TYPING:esc(c.reply)}${c.filled&&c.filled.length?`<div class="filled"><span>Ingevuld:</span>${c.filled.map(id=>`<button type="button" class="tag" data-jump="${id}">${esc(Q(id).title.replace(/\?$/,''))}</button>`).join('')}</div>`:''}</div></div>`).join('');
 }
 function renderChat(focus){
   const rq=relevant();
@@ -1266,30 +1361,37 @@ function renderChat(focus){
   const cur=rq[qIndex];
   const curPh=cur?PHASES.find(p=>p.id===cur.phase):PHASES[PHASES.length-1];
   setBg(curPh);
-  let html=chatItemsAfter(null), lastPh=null;
+  P.times=P.times||{};
+  let html=chatTop()+chatItemsAfter(null), lastPh=null;
   rq.slice(0,qIndex).forEach((q,i)=>{
     const ph=PHASES.find(p=>p.id===q.phase);
     if(ph!==lastPh){ html+=phaseIntro(ph,PHASES.indexOf(ph)); lastPh=ph; }
+    if(!P.times[q.id]) P.times[q.id]=Date.now();
     html+=`<div class="msg">${AV()}<div class="bubble q">${esc(q.title)}</div></div>
-      <div class="msg me"><div class="bubble">${answerText(q)} <button type="button" class="edit" data-jump="${q.id}" aria-label="Wijzig antwoord op: ${esc(q.title)}">wijzig</button></div></div>`;
+      <div class="msg me"><div class="bubble">${answerText(q)}<span class="bmeta"><button type="button" class="edit" data-jump="${q.id}" aria-label="Wijzig antwoord op: ${esc(q.title)}">wijzig</button>${hhmm(P.times[q.id])} ${TICKS}</span></div></div>`;
     const r=P.reactions[q.id];
-    if(r) html+=`<div class="msg">${AV()}<div class="bubble re" id="re-${q.id}">${r.text?esc(r.text):'<span class="typing" aria-label="Kompas typt"><i></i><i></i><i></i></span>'}</div></div>`;
+    if(r) html+=`<div class="msg">${AV()}<div class="bubble re${r.text?'':' is-typing'}" id="re-${q.id}">${r.text?esc(r.text):TYPING}</div></div>`;
     html+=chatItemsAfter(q.id);
     const nq=rq[i+1];
     if(!nq || nq.phase!==q.phase){ const nph=nq?PHASES.find(p=>p.id===nq.phase):null; if(qIndex>i) html+=revealCard(ph,nph); }
   });
   if(cur && curPh!==lastPh) html+=phaseIntro(curPh,PHASES.indexOf(curPh));
+  (choreograph.timers||[]).forEach(clearTimeout); choreograph.timers=[];
+  const arrive=ARRIVE&&!reduceMotion(); ARRIVE=false;
+  const from=prevThreadLen;
   $('#thread').innerHTML=html;
   $('#qwrap').innerHTML = cur ? currentQ(cur) : finishCard();
   bindThread(); if(cur) bindQ(cur); else bindFinish();
+  groupBubbles();
   renderHead();
+  const n=$('#thread').children.length; prevThreadLen=n;
+  if(arrive && n>from && n-from<12){
+    requestAnimationFrame(()=>{ choreograph(from); const h=$('#qT'); if(h){h.setAttribute('tabindex','-1');h.focus({preventScroll:true})} });
+    return;
+  }
   requestAnimationFrame(()=>{
     // Scroll naar de huidige vraag; staat er direct een fase-video boven, dan die mee in beeld.
-    const last=$('#thread').lastElementChild;
-    const target=(last&&last.classList.contains('phase-scene'))?last:$('#qwrap');
-    const head=($('.wz-head').getBoundingClientRect().bottom||150)+12;
-    const y=target.getBoundingClientRect().top+window.scrollY-head;
-    window.scrollTo({top:Math.max(0,y),behavior:(focus||reduceMotion())?'auto':'smooth'});
+    scrollToCurrent((focus||reduceMotion())?'auto':'smooth');
     if(focus){const h=$('#qT')||$('#qwrap');h.setAttribute('tabindex','-1');h.focus({preventScroll:true})}
   });
 }
@@ -1343,6 +1445,7 @@ function currentQ(q){
   const answered=answeredFrac(q)>0, rq=relevant(), last=qIndex===rq.length-1;
   return `<div class="current">
     <div class="msg">${AV()}<div class="bubble q big"><h2 class="q-title" id="qT">${esc(q.title)}</h2>${q.help?`<p class="q-help">${esc(q.help)}</p>`:''}${q.why?`<p class="q-why"><b>Waarom ik dit vraag:</b> ${esc(q.why)}</p>`:''}</div></div>
+    <div class="reply-hint" aria-hidden="true">${q.type==='multi'||q.type==='pick3'?'Kies wat bij je past, meerdere mag':'Tik je antwoord aan'}</div>
     ${body}
     <div class="wz-foot">
       <button type="button" class="btn btn-ghost" id="bBack">${qIndex===0?'Naar de homepage':'Terug'}</button>
@@ -1359,6 +1462,7 @@ function advance(q){
   if(answeredFrac(q)===0&&!P.skipped.includes(q.id)) P.skipped.push(q.id);
   const rq=relevant(); qIndex=rq.indexOf(q)+1; save();
   P.reactions[q.id] = P.reactions[q.id] && P.reactions[q.id].key===JSON.stringify(P.answers[q.id]??null) ? P.reactions[q.id] : {key:'',text:''};
+  ARRIVE=true;
   renderChat(true);
   react(q);
 }
@@ -1464,7 +1568,7 @@ function showResult(){
       ${pri.length?`<span class="k" style="margin-top:6px">Belangrijkste wensen</span><ol class="pri">${pri.map((v,i)=>`<li><span>${i+1}</span>${esc(lbl('priorities',v))}</li>`).join('')}</ol>`:'<p style="color:var(--muted)">Je belangrijkste wensen staan nog open.</p>'}
       ${a.flex?`<span class="k" style="margin-top:6px">Hier ben je flexibel</span><div class="tags">${a.flex.map(v=>`<span class="tag">${esc(lbl('flex',v))}</span>`).join('')}</div>`:''}</div>
     <div class="panel"><span class="k">Plaatsen die passen bij je keuzes</span><h3>Waar je eens kunt rondkijken</h3>
-      ${sg.length?`<div class="suggest">${sg.map(x=>`<div class="sg"><span class="art">${landscape(x.p.scene,x.p.name.length*7)}</span><div><b>${x.p.name}</b><small>Past bij je keuze voor ${x.why.map(t=>TAG_LABEL[t]).join(', ').replace(/, ([^,]*)$/,' en $1')}.</small></div></div>`).join('')}</div><p style="font-size:.85rem;color:var(--muted)">Gebaseerd op de sfeer en omgeving die je koos, niet op woningaanbod.</p>`
+      ${sg.length?`<div class="suggest">${sg.map(x=>`<div class="sg"><span class="art">${placeArt(x.p,x.p.name.length*7,true)}</span><div><b>${x.p.name}</b><small>Past bij je keuze voor ${x.why.map(t=>TAG_LABEL[t]).join(', ').replace(/, ([^,]*)$/,' en $1')}.</small></div></div>`).join('')}</div><p style="font-size:.85rem;color:var(--muted)">Gebaseerd op de sfeer en omgeving die je koos, niet op woningaanbod.</p>`
       :`<p style="color:var(--muted)">Kies een sfeer en omgeving, dan laten we zien welke plaatsen daarbij passen.</p>`}
       ${favs.length?`<span class="k" style="margin-top:6px">Door jou bewaard</span><div class="tags">${favs.map(f=>`<span class="tag">${f.name}</span>`).join('')}</div>`:''}</div>
     <div class="panel"><span class="k">Nog open</span><h3>${open.length?'Maak je profiel scherper':'Alles ingevuld'}</h3>
@@ -1524,7 +1628,7 @@ function sendFormHTML(mode){
     <div class="hp" aria-hidden="true"><label for="f-website">Laat dit veld leeg</label><input id="f-website" tabindex="-1" autocomplete="off"></div>
     <label class="check"><input type="checkbox" id="c-share"><span>Ja, mail mij mijn woonkompas en de gids. Soltura Real Estate ontvangt mijn antwoorden en mag vrijblijvend contact met mij opnemen over mijn woonwensen. <button type="button" class="btn-quiet" style="min-height:0;padding:0" data-privacy>Hoe gaan jullie met mijn gegevens om?</button></span></label>
     <span class="err" id="e-share" hidden></span>
-    <label class="check mr-opt"><input type="checkbox" id="c-mkt"><span><b>Ja, stuur mij ook het wekelijkse Marktrapport</b> van Soltura Real Estate: elke maandag de prijzen, verkopen en trends aan de Costa Blanca in één mail. Gratis, los van de vorige keuze en altijd op te zeggen.</span></label>
+    <label class="check mr-opt"><input type="checkbox" id="c-mkt"><span><b>Ja, stuur mij ook het wekelijkse Marktrapport</b> van Soltura Real Estate: elke maandag de prijzen, verkopen en trends aan de Costa Blanca. Ik ontvang dan ook de nieuwsbrief en woningen die passen bij mijn wensen. Gratis, los van de vorige keuze en per mailing op te zeggen.</span></label>
     <div id="sendResult" role="status" hidden></div>
     <div class="row">${mode==='dialog'?'<button type="button" class="btn btn-ghost" data-close>Nog niet</button>':''}<button type="submit" class="btn btn-primary" id="sendSubmit">Stuur mij mijn gratis woonkompas</button></div>
   </form>`;
@@ -1631,12 +1735,18 @@ function renderMap(){
   svg.insertAdjacentHTML('beforeend',s);
   svg.querySelectorAll('.mapdot').forEach(g=>{const act=()=>{const el=document.getElementById('pl-'+g.dataset.place);el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});el.querySelector('h3').focus({preventScroll:true})};g.addEventListener('click',act);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();act()}})});
 }
+const PHOTO = {"rojales": {"a": "Orniosviajero", "l": "CC BY-SA 4.0", "u": "https://commons.wikimedia.org/wiki/File:Puente_de_Carlos_III_de_Rojales.jpg"}, "quesada": {"a": "H.Helmlechner", "l": "CC BY-SA 4.0", "u": "https://commons.wikimedia.org/wiki/File:Ciudad_Quesada_03.jpg"}, "guardamar": {"a": "Joanbanjo", "l": "CC BY-SA 4.0", "u": "https://commons.wikimedia.org/wiki/File:Guardamar_del_Segura_des_del_castell.JPG"}, "torrevieja": {"a": "Werner Wilmes", "l": "CC BY 2.0", "u": "https://commons.wikimedia.org/wiki/File:Laguna_Salada_de_Torrevieja_-_52451565734.jpg"}, "orihuela": {"a": "Ximonic (Simo Räsänen)", "l": "CC BY-SA 4.0", "u": "https://commons.wikimedia.org/wiki/File:Mediterranean_coastline_of_Cabo_Roig_in_Orihuela_Costa%2C_Orihuela%2C_Alicante%2C_Spain%2C_2022_January.jpg"}, "benijofar": {"a": "Galopax", "l": "CC BY-SA 4.0", "u": "https://commons.wikimedia.org/wiki/File:Benij%C3%B3far_5_-_Iglesia.jpg"}, "dolores": {"a": "zie bronpagina", "l": "CC BY-SA 3.0", "u": "https://commons.wikimedia.org/wiki/File:Countryside_of_Dolores%2C_Alicante.jpg"}, "formentera": {"a": "Galopax", "l": "CC BY-SA 4.0", "u": "https://commons.wikimedia.org/wiki/File:Formentera_del_Segura_5_-_Ayuntamiento.jpg"}, "sanmiguel": {"a": "Ximonic (Simo Räsänen)", "l": "CC BY-SA 4.0", "u": "https://commons.wikimedia.org/wiki/File:Castillo_de_San_Miguel_in_San_Miguel_de_Salinas%2C_Alicante%2C_Spain%2C_2025_February.jpg"}};
+function placeArt(p,seed,small){
+  const ph=PHOTO[p.id];
+  if(!ph) return landscape(p.scene,seed);
+  return `<img src="img/plaatsen/${p.id}.jpg" alt="${esc(p.name)}" loading="lazy" decoding="async" width="1200" height="750">${small?'':`<a class="credit" href="${ph.u}" target="_blank" rel="noopener" title="Wikimedia Commons, bijgesneden">Foto: ${esc(ph.a)} · ${esc(ph.l)}</a>`}`;
+}
 let filter='all';
 function renderPlaces(){
   $('#places').innerHTML=PLACES.filter(p=>filter==='all'||p.zone===filter||p.tags.includes(filter)).map((p,i)=>{
     const fav=P.favorites.includes(p.id);
     return `<article class="place" id="pl-${p.id}">
-      <div class="art">${landscape(p.scene,i*31+5)}</div>
+      <div class="art">${placeArt(p,i*31+5)}</div>
       <div class="bd">
         <span class="meta">${p.zone==='kust'?'Aan de kust':'Achterland'}</span>
         <h3 tabindex="-1">${p.name}</h3>
