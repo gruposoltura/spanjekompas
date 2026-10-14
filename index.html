@@ -316,6 +316,11 @@ footer button{background:none;border:0;color:#e6ebf2;text-decoration:underline;t
 .current>*{transition:opacity .4s ease}
 .opts .opt{animation:pop .4s cubic-bezier(.2,.8,.2,1) both}
 .opts .opt:nth-child(2){animation-delay:.04s}.opts .opt:nth-child(3){animation-delay:.08s}.opts .opt:nth-child(4){animation-delay:.12s}.opts .opt:nth-child(5){animation-delay:.16s}.opts .opt:nth-child(n+6){animation-delay:.2s}
+body.in-chat>footer{display:none}
+.restart{display:flex;justify-content:center;margin-top:28px}
+.restart button{display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid var(--line);border-radius:999px;color:var(--muted);font:inherit;font-size:.86rem;padding:.5em 1.1em;cursor:pointer;min-height:40px}
+.restart button:hover{color:var(--ink);border-color:var(--ink)}
+.restart svg{width:16px;height:16px}
 .reply-hint{display:flex;align-items:center;gap:8px;justify-content:flex-end;color:var(--muted);font-size:.82rem;margin:14px 2px -14px}
 .reply-hint::before{content:"";width:22px;height:1px;background:var(--line)}
 .filled{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center;font-size:.85rem;color:var(--muted)}
@@ -602,6 +607,7 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
   <div class="wrap chat">
     <div class="thread" id="thread" aria-live="polite"></div>
     <div id="qwrap" tabindex="-1"></div>
+    <div class="restart"><button type="button" id="bRestart"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Begin opnieuw</button></div>
   </div>
   <form class="say" id="sayForm" hidden>
     <div class="say-in">
@@ -648,7 +654,9 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
     <h2 id="privT">Privacy en gegevens</h2>
     <p><b>Wie zijn wij.</b> SpanjeKompas is een initiatief van Soltura Real Estate (CIF B54286042), Formentera del Segura (Alicante), verwerkingsverantwoordelijke voor gegevens die je met ons deelt.</p>
     <h3>Zonder delen</h3>
-    <p>Je antwoorden worden alleen in de opslag van je eigen browser bewaard (localStorage), zodat je later verder kunt. Ze verlaten je apparaat niet. We gebruiken geen cookies, analytics of advertentietrackers, daarom zie je ook geen cookiebanner. Via "Wis mijn antwoorden" verwijder je alles.</p>
+    <p>Je antwoorden worden in de opslag van je eigen browser bewaard (localStorage), zodat je later verder kunt. We gebruiken geen cookies, analytics of advertentietrackers, daarom zie je ook geen cookiebanner. Via "Wis mijn antwoorden" verwijder je alles.</p>
+    <h3>Kompas, je digitale woongids</h3>
+    <p>De reacties in het gesprek worden gemaakt door een AI-taalmodel (Claude van Anthropic). Daarvoor sturen we je antwoorden, zonder naam of e-mailadres, naar onze eigen server en van daaruit naar dat model. Ze worden alleen gebruikt om de reactie te schrijven en niet aan jou gekoppeld of bewaard. Controleer bij tekst die je zelf typt even wat er is ingevuld.</p>
     <h3>Als je je woonkompas laat mailen</h3>
     <p>Pas als je het formulier invult en het vakje aanvinkt, versturen we je antwoorden met je naam, e-mailadres en eventueel telefoonnummer. Daarmee maken we je woonkompas als PDF en mailen we het, samen met de gids, via onze e-maildienst Brevo. Soltura Real Estate bewaart je profiel en kan vrijblijvend contact met je opnemen over je woonwensen. Grondslag: jouw toestemming (art. 6.1.a AVG). Het wekelijkse Marktrapport, de nieuwsbrief en passende woningen ontvang je alleen als je dat apart aanvinkt. Je wordt dan opgenomen in het klantenbestand van Soltura Real Estate; afmelden kan per mailing via de link onderaan elke mail.</p>
     <h3>Bewaartermijn</h3>
@@ -660,6 +668,14 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
 </dialog>
 
 <!-- Confirm wipe dialog -->
+<dialog id="dlgRestart" aria-labelledby="restT">
+  <div class="dlg">
+    <h2 id="restT">Opnieuw beginnen?</h2>
+    <p>Je antwoorden en het gesprek tot nu toe worden gewist, en je begint weer bij de eerste vraag. Je bewaarde plaatsen blijven staan.</p>
+    <div class="row"><button type="button" class="btn btn-ghost" data-close>Nee, ga verder</button><button type="button" class="btn btn-primary" id="restartYes">Ja, begin opnieuw</button></div>
+  </div>
+</dialog>
+
 <dialog id="dlgWipe" aria-labelledby="wipeT">
   <div class="dlg">
     <h2 id="wipeT">Antwoorden wissen?</h2>
@@ -1329,7 +1345,7 @@ function applyExtracted(ans){
 function syncSay(){
   const f=$('#sayForm'); if(!f) return;
   f.hidden=!AI;
-  $('#aiNote').textContent = AI ? 'Bijvoorbeeld: "we zijn met z\'n vieren, de kinderen zijn 9 en 13 en we willen volgend jaar emigreren". Reacties en het lezen van je woorden komen van Claude (AI); controleer wat er is ingevuld.' : '';
+  $('#aiNote').textContent = AI ? 'Bijvoorbeeld: "we zijn met z\'n vieren, de kinderen zijn 9 en 13 en we willen volgend jaar emigreren".' : '';
 }
 $('#sayForm').addEventListener('submit',async ev=>{
   ev.preventDefault();
@@ -1858,7 +1874,7 @@ document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.da
 /* =========================================================
    NAVIGATIE tussen schermen
    ========================================================= */
-function show(id){['v-home','v-wizard','v-result'].forEach(v=>document.getElementById(v).hidden=v!==id);syncNav()}
+function show(id){['v-home','v-wizard','v-result'].forEach(v=>document.getElementById(v).hidden=v!==id);document.body.classList.toggle('in-chat',id==='v-wizard');syncNav()}
 function go(where,noRender){
   if(where==='wizard'){show('v-wizard');renderChat(true);return}
   if(where==='kompas'){show('v-result');if(!noRender)showResult();window.scrollTo(0,0);return}
@@ -1879,6 +1895,8 @@ document.addEventListener('click',e=>{
   const w=e.target.closest('[data-wipe]');if(w){e.preventDefault();$('#dlgWipe').showModal();return}
   const c=e.target.closest('[data-close]');if(c){c.closest('dialog').close();return}
 });
+$('#bRestart').onclick=()=>{clearTimeout(autoT);$('#dlgRestart').showModal()};
+$('#restartYes').onclick=()=>{const fav=P.favorites.slice();(choreograph.timers||[]).forEach(clearTimeout);wipe();P.favorites=fav;save();prevThreadLen=0;$('#dlgRestart').close();updateResume();window.scrollTo({top:0});renderChat(true);toast('Je begint opnieuw. Fijn dat je er weer bent!')};
 $('#wipeYes').onclick=()=>{wipe();$('#dlgWipe').close();renderPlaces();updateResume();toast('Je antwoorden zijn van dit apparaat gewist.');go('home')};
 function updateResume(){const p=progress();$('#resumeLine').hidden=!(p>0);document.querySelector('[data-resume-pct]').textContent=p}
 
