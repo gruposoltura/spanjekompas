@@ -318,6 +318,42 @@ footer button{background:none;border:0;color:#e6ebf2;text-decoration:underline;t
 }
 .prog-top span:last-child{overflow:hidden;text-overflow:ellipsis}
 
+/* Beloning */
+.gift{display:inline-flex;gap:10px;align-items:center;margin-top:14px;background:rgba(10,20,36,.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:.45em 1em .45em .5em;font-size:.92rem;animation:rise 1.4s ease 1.1s both;max-width:100%}
+.gift span{background:#f3c79c;color:#14243a;font-weight:800;letter-spacing:.1em;text-transform:uppercase;font-size:.72rem;border-radius:999px;padding:.35em .8em;flex:none}
+.reward{background:var(--night);color:#eef1f5;padding-block:clamp(56px,8vw,96px)}
+.reward .lead{color:#c3ccd7}
+.reward h2 em{color:#f6cf9a}
+.reward .eyebrow{color:#f3c79c}
+.reward-in{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,5vw,72px);align-items:center}
+@media (max-width:860px){.reward-in{grid-template-columns:1fr}}
+.covers{position:relative;height:400px;max-width:420px;width:100%;margin-inline:auto}
+.cv{position:absolute;width:62%;aspect-ratio:210/297;max-width:100%;border-radius:6px;padding:18px;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;box-shadow:0 24px 50px -20px rgba(0,0,0,.6)}
+.cv b{font-family:var(--f-display);font-weight:400;font-size:1.35rem;line-height:1.05}
+.cv small{font-size:.75rem;opacity:.8}
+.cv-gids{left:0;top:0;justify-content:flex-start;padding-top:52px;transform:rotate(-5deg);background:linear-gradient(180deg,rgba(10,20,36,.2),rgba(10,20,36,.85)),linear-gradient(160deg,#6f9bc2,#e8b886 55%,#1e5f76 56%);color:#fff}
+.cv-kompas{right:0;top:96px;width:54%;transform:rotate(4deg);background:#fbf8f2;color:#14243a;border-top:46px solid #14243a}
+.cv-free{position:absolute;top:14px;left:14px;background:#f3c79c;color:#14243a;font-weight:800;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:.3em .8em}
+.gift-list{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:8px}
+.gift-list li{padding-left:28px;position:relative}
+.gift-list li::before{content:"";position:absolute;left:0;top:.25em;width:18px;height:18px;border-radius:50%;background:#56c7c3 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12l4 4 8-9' fill='none' stroke='%2314243a' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center/12px no-repeat}
+/* Verzendformulier */
+.sendform{display:grid;gap:14px;margin-top:14px}
+.sendform.card{background:var(--card);border-radius:18px;padding:clamp(16px,3vw,26px);box-shadow:var(--shadow)}
+.sf-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:600px){.sf-row{grid-template-columns:1fr}}
+.opt-l{font-weight:400;color:var(--muted)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.sendform .err{color:#b3261e;font-size:.88rem;font-weight:500}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sendform .err{color:#ff9a8f}}
+:root[data-theme="dark"] .sendform .err{color:#ff9a8f}
+.sendform .row{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end}
+.box.ok{border-left:4px solid var(--sea)}
+.box.warn{border-left:4px solid var(--terra)}
+#sendResult{display:grid;gap:10px}
+#sendResult[hidden]{display:none}
+.finish .wz-foot{border-top:0;padding-top:0;margin-top:10px}
+
 /* Result */
 .res-hero{background:var(--night);color:#f2efe8;padding-block:clamp(40px,7vw,80px)}
 .res-hero .wrap{display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,4vw,48px);align-items:center}
@@ -411,9 +447,31 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
         <a class="btn btn-ghost" href="#hoe" data-go="hoe">Ik wil eerst even rondkijken</a>
       </div>
       <p class="micro">Vrijblijvend · Persoonlijk · Helemaal op jouw tempo</p>
+      <p class="gift"><span>Gratis</span> Ontvang je persoonlijke woonkompas als PDF, samen met onze woon- en emigratiegids.</p>
       <p class="micro" id="resumeLine" hidden style="margin-top:10px"><button class="btn-quiet" style="color:#fff;padding:0;min-height:32px" data-resume>Verder waar je gebleven was (<span data-resume-pct>0</span>% ingevuld)</button></p>
     </div>
     <div class="scrollcue" aria-hidden="true"></div>
+  </section>
+
+  <section class="reward" id="gratis" aria-labelledby="giftT">
+    <div class="wrap reward-in">
+      <div class="covers" aria-hidden="true">
+        <div class="cv cv-gids"><span class="cv-free">Gratis</span><b>Wonen en emigreren aan de Costa Blanca Zuid</b><small>Gids · 4 pagina's</small></div>
+        <div class="cv cv-kompas"><b>Het woonkompas van jou</b><small>Persoonlijk · PDF</small></div>
+      </div>
+      <div>
+        <p class="eyebrow">Jouw beloning</p>
+        <h2 id="giftT" style="margin-top:10px">Ontvang <em>gratis</em> je woonkompas én de woon- en emigratiegids</h2>
+        <p class="lead" style="margin-top:12px">Na de laatste vraag mailen we je persoonlijke woonkompas als PDF, met alles wat je hebt gekozen op één pagina. Erbij: onze gids van vier pagina's over kopen, kosten, emigreren en het eerste gesprek met een makelaar. Helemaal gratis, zonder verplichtingen.</p>
+        <ul class="gift-list">
+          <li>Je woonwensen, overzichtelijk op papier</li>
+          <li>Kopen in Spanje in zes stappen, met de kosten erbij</li>
+          <li>Checklist voor de eerste maanden na emigratie, ook met kinderen</li>
+          <li>Acht vragen die je elke makelaar kunt stellen</li>
+        </ul>
+        <button class="btn btn-primary" data-start style="margin-top:20px">Start en ontvang je gratis gids</button>
+      </div>
+    </div>
   </section>
 
   <section class="block" id="hoe">
@@ -530,26 +588,8 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
   <button class="go" data-start><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Start</button>
 </nav>
 
-<!-- Share dialog -->
-<dialog id="dlgShare" aria-labelledby="shareT">
-  <form class="dlg" id="shareForm" novalidate>
-    <h2 id="shareT">Bespreek je woonwensen vrijblijvend</h2>
-    <p>Soltura Real Estate kan je woonprofiel vertalen naar een concrete zoektocht. Dit wordt gedeeld als je hieronder bevestigt:</p>
-    <ul>
-      <li>je antwoorden uit de woonwijzer en je bewaarde plaatsen;</li>
-      <li>je naam, e-mailadres en, als je dat invult, je telefoonnummer.</li>
-    </ul>
-    <p>Niets anders. Geen documenten, geen financiële gegevens buiten de globale keuzes die je zelf hebt gemaakt.</p>
-    <div class="field"><label for="f-name">Je naam</label><input id="f-name" name="name" autocomplete="name" required><span class="err" id="e-name" hidden></span></div>
-    <div class="field"><label for="f-email">E-mailadres</label><input id="f-email" name="email" type="email" autocomplete="email" required><span class="err" id="e-email" hidden></span></div>
-    <div class="field"><label for="f-phone">Telefoon (optioneel)</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"><span class="err" id="e-phone" hidden></span></div>
-    <label class="check"><input type="checkbox" id="c-share" name="share"><span>Ik wil dat Soltura Real Estate contact met mij opneemt over mijn woonwensen en daarvoor mijn profiel ontvangt. <button type="button" class="btn-quiet" style="min-height:0;padding:0" data-privacy>Hoe ga je met mijn gegevens om?</button></span></label>
-    <span class="err" id="e-share" hidden style="color:#b3261e;font-size:.88rem"></span>
-    <label class="check"><input type="checkbox" id="c-mkt" name="marketing"><span>Optioneel: stuur mij af en toe nieuws over de Costa Blanca. Los van de vorige keuze en altijd op te zeggen.</span></label>
-    <div id="shareResult" hidden></div>
-    <div class="row"><button type="button" class="btn btn-ghost" data-close>Nog niet</button><button type="submit" class="btn btn-primary" id="shareSubmit">Deel mijn woonkompas met Soltura</button></div>
-  </form>
-</dialog>
+<!-- Verzenddialoog (inhoud wordt door sendFormHTML() gevuld) -->
+<dialog id="dlgShare" aria-label="Ontvang je woonkompas"><div class="dlg" id="dlgSendBox"></div></dialog>
 
 <!-- Privacy dialog -->
 <dialog id="dlgPrivacy" aria-labelledby="privT">
@@ -558,8 +598,8 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
     <p><b>Wie zijn wij.</b> SpanjeKompas is een initiatief van Grupo Soltura S.L. (Soltura Real Estate), CIF B54286042, Formentera del Segura (Alicante), verwerkingsverantwoordelijke voor gegevens die je met ons deelt.</p>
     <h3>Zonder delen</h3>
     <p>Je antwoorden worden alleen in de opslag van je eigen browser bewaard (localStorage), zodat je later verder kunt. Ze verlaten je apparaat niet. We gebruiken geen cookies, analytics of advertentietrackers, daarom zie je ook geen cookiebanner. Via "Wis mijn antwoorden" verwijder je alles.</p>
-    <h3>Als je kiest om te delen</h3>
-    <p>Pas als je het deelvenster invult en het vakje aanvinkt, ontvangt Soltura je profiel, naam, e-mail en eventueel telefoon. Grondslag: jouw toestemming (art. 6.1.a AVG). Doel: je woonwensen begrijpen en je opvolgen over een zoektocht. Marketingberichten alleen met een aparte, vrijwillige toestemming.</p>
+    <h3>Als je je woonkompas laat mailen</h3>
+    <p>Pas als je het formulier invult en het vakje aanvinkt, versturen we je antwoorden met je naam, e-mailadres en eventueel telefoonnummer. Daarmee maken we je woonkompas als PDF en mailen we het, samen met de gids, via onze e-maildienst Brevo. Soltura Real Estate bewaart je profiel en kan vrijblijvend contact met je opnemen over je woonwensen. Grondslag: jouw toestemming (art. 6.1.a AVG). Nieuws over de Costa Blanca alleen met een aparte, vrijwillige toestemming.</p>
     <h3>Bewaartermijn</h3>
     <p>Maximaal 24 maanden na het laatste contact, tenzij er een aankoop volgt en de wet langere bewaring vraagt.</p>
     <h3>Jouw rechten</h3>
@@ -588,7 +628,8 @@ const CONFIG = {
   storageKey: 'spanjekompas.profile.v1',
   // POST-endpoint dat het profiel ontvangt (bv. n8n-webhook of Supabase Edge Function).
   // null = niet gekoppeld: de pagina toont dan een werkende alternatieve route (kopiëren + mailen).
-  submitEndpoint: null,
+  // Maakt het woonkompas-PDF, mailt het met de gids en meldt het aan Soltura (n8n JARVIS-Sales-SpanjeKompas).
+  submitEndpoint: 'https://gruposoltura.app.n8n.cloud/webhook/spanjekompas-send',
   contactEmail: 'info@gruposoltura.com',
   // Claude-gids buiten claude.ai: POST {prompt, json} -> {text} of {json}. Bijv. n8n-webhook die de Anthropic API aanroept.
   guideEndpoint: null,
@@ -1249,9 +1290,9 @@ function bindThread(){
   document.querySelectorAll('#thread [data-jump]').forEach(b=>b.onclick=()=>{qIndex=relevant().findIndex(q=>q.id===b.dataset.jump);renderChat(true)});
 }
 function finishCard(){
-  return `<div class="current finish"><h2 class="q-title" id="qT">Je kompas staat klaar.</h2><p class="q-help">Je hebt ${progress()}% van je profiel ingevuld. Bekijk je persoonlijke overzicht, met de plaatsen die bij je passen.</p><div class="wz-foot"><span class="sp"></span><button class="btn btn-primary" id="bFinish">Bekijk mijn kompas <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div></div>`;
+  return `<div class="current finish"><p class="eyebrow">Laatste stap · gratis</p><h2 class="q-title" id="qT">Waar mogen we je woonkompas naartoe sturen?</h2><p class="q-help">Je hebt ${progress()}% van je profiel ingevuld. Laat je naam en e-mailadres achter, dan mailen we je persoonlijke woonkompas als PDF, samen met de gratis woon- en emigratiegids.</p>${sendFormHTML('inline')}<div class="wz-foot"><button type="button" class="btn-quiet" id="bFinish">Eerst mijn overzicht bekijken</button></div></div>`;
 }
-function bindFinish(){ $('#bFinish').onclick=()=>showResult(); }
+function bindFinish(){ $('#bFinish').onclick=()=>showResult(); bindSendForm(); }
 
 function optCard(q,o,selected,extra=''){
   const role = q.type==='single'?'role="radio" aria-checked="'+selected+'"':'aria-pressed="'+selected+'"';
@@ -1422,10 +1463,10 @@ function showResult(){
     <div class="panel"><span class="k">Nog open</span><h3>${open.length?'Maak je profiel scherper':'Alles ingevuld'}</h3>
       ${open.length?`<p style="color:var(--muted)">Elke vraag hieronder maakt je kompas nauwkeuriger. Tik om meteen te beantwoorden.</p><ul class="openlist">${open.slice(0,8).map(q=>`<li><button type="button" data-jump="${q.id}">${esc(q.title)}</button></li>`).join('')}</ul>${open.length>8?`<p style="color:var(--muted);font-size:.9rem">en nog ${open.length-8} meer</p>`:''}`:'<p style="color:var(--muted)">Je kunt je antwoorden altijd nog aanpassen.</p>'}</div>
     <div class="cta-band">
-      <div><h3>Wat wil je nu doen?</h3><p>SpanjeKompas helpt je ontdekken wat bij je past. Wil je jouw wensen vertalen naar een concrete zoektocht? Dan kan het team van Soltura Real Estate je vrijblijvend verder helpen.</p></div>
+      <div><h3>Ontvang je woonkompas als PDF</h3><p>Gratis, met de woon- en emigratiegids erbij. Neem het mee naar een eerste gesprek; het team van Soltura Real Estate helpt je vrijblijvend je wensen te vertalen naar een concrete zoektocht.</p></div>
       <div class="row">
         ${open.length?'<button class="btn btn-primary" id="rComplete">Maak mijn woonkompas compleet</button>':'<button class="btn btn-primary" id="rEdit">Pas mijn antwoorden aan</button>'}
-        <button class="btn btn-ghost" id="rShare">Bespreek mijn woonwensen vrijblijvend</button>
+        <button class="btn btn-ghost" id="rShare">Ontvang mijn kompas + gratis gids</button>
         <button class="btn-quiet" id="rCopy">Kopieer mijn overzicht</button>
         ${open.length?'<button class="btn-quiet" id="rEdit2">Antwoorden wijzigen</button>':''}
       </div>
@@ -1459,61 +1500,108 @@ function fallbackCopy(t,msg){
 }
 
 /* =========================================================
-   DELEN met Soltura: payload + integratiepunt
+   VERZENDEN: woonkompas-PDF + gratis gids per e-mail, profiel naar Soltura
    ========================================================= */
-function buildPayload(form){
+function sendFormHTML(mode){
+  const c=P.contact||{};
+  return `<form class="sendform ${mode==='dialog'?'':'card'}" id="sendForm" novalidate>
+    ${mode==='dialog'?`<h2 id="sendT">Ontvang je woonkompas als PDF</h2><p>Gratis, samen met de woon- en emigratiegids van vier pagina's.</p>`:''}
+    <div class="sf-row">
+      <div class="field"><label for="f-first">Voornaam</label><input id="f-first" autocomplete="given-name" maxlength="60" value="${esc(c.first||'')}"><span class="err" id="e-first" hidden></span></div>
+      <div class="field"><label for="f-last">Achternaam</label><input id="f-last" autocomplete="family-name" maxlength="60" value="${esc(c.last||'')}"><span class="err" id="e-last" hidden></span></div>
+    </div>
+    <div class="sf-row">
+      <div class="field"><label for="f-email">E-mailadres</label><input id="f-email" type="email" autocomplete="email" maxlength="120" value="${esc(c.email||'')}"><span class="err" id="e-email" hidden></span></div>
+      <div class="field"><label for="f-phone">Telefoon <span class="opt-l">(optioneel)</span></label><input id="f-phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="24" value="${esc(c.phone||'')}"><span class="err" id="e-phone" hidden></span></div>
+    </div>
+    <div class="hp" aria-hidden="true"><label for="f-website">Laat dit veld leeg</label><input id="f-website" tabindex="-1" autocomplete="off"></div>
+    <label class="check"><input type="checkbox" id="c-share"><span>Ja, mail mij mijn woonkompas en de gids. Soltura Real Estate ontvangt mijn antwoorden en mag vrijblijvend contact met mij opnemen over mijn woonwensen. <button type="button" class="btn-quiet" style="min-height:0;padding:0" data-privacy>Hoe gaan jullie met mijn gegevens om?</button></span></label>
+    <span class="err" id="e-share" hidden></span>
+    <label class="check"><input type="checkbox" id="c-mkt"><span>Optioneel: stuur mij af en toe nieuws over wonen aan de Costa Blanca. Los van de vorige keuze en altijd op te zeggen.</span></label>
+    <div id="sendResult" role="status" hidden></div>
+    <div class="row">${mode==='dialog'?'<button type="button" class="btn btn-ghost" data-close>Nog niet</button>':''}<button type="submit" class="btn btn-primary" id="sendSubmit">Stuur mij mijn gratis woonkompas</button></div>
+  </form>`;
+}
+function openShare(){
+  document.querySelectorAll('#sendForm').forEach(f=>f.remove());
+  $('#dlgSendBox').innerHTML=sendFormHTML('dialog');
+  bindSendForm();
+  $('#dlgShare').showModal(); setTimeout(()=>$('#f-first').focus(),50);
+}
+function validateSend(){
+  let ok=true;
+  const set=(k,msg)=>{const e=$('#e-'+k),i=$('#f-'+k);if(msg){e.textContent=msg;e.hidden=false;i&&i.setAttribute('aria-invalid','true');ok=false}else{e.hidden=true;i&&i.removeAttribute('aria-invalid')}};
+  const first=$('#f-first').value.trim(),last=$('#f-last').value.trim(),email=$('#f-email').value.trim(),phone=$('#f-phone').value.trim();
+  set('first',first.length<1?'Vul je voornaam in.':'');
+  set('last',last.length<1?'Vul je achternaam in.':'');
+  set('email',!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)?'Vul een geldig e-mailadres in, bijvoorbeeld naam@voorbeeld.nl.':'');
+  set('phone',phone&&!/^\+?[\d\s().-]{8,20}$/.test(phone)?'Gebruik alleen cijfers, spaties en eventueel een + vooraan.':'');
+  const e=$('#e-share');
+  if(!$('#c-share').checked){e.textContent='Vink dit aan, anders kunnen we je woonkompas niet mailen.';e.hidden=false;ok=false}else e.hidden=true;
+  if(!ok){const f=$('#sendForm').querySelector('[aria-invalid="true"]')||$('#c-share');f.focus()}
+  return ok;
+}
+function rowsFor(ids){
+  return ids.map(id=>Q(id)).filter(q=>q&&relevant().includes(q)).map(q=>[shortLabel(q.id),answeredFrac(q)?lbl(q.id,P.answers[q.id]):'']);
+}
+const SHORT={reason:'Reden',mood:'Sfeer',household:'Huishouden',kids_ages:'Kinderen',school:'School',kids_lang:'Taal kinderen',kids_needs:'Voor de kinderen',visitors:'Logees',pets:'Huisdieren',work:'Werk',setting:'Omgeving',distance:'Afstanden',ptype:'Type',bedrooms:'Slaapkamers',bathrooms:'Badkamers',outdoor:'Buiten',pool:'Zwembad',musthave:'Onmisbaar',view:'Uitzicht',build:'Bouw',budget:'Budget',finance:'Financiering',months:'Per jaar',season:'Seizoen',rental:'Verhuur',daily:'Dagelijks nodig',access:'Snelle reis NL/BE',timing:'Fase'};
+function shortLabel(id){return SHORT[id]||id}
+function buildPdfPayload(contact,marketing){
+  const a=P.answers;
+  const pri=(a.priorities||[]).map(v=>(PRIORITY_POOL.find(o=>o.v===v)||{}).l||v);
+  const sg=suggestions().map(x=>({name:x.p.name,why:x.why.map(t=>TAG_LABEL[t]).join(', ').replace(/, ([^,]*)$/,' en $1')}));
   return {
-    profile_id:P.id, created_at:P.created_at, updated_at:P.updated_at, lang:P.lang,
-    completeness_pct:progress(), answers:P.answers, skipped:P.skipped, favorites:P.favorites,
-    open_questions:openQuestions().map(q=>q.id),
-    contact:{name:form.name.trim(), email:form.email.trim(), phone:form.phone.trim()||null},
-    consents:{
-      share_with_soltura:{given:true, at:new Date().toISOString(), privacy_version:CONFIG.privacyVersion},
-      marketing:{given:form.marketing, at:form.marketing?new Date().toISOString():null}
-    },
-    source:'spanjekompas-web'
+    v:1, source:'spanjekompas-web', lang:P.lang, profile_id:P.id, completeness:progress(),
+    contact, consent:{share:true, marketing:!!marketing, privacy_version:CONFIG.privacyVersion, at:new Date().toISOString()},
+    website:$('#f-website')?$('#f-website').value:'',
+    sentence:styleSentence()||'',
+    sections:[
+      {title:'Wie gaan er mee',rows:rowsFor(['household','kids_ages','school','kids_lang','kids_needs','visitors','pets','work'])},
+      {title:'Mijn omgeving',rows:rowsFor(['reason','mood','setting','distance'])},
+      {title:'Mijn woning',rows:rowsFor(['ptype','bedrooms','bathrooms','outdoor','pool','musthave','view','build'])},
+      {title:'Budget en ritme',rows:rowsFor(['budget','finance','months','season','rental','daily','access','timing'])}
+    ],
+    priorities:pri,
+    flex:(a.flex||[]).map(v=>lbl('flex',v)),
+    places:sg,
+    favorites:PLACES.filter(x=>P.favorites.includes(x.id)).map(x=>x.name),
+    open:openQuestions().slice(0,6).map(q=>q.title),
+    answers:a
   };
 }
 async function submitProfile(payload){
-  if(!CONFIG.submitEndpoint) return {ok:false, reason:'not_configured'};
+  if(!CONFIG.submitEndpoint) return {ok:false,error:'not_configured'};
   try{
     const r=await fetch(CONFIG.submitEndpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    return r.ok?{ok:true}:{ok:false,reason:'http_'+r.status};
-  }catch(e){return {ok:false,reason:'network'}}
+    let d={}; try{d=await r.json()}catch(e){}
+    return r.ok&&d.ok!==false?{ok:true}:{ok:false,error:d.error||('http_'+r.status)};
+  }catch(e){return {ok:false,error:'network'}}
 }
-function openShare(){
-  const d=$('#dlgShare');$('#shareResult').hidden=true;$('#shareSubmit').hidden=false;
-  ['name','email','phone','share'].forEach(k=>{const e=$('#e-'+k);if(e)e.hidden=true});
-  d.showModal();setTimeout(()=>$('#f-name').focus(),50);
+function bindSendForm(){
+  const f=$('#sendForm'); if(!f) return;
+  f.addEventListener('input',ev=>{const id=(ev.target.id||'').replace(/^[fc]-/,'');const e=$('#e-'+id);if(e){e.hidden=true;ev.target.removeAttribute('aria-invalid')}});
+  f.addEventListener('submit',async ev=>{
+    ev.preventDefault();
+    if(!validateSend()) return;
+    const contact={first:$('#f-first').value.trim(),last:$('#f-last').value.trim(),email:$('#f-email').value.trim(),phone:$('#f-phone').value.trim()};
+    P.contact=contact; save();
+    const payload=buildPdfPayload(contact,$('#c-mkt').checked);
+    const btn=$('#sendSubmit');btn.disabled=true;btn.textContent='Je woonkompas wordt gemaakt…';
+    const res=await submitProfile(payload);
+    btn.disabled=false;btn.textContent='Stuur mij mijn gratis woonkompas';
+    const box=$('#sendResult');box.hidden=false;
+    if(res.ok){
+      P.status='shared';P.shared={at:new Date().toISOString(),marketing:payload.consent.marketing};save();
+      box.innerHTML=`<div class="box ok"><b>Verstuurd naar ${esc(contact.email)}.</b> Je woonkompas en de gratis gids staan binnen een paar minuten in je mailbox. Niets ontvangen? Kijk ook even in je spammap.</div>`;
+      btn.hidden=true;
+      if(!$('#v-wizard').hidden){ const b=document.createElement('button');b.className='btn btn-ghost';b.textContent='Bekijk mijn overzicht';b.onclick=()=>showResult();box.appendChild(b); }
+    } else {
+      const msg = res.error==='too_many' ? 'Je hebt je woonkompas net al aangevraagd. Kijk in je mailbox (en spammap), of probeer het over tien minuten opnieuw.'
+        : 'Versturen lukte nu niet. Je antwoorden zijn bewaard; probeer het zo nog eens, of mail ons op '+CONFIG.contactEmail+'.';
+      box.innerHTML=`<div class="box warn">${esc(msg)}</div>`;
+    }
+  });
 }
-function validate(){
-  let ok=true;const set=(k,msg)=>{const e=$('#e-'+k),i=$('#f-'+k);if(msg){e.textContent=msg;e.hidden=false;i&&i.setAttribute('aria-invalid','true');ok=false}else{e.hidden=true;i&&i.removeAttribute('aria-invalid')}};
-  const name=$('#f-name').value.trim(),email=$('#f-email').value.trim(),phone=$('#f-phone').value.trim();
-  set('name',name.length<2?'Vul je naam in, zodat Soltura weet wie je bent.':'');
-  set('email',!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)?'Vul een geldig e-mailadres in, bijvoorbeeld naam@voorbeeld.nl.':'');
-  set('phone',phone&&!/^\+?[\d\s()-]{8,20}$/.test(phone)?'Gebruik alleen cijfers, spaties en eventueel een + vooraan.':'');
-  const e=$('#e-share');if(!$('#c-share').checked){e.textContent='Vink dit aan als je wilt dat Soltura je profiel ontvangt. Zonder vinkje wordt er niets gedeeld.';e.hidden=false;ok=false}else e.hidden=true;
-  if(!ok){const first=$('#shareForm').querySelector('[aria-invalid="true"]')||$('#c-share');first.focus()}
-  return ok;
-}
-$('#shareForm').addEventListener('submit',async ev=>{
-  ev.preventDefault();
-  if(!validate()) return;
-  const payload=buildPayload({name:$('#f-name').value,email:$('#f-email').value,phone:$('#f-phone').value,marketing:$('#c-mkt').checked});
-  const btn=$('#shareSubmit');btn.disabled=true;btn.textContent='Bezig…';
-  const res=await submitProfile(payload);
-  btn.disabled=false;btn.textContent='Deel mijn woonkompas met Soltura';
-  const box=$('#shareResult');box.hidden=false;
-  if(res.ok){
-    P.status='shared';P.shared={at:new Date().toISOString(),marketing:payload.consents.marketing.given};save();
-    box.innerHTML='<div class="box"><b>Je woonkompas is gedeeld met Soltura.</b> Je hoort binnenkort van het team. Je antwoorden blijven ook op dit apparaat staan.</div>';btn.hidden=true;
-  } else {
-    const txt=summaryText()+'\n\nNaam: '+payload.contact.name+'\nE-mail: '+payload.contact.email+(payload.contact.phone?'\nTelefoon: '+payload.contact.phone:'')+'\nNieuws ontvangen: '+(payload.consents.marketing.given?'ja':'nee');
-    box.innerHTML=`<div class="box"><b>${res.reason==='not_configured'?'Rechtstreeks doorsturen is in deze versie nog niet gekoppeld.':'Doorsturen lukte nu niet.'}</b> Er is niets verstuurd. Je kunt je overzicht kopiëren en zelf mailen naar <span class="addr">${CONFIG.contactEmail}</span>.<pre id="shareTxt">${esc(txt)}</pre><div style="margin-top:10px"><button type="button" class="btn btn-primary" id="cpShare">Kopieer mijn overzicht</button></div></div>`;
-    $('#cpShare').onclick=()=>copyText(txt,'Gekopieerd. Plak het in een e-mail aan '+CONFIG.contactEmail);
-    btn.hidden=true;
-  }
-});
 
 /* =========================================================
    REGIO: kaart + kaarten + favorieten
