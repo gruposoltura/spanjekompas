@@ -1,14 +1,19 @@
 <!doctype html>
 <html lang="nl">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-210MVW9H6N"></script>
+<!-- Google Analytics: laadt pas na toestemming via de cookiebanner -->
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-210MVW9H6N');
+  window.SK_GA_ID='G-210MVW9H6N';
+  window.skLoadGA=function(){
+    if(window.__skGA) return; window.__skGA=true;
+    window.dataLayer=window.dataLayer||[];
+    window.gtag=function(){dataLayer.push(arguments);};
+    gtag('js',new Date()); gtag('config',window.SK_GA_ID);
+    var sc=document.createElement('script'); sc.async=true;
+    sc.src='https://www.googletagmanager.com/gtag/js?id='+window.SK_GA_ID;
+    document.head.appendChild(sc);
+  };
+  try{ if(localStorage.getItem('sk_consent')==='yes') window.skLoadGA(); }catch(e){}
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -483,6 +488,14 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
 
 .toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--night);color:#fff;padding:.8em 1.3em;border-radius:999px;font-weight:500;opacity:0;pointer-events:none;transition:.35s;z-index:80;max-width:calc(100vw - 32px);text-align:center}
 .toast.on{opacity:1;transform:translateX(-50%)}
+.consent{position:fixed;left:16px;right:16px;bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:90;max-width:460px;margin-left:auto;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;font-size:.9rem;line-height:1.5}
+.consent[hidden]{display:none}
+.consent p{margin:0 0 12px}
+.consent .btn-quiet{background:none;border:0;padding:0;color:var(--sea);text-decoration:underline;cursor:pointer;font:inherit}
+.consent .row{display:flex;gap:10px;flex-wrap:wrap}
+.consent .btn{min-height:40px;padding:.45em 1.1em;font-size:.9rem}
+.consent .btn-ghost{color:var(--ink)}
+@media (min-width:901px){.consent{bottom:24px;right:24px;left:auto}}
 @media (min-width:901px){.toast{bottom:32px}}
 
 @media (prefers-reduced-motion:reduce){
@@ -656,6 +669,7 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
     <div style="display:grid;gap:2px">
       <button data-privacy>Privacy en gegevens</button>
       <button data-wipe>Wis mijn antwoorden op dit apparaat</button>
+      <button data-consent>Cookie-instellingen</button>
       <small>Je voortgang staat alleen in je eigen browser.</small>
     </div>
   </div>
@@ -671,12 +685,20 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
 <!-- Verzenddialoog (inhoud wordt door sendFormHTML() gevuld) -->
 <dialog id="dlgShare" aria-label="Ontvang je woonkompas"><div class="dlg" id="dlgSendBox"></div></dialog>
 
+<!-- Cookiebanner -->
+<div class="consent" id="consent" role="dialog" aria-label="Cookies" hidden>
+  <p>We gebruiken analytische cookies van Google Analytics om te zien hoe de site en het woonkompas gebruikt worden. Alleen als je akkoord geeft. <button type="button" class="btn-quiet" data-privacy>Meer info</button></p>
+  <div class="row"><button type="button" class="btn btn-primary" id="consentYes">Akkoord</button><button type="button" class="btn btn-ghost" id="consentNo">Weigeren</button></div>
+</div>
+
 <!-- Privacy dialog -->
 <dialog id="dlgPrivacy" aria-labelledby="privT">
   <div class="dlg legal">
     <h2 id="privT">Privacy en gegevens</h2>
     <h3>Zonder delen</h3>
     <p>Je antwoorden worden in de opslag van je eigen browser bewaard (localStorage), zodat je later verder kunt. Via "Wis mijn antwoorden" verwijder je alles.</p>
+    <h3>Cookies en analytics</h3>
+    <p>Alleen als je in de cookiebanner op "Akkoord" klikt, gebruiken we Google Analytics (Google Ireland Ltd.) om te meten hoe de site en het woonkompas gebruikt worden, bijvoorbeeld hoeveel vragen worden ingevuld. Daarbij worden cookies geplaatst. Je antwoorden, naam of e-mailadres sturen we niet naar Google. Grondslag: jouw toestemming (art. 6.1.a AVG). Je kunt je keuze altijd wijzigen via "Cookie-instellingen" onderaan de pagina.</p>
     <h3>Kompas, je digitale woongids</h3>
     <p>De reacties in het gesprek worden gemaakt door een AI-taalmodel (Claude van Anthropic). Daarvoor sturen we je antwoorden, zonder naam of e-mailadres, naar onze eigen server en van daaruit naar dat model. Ze worden alleen gebruikt om de reactie te schrijven en niet aan jou gekoppeld of bewaard. Controleer bij tekst die je zelf typt even wat er is ingevuld.</p>
     <h3>Als je je woonkompas laat mailen</h3>
@@ -1957,6 +1979,7 @@ document.addEventListener('click',e=>{
   const g=e.target.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go);return}
   const pv=e.target.closest('[data-privacy]');if(pv){e.preventDefault();$('#dlgPrivacy').showModal();return}
   const w=e.target.closest('[data-wipe]');if(w){e.preventDefault();$('#dlgWipe').showModal();return}
+  const cs=e.target.closest('[data-consent]');if(cs){e.preventDefault();$('#consent').hidden=false;return}
   const c=e.target.closest('[data-close]');if(c){c.closest('dialog').close();return}
 });
 $('#bRestart').onclick=()=>{clearTimeout(autoT);$('#dlgRestart').showModal()};
@@ -1992,4 +2015,24 @@ document.querySelectorAll('[data-logo]').forEach(s=>s.innerHTML=logoSVG(s.datase
 initHero();renderMap();renderPlaces();updateResume();syncNav();
 const h=(location.hash||'').slice(1);
 if(h==='kompas') go('kompas'); else if(h==='woonwijzer') startWizard(); else if(['regio','hoe','over'].includes(h)) go(h);
+</script>
+<script>
+(function(){
+  var b=document.getElementById('consent'); if(!b) return;
+  var c=null; try{c=localStorage.getItem('sk_consent')}catch(e){}
+  if(c!=='yes'&&c!=='no') b.hidden=false;
+  function set(v){
+    try{localStorage.setItem('sk_consent',v)}catch(e){}
+    b.hidden=true;
+    if(v==='yes'){window.skLoadGA();return}
+    if(window.__skGA){ // toestemming ingetrokken: GA-cookies wissen en herladen
+      var h=location.hostname.replace(/^www\./,'');
+      document.cookie.split(';').forEach(function(k){var n=k.split('=')[0].trim();
+        if(/^_ga/.test(n)){['',location.hostname,'.'+h].forEach(function(d){document.cookie=n+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/'+(d?';domain='+d:'')})}});
+      location.reload();
+    }
+  }
+  document.getElementById('consentYes').onclick=function(){set('yes')};
+  document.getElementById('consentNo').onclick=function(){set('no')};
+})();
 </script>
