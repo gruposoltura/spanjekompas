@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="nl">
 <head>
-<!-- Google Analytics: laadt pas na toestemming via de cookiebanner -->
+<!-- Google Analytics: standaard aan; uit als de bezoeker weigert (sk_consent=no) -->
 <script>
   window.SK_GA_ID='G-210MVW9H6N';
   window.skLoadGA=function(){
@@ -13,7 +13,8 @@
     sc.src='https://www.googletagmanager.com/gtag/js?id='+window.SK_GA_ID;
     document.head.appendChild(sc);
   };
-  try{ if(localStorage.getItem('sk_consent')==='yes') window.skLoadGA(); }catch(e){}
+  var skc=null; try{ skc=localStorage.getItem('sk_consent'); }catch(e){}
+  if(skc!=='no') window.skLoadGA();
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -688,8 +689,8 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
 
 <!-- Cookiebanner -->
 <div class="consent" id="consent" role="dialog" aria-label="Cookies" hidden>
-  <span>Cookies om te meten wat werkt? <button type="button" class="btn-quiet" data-privacy>Info</button></span>
-  <span><button type="button" class="cb cb-yes" id="consentYes">Akkoord</button> <button type="button" class="cb cb-no" id="consentNo">Nee</button></span>
+  <span>We meten bezoek met cookies. <button type="button" class="btn-quiet" data-privacy>Info</button></span>
+  <span><button type="button" class="cb cb-yes" id="consentYes">Oké</button> <button type="button" class="cb cb-no" id="consentNo">Weigeren</button></span>
 </div>
 
 <!-- Privacy dialog -->
@@ -699,7 +700,7 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
     <h3>Zonder delen</h3>
     <p>Je antwoorden worden in de opslag van je eigen browser bewaard (localStorage), zodat je later verder kunt. Via "Wis mijn antwoorden" verwijder je alles.</p>
     <h3>Cookies en analytics</h3>
-    <p>Alleen als je in de cookiebanner op "Akkoord" klikt, gebruiken we Google Analytics (Google Ireland Ltd.) om te meten hoe de site en het woonkompas gebruikt worden, bijvoorbeeld hoeveel vragen worden ingevuld. Daarbij worden cookies geplaatst. Je antwoorden, naam of e-mailadres sturen we niet naar Google. Grondslag: jouw toestemming (art. 6.1.a AVG). Je kunt je keuze altijd wijzigen via "Cookie-instellingen" onderaan de pagina.</p>
+    <p>We gebruiken Google Analytics (Google Ireland Ltd.) om te meten hoe de site en het woonkompas gebruikt worden, bijvoorbeeld hoeveel vragen worden ingevuld. Daarbij worden cookies geplaatst. Je antwoorden, naam of e-mailadres sturen we niet naar Google. Dit staat standaard aan. Wil je niet gemeten worden, klik dan in de cookiebanner of via "Cookie-instellingen" onderaan de pagina op "Weigeren"; de cookies worden dan verwijderd en Google Analytics laadt niet meer.</p>
     <h3>Kompas, je digitale woongids</h3>
     <p>De reacties in het gesprek worden gemaakt door een AI-taalmodel (Claude van Anthropic). Daarvoor sturen we je antwoorden, zonder naam of e-mailadres, naar onze eigen server en van daaruit naar dat model. Ze worden alleen gebruikt om de reactie te schrijven en niet aan jou gekoppeld of bewaard. Controleer bij tekst die je zelf typt even wat er is ingevuld.</p>
     <h3>Als je je woonkompas laat mailen</h3>
