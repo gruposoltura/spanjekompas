@@ -28,6 +28,7 @@ function grab(name, open, close) {
 const PLACES = grab('PLACES', '[', ']');
 const TAG_LABEL = grab('TAG_LABEL', '{', '}');
 const PHOTO = grab('PHOTO', '{', '}');
+const LOKAAL = require('./lokaal.js');
 
 const SLUG = {
   rojales: 'rojales', quesada: 'ciudad-quesada', benijofar: 'benijofar',
@@ -193,6 +194,21 @@ const crumbsLD = items => ({
 });
 const ORG = { '@id': `${SITE}/#organization` };
 
+
+function lokaalSectie(p) {
+  const L = LOKAAL[p.id];
+  if (!L) return '';
+  const bron = (L.bronnen || []).map(b => `<li><a href="${b.u}" rel="noopener" target="_blank">${esc(b.t)}</a>${b.gecontroleerd ? `, gecontroleerd op <time datetime="${b.gecontroleerd}">${datumNL(b.gecontroleerd)}</time>` : ''}</li>`).join('');
+  return `
+  <section aria-labelledby="lokaalT">
+  <h2 id="lokaalT">${esc(L.kop)}</h2>
+  ${L.intro ? `<p>${esc(L.intro)}</p>` : ''}
+  ${L.blokken.map(b => `<h3 style="margin-top:1.4em">${esc(b.h)}</h3>\n  <p>${esc(b.p)}</p>`).join('\n  ')}
+  ${bron ? `<p class="small muted" style="margin-top:14px">Bronnen:</p><ul class="small muted">${bron}</ul>` : ''}
+  </section>
+`;
+}
+
 /* ---------- plaatspagina ---------- */
 function placePage(p) {
   const canonical = url(p);
@@ -235,6 +251,7 @@ function placePage(p) {
   <h2>Ligging en omgeving</h2>
   <p>${esc(p.name)} ligt ${ZONE[p.zone]} van de zuidelijke Costa Blanca, in de provincie Alicante. ${esc(p.omgeving)}</p>
 
+${lokaalSectie(p)}
   <h2>Voorzieningen</h2>
   <p>${esc(p.voorzieningen)}</p>
 
