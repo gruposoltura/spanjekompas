@@ -1,0 +1,5 @@
+# SpanjeKompas — alle zoekmachines en AI-crawlers welkom
+User-agent: *
+Allow: /
+
+Sitemap: https://spanjekompas.com/sitemap.xml
