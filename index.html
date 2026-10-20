@@ -2040,6 +2040,7 @@ document.querySelectorAll('[data-logo]').forEach(s=>s.innerHTML=logoSVG(s.datase
 initHero();renderMap();renderPlaces();updateResume();syncNav();
 const h=(location.hash||'').slice(1);
 if(h==='kompas') go('kompas'); else if(h==='woonwijzer') startWizard(); else if(['regio','hoe','over'].includes(h)) go(h);
+if(h==='privacy'){const d=document.getElementById('dlgPrivacy');if(d&&d.showModal)d.showModal();}
 </script>
 <script>
 (function(){

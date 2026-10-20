@@ -1,0 +1,109 @@
+/* Gidspagina's (Costa Blanca Zuid en plaatsen). Zelfde huisstijl als de homepage. */
+:root{
+  --night:#14243a;--sand:#efe5d4;--paper:#fbf8f2;--card:#fffdf8;--terra:#b45d3a;--sea:#0d7473;--sea-soft:#d6ecea;
+  --pine:#2e4a3a;--ink:#1a2230;--muted:#5a6370;--line:rgba(20,36,58,.14);--focus:#0d7473;
+  --shadow:0 1px 2px rgba(20,36,58,.06),0 8px 24px -12px rgba(20,36,58,.18);
+  --f-display:"Instrument Serif","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --f-ui:"Figtree","Segoe UI",system-ui,-apple-system,sans-serif;
+  --r:14px;--gutter:clamp(16px,4vw,40px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --night:#0b1525;--sand:#18253a;--paper:#0f1a2b;--card:#16233a;--terra:#e08b66;--sea:#56c7c3;--sea-soft:#173c45;
+  --pine:#8fb59d;--ink:#eef1f5;--muted:#a8b2be;--line:rgba(230,236,245,.14);--focus:#56c7c3;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;line-height:1.1;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(2.4rem,6vw,4rem)}
+h2{font-size:clamp(1.7rem,3.4vw,2.4rem);margin-top:2.2em}
+h3{font-size:1.35rem}
+p{margin:.7em 0 0}
+a{color:var(--sea)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1080px;margin-inline:auto;padding-inline:var(--gutter)}
+.narrow{max-width:760px}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--terra);margin:0}
+.lead{font-size:1.15rem;color:var(--muted);max-width:62ch}
+.muted{color:var(--muted)}
+small,.small{font-size:.85rem}
+
+/* Navigatie */
+.nav{background:var(--night);color:#fff;position:sticky;top:0;z-index:20}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
+.brand img{width:34px;height:34px}
+.brand b{font-family:var(--f-display);font-weight:400;font-size:1.5rem}
+.brand b i{color:#f3c79c}
+.nav-links{display:flex;align-items:center;gap:18px}
+.nav-links a{color:#fff;text-decoration:none;font-weight:500;font-size:.95rem}
+.nav-links a:not(.btn){opacity:.85}
+@media (max-width:640px){.nav-links a:not(.btn){display:none}}
+
+/* Knoppen */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;min-height:48px;padding:.7em 1.4em;border-radius:999px;font-weight:600;font-size:1rem;text-decoration:none;border:1.5px solid transparent}
+.btn-primary{background:var(--sea);color:#fff}
+.btn-ghost{border-color:var(--line);color:var(--ink)}
+.nav .btn{min-height:40px;padding:.45em 1.1em;font-size:.92rem;white-space:nowrap}
+@media (max-width:420px){.hide-s{display:none}.brand b{font-size:1.3rem}}
+
+/* Kruimelpad */
+.crumbs{font-size:.88rem;color:var(--muted);margin:22px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.crumbs li+li::before{content:"›";margin-right:6px;opacity:.6}
+.crumbs a{color:var(--muted)}
+
+/* Kop */
+header.page{padding:10px 0 8px}
+header.page h1{margin-top:10px}
+.figure{margin:28px 0 0;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);background:var(--sand)}
+.figure img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover}
+.figure figcaption{font-size:.78rem;color:var(--muted);padding:8px 12px}
+.figure figcaption a{color:var(--muted)}
+
+/* Feitenblok */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:28px 0 0;padding:0}
+.facts div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.facts dt{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--muted)}
+.facts dd{margin:4px 0 0;font-weight:500}
+
+ul.check{padding-left:1.2em}
+ul.check li{margin:.35em 0}
+.note{background:var(--sand);border-radius:var(--r);padding:16px 18px;margin-top:20px}
+
+/* Kaarten */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);text-decoration:none;color:var(--ink);display:flex;flex-direction:column}
+.card img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;background:var(--sand)}
+.card .body{padding:14px 16px 18px}
+.card h3{margin-top:4px}
+.card p{font-size:.95rem;color:var(--muted);margin-top:6px}
+.card:hover h3{text-decoration:underline;text-underline-offset:3px}
+
+/* Vergelijkingstabel */
+.table-wrap{overflow-x:auto;margin-top:18px;border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:.95rem;background:var(--card)}
+th,td{text-align:left;vertical-align:top;padding:10px 14px;border-bottom:1px solid var(--line)}
+th{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+tr:last-child td,tr:last-child th{border-bottom:0}
+tbody th{text-transform:none;letter-spacing:0;font-size:inherit;color:var(--ink);font-weight:600}
+
+/* Oproep */
+.cta{background:var(--night);color:#fff;border-radius:calc(var(--r) + 6px);padding:28px clamp(20px,4vw,40px);margin:48px 0 0}
+.cta h2{margin-top:0;color:#fff}
+.cta p{color:rgba(255,255,255,.82)}
+.cta .btn{margin-top:18px}
+
+/* Voet */
+footer{background:var(--night);color:rgba(255,255,255,.8);margin-top:64px;padding:32px 0 calc(40px + env(safe-area-inset-bottom,0px));font-size:.9rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:20px}
+footer a,footer button{color:rgba(255,255,255,.85);background:none;border:0;padding:0;font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+footer nav{display:flex;flex-wrap:wrap;gap:6px 18px}
+
+/* Cookiemelding (zelfde gedrag als homepage) */
+.consent{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:90;width:max-content;max-width:calc(100vw - 24px);display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:999px;box-shadow:var(--shadow);padding:5px 6px 5px 14px;font-size:.8rem}
+.consent[hidden]{display:none}
+.consent span{white-space:nowrap}
+.consent a{color:var(--sea)}
+.consent .cb{min-height:28px;padding:0 12px;border-radius:999px;font-size:.78rem;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:inherit}
+.consent .cb-yes{background:var(--sea);color:#fff}
+.consent .cb-no{background:transparent;color:var(--muted);border-color:var(--line)}
+@media (min-width:901px){.consent{left:auto;right:20px;transform:none;bottom:20px}}
