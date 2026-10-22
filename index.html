@@ -127,6 +127,7 @@ button{font:inherit;color:inherit}
 .links .btn{min-height:44px;padding:.55em 1.1em;font-size:.92rem}
 .nav:not(.solid) .links .btn{background:#fff;color:var(--night)}
 @media (max-width:1120px){.links a{display:none}}
+@media (max-width:1340px){.links a[href="/gids/"]{display:none}}
 @media (max-width:900px){.links{display:none}}
 
 /* Mobile bottom bar (one-hand) */
@@ -526,6 +527,35 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
 @media (min-width:901px){.consent{left:auto;right:20px;transform:none;bottom:20px}}
 @media (min-width:901px){.toast{bottom:32px}}
 
+/* Kerngetallen */
+.kern{list-style:none;margin:30px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.kern{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kern li{background:var(--night);color:#fff;border-radius:var(--r);padding:16px 16px 14px;display:grid;gap:2px;align-content:start}
+.kern b{font-family:var(--f-display);font-weight:400;font-size:clamp(1.9rem,3.4vw,2.5rem);line-height:1;color:#f3c79c}
+.kern .ke{font-weight:600;font-size:.95rem}
+.kern .ku{font-size:.84rem;color:rgba(255,255,255,.72);margin-top:4px}
+.kern-bron{font-size:.78rem;color:var(--muted);margin-top:8px}
+.kern-bron a{color:var(--muted)}
+.maplink{display:inline-block;margin-top:6px;font-weight:600;color:var(--sea);text-decoration:none}
+.maplink:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* Situatie-tabs */
+.sit-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.sit-tabs [role="tab"]{min-height:44px;padding:.45em 1.1em;border-radius:999px;border:1.5px solid var(--line);background:var(--card);cursor:pointer;font-weight:600;font-size:.95rem;color:var(--ink)}
+.sit-tabs [role="tab"][aria-selected="true"]{background:var(--night);color:var(--paper);border-color:var(--night)}
+.sit-panel{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(20px,4vw,48px);margin-top:24px;align-items:center}
+@media (max-width:860px){.sit-panel{grid-template-columns:1fr}}
+.sit-panel[hidden]{display:none}
+.sit-panel img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;border-radius:var(--r);box-shadow:var(--shadow)}
+.sit-panel h3{font-size:clamp(1.6rem,3vw,2.2rem)}
+.sit-panel p{color:var(--muted);margin-top:10px}
+.sit-panel ul{margin:14px 0 0;padding-left:1.2em}
+.sit-panel li{margin:.3em 0}
+.sit-links{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:14px}
+.sit-links a{color:var(--sea);font-weight:600;text-decoration:none}
+.sit-links a:hover{text-decoration:underline;text-underline-offset:3px}
+.sit-panel .btn{margin-top:20px}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
   .kb{animation:none;transform:scale(1.04)}
@@ -545,6 +575,7 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
       <a href="#kompas" data-go="kompas">Mijn woonkompas</a>
       <a href="#hoe" data-go="hoe">Hoe het werkt</a>
       <a href="#over" data-go="over">Over SpanjeKompas</a>
+      <a href="/gids/">Woongids</a>
       <button class="btn btn-primary" data-start>Start jouw woonkompas</button>
     </nav>
   </div>
@@ -610,11 +641,66 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
     <div class="wrap" style="margin-top:40px"><button class="btn btn-primary" data-start>Ontdek wat bij jou past <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
   </section>
 
+  <section class="block" id="situatie" aria-labelledby="sitH" style="padding-top:0">
+    <div class="wrap">
+      <p class="eyebrow">Welke situatie past bij jou?</p>
+      <h2 id="sitH" style="margin-top:12px;max-width:22ch">Elke levensfase vraagt om een andere plek.</h2>
+      <div class="sit-tabs" role="tablist" aria-label="Kies je situatie"><button type="button" role="tab" id="sitT-gezin" aria-controls="sitP-gezin" aria-selected="true" tabindex="0">Met kinderen</button><button type="button" role="tab" id="sitT-pensioen" aria-controls="sitP-pensioen" aria-selected="false" tabindex="-1">(Vroeg)pensioen</button><button type="button" role="tab" id="sitT-overwinteren" aria-controls="sitP-overwinteren" aria-selected="false" tabindex="-1">Overwinteren</button><button type="button" role="tab" id="sitT-werken" aria-controls="sitP-werken" aria-selected="false" tabindex="-1">Werken op afstand</button></div>
+      <div class="sit-panel" role="tabpanel" id="sitP-gezin" aria-labelledby="sitT-gezin">
+        <img src="img/opties/vakantie.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+        <div>
+          <h3>Emigreren met het gezin</h3>
+          <p>Met kinderen begint de zoektocht bij de school, niet bij het huis. Een school op fietsafstand, sportclubs en andere gezinnen in de buurt bepalen hoe snel iedereen zich thuis voelt.</p>
+          <ul><li>Spaanse of internationale school: die keuze bepaalt in welke buurt je zoekt.</li><li>Kinderen leren Spaans snel, maar de eerste maanden zijn vaak pittig.</li><li>Schrijf je eerst in bij de gemeente; de school vraagt erom.</li></ul>
+          <div class="sit-links"><a href="/gids/naar-school-costa-blanca-zuid/">Naar school aan de Costa Blanca Zuid →</a><a href="/gids/emigreren-met-kinderen/">Checklist emigreren met kinderen →</a></div>
+          <button class="btn btn-primary" data-start data-pre='{"reason":"permanent","household":"gezin"}'>Start het kompas voor ons gezin <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="sit-panel" role="tabpanel" id="sitP-pensioen" aria-labelledby="sitT-pensioen" hidden>
+        <img src="img/opties/pensioen.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+        <div>
+          <h3>Genieten van je pensioen</h3>
+          <p>Rust, zon en voorzieningen dichtbij. Kijk niet alleen naar nu, maar ook naar over tien jaar: gelijkvloers wonen, de huisarts op korte afstand en een buurt die ook in de winter leeft.</p>
+          <ul><li>Met een Nederlands pensioen loopt je zorg meestal via het CAK.</li><li>Gelijkvloers en weinig trappen is later goud waard.</li><li>Winkels en een gezondheidscentrum op loopafstand of een korte rit.</li></ul>
+          <div class="sit-links"><a href="/gids/zorg-in-spanje/">Zorg in Spanje →</a><a href="/gids/overwinteren-of-emigreren/">Overwinteren of emigreren →</a></div>
+          <button class="btn btn-primary" data-start data-pre='{"reason":"pensioen"}'>Start het kompas voor je pensioen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="sit-panel" role="tabpanel" id="sitP-overwinteren" aria-labelledby="sitT-overwinteren" hidden>
+        <img src="img/opties/overwinteren.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+        <div>
+          <h3>Overwinteren in de zon</h3>
+          <p>Een paar maanden per jaar in Spanje vraagt om een woning die je zorgeloos achterlaat, en om een buurt die in de winter niet uitgestorven is.</p>
+          <ul><li>Tot drie maanden hoef je je in Spanje niet in te schrijven.</li><li>Let op isolatie en verwarming: winternachten kunnen koel zijn.</li><li>Kijk ook in januari hoe de buurt leeft.</li></ul>
+          <div class="sit-links"><a href="/gids/overwinteren-of-emigreren/">Waar ligt de grens? →</a><a href="/gids/klimaat-costa-blanca-zuid/">Klimaat het jaar rond →</a></div>
+          <button class="btn btn-primary" data-start data-pre='{"reason":"overwinteren"}'>Start het kompas voor overwinteren <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="sit-panel" role="tabpanel" id="sitP-werken" aria-labelledby="sitT-werken" hidden>
+        <img src="img/opties/ontdekken.jpg" alt="" width="800" height="500" loading="lazy" decoding="async">
+        <div>
+          <h3>Werken vanuit de zon</h3>
+          <p>Je werk meenemen kan prima, als het internet, je werkplek en de regels kloppen. Bespreek je plannen vroeg met je werkgever en een adviseur.</p>
+          <ul><li>Glasvezel op het adres en een kamer met een deur die dicht kan.</li><li>Belasting en sociale zekerheid verschuiven vaak naar Spanje.</li><li>Een luchthaven op korte afstand als je regelmatig naar kantoor moet.</li></ul>
+          <div class="sit-links"><a href="/gids/werken-op-afstand-vanuit-spanje/">Werken op afstand vanuit Spanje →</a><a href="/maandlasten/">Reken je maandlasten door →</a></div>
+          <button class="btn btn-primary" data-start data-pre='{"reason":"permanent","work":"remote"}'>Start het kompas voor wonen en werken <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="block region" id="regio">
     <div class="wrap">
       <p class="eyebrow">Ontdek de Costa Blanca</p>
       <h2 style="margin-top:12px;max-width:20ch">Negen plaatsen, elk met een eigen karakter.</h2>
       <p class="lead" style="margin-top:14px">Van de zoutmeren van Torrevieja tot de boomgaarden van de Vega Baja. Bewaar wat je aanspreekt; het komt vanzelf in je woonkompas terecht.</p>
+      <ul class="kern" aria-label="De regio in cijfers">
+        <li><b>± 2.850</b><span class="ke">zonuren per jaar</span><span class="ku">Ruim anderhalf keer zoveel als in Nederland en België.</span></li>
+        <li><b>18 °C</b><span class="ke">gemiddeld over het jaar</span><span class="ku">Rond 12 °C in januari en 26 °C in augustus.</span></li>
+        <li><b>± 38</b><span class="ke">regendagen per jaar</span><span class="ku">De meeste regen valt in de herfst.</span></li>
+        <li><b>± 2½ uur</b><span class="ke">vliegen naar Alicante</span><span class="ku">Vanaf Amsterdam, Eindhoven of Brussel.</span></li>
+      </ul>
+      <p class="kern-bron">Klimaatcijfers: <a href="https://www.aemet.es/es/serviciosclimaticos/datosclimatologicos/valoresclimatologicos?l=8025" rel="noopener" target="_blank">AEMET, normaalwaarden Alicante 1981–2010</a>. Vliegtijden zijn indicatief.</p>
       <div class="filters" role="group" aria-label="Filter plaatsen">
         <button class="chip" aria-pressed="true" data-filter="all">Alles</button>
         <button class="chip" aria-pressed="false" data-filter="kust">Aan de kust</button>
@@ -626,7 +712,7 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
       <div class="region-grid">
         <figure class="map" style="margin:0">
           <svg viewBox="0 0 400 420" role="img" aria-labelledby="mapT" id="mapSvg"><title id="mapT">Schematische kaart van de zuidelijke Costa Blanca met negen plaatsen</title></svg>
-          <figcaption>Schematisch, niet op schaal. Tik op een plaats om naar de beschrijving te gaan.</figcaption>
+          <figcaption>Schematisch, niet op schaal. Tik op een plaats om naar de beschrijving te gaan.<br><a class="maplink" href="/costa-blanca-zuid/#kaart">Bekijk de echte kaart met luchtfoto's →</a></figcaption>
         </figure>
         <div class="places" id="places"></div>
       </div>
@@ -701,7 +787,7 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
       <small>Je voortgang staat alleen in je eigen browser.</small>
     </div>
   </div>
-  <nav class="wrap foot-places" aria-label="Plaatsen aan de Costa Blanca Zuid"><a href="/costa-blanca-zuid/">Wonen aan de Costa Blanca Zuid</a>: <a href="/wonen-in/rojales/">Rojales</a> · <a href="/wonen-in/ciudad-quesada/">Ciudad Quesada</a> · <a href="/wonen-in/benijofar/">Benijófar</a> · <a href="/wonen-in/formentera-del-segura/">Formentera del Segura</a> · <a href="/wonen-in/guardamar-del-segura/">Guardamar del Segura</a> · <a href="/wonen-in/torrevieja/">Torrevieja</a> · <a href="/wonen-in/orihuela-costa/">Orihuela Costa</a> · <a href="/wonen-in/dolores/">Dolores</a> · <a href="/wonen-in/san-miguel-de-salinas/">San Miguel de Salinas</a></nav>
+  <nav class="wrap foot-places" aria-label="Plaatsen aan de Costa Blanca Zuid"><a href="/costa-blanca-zuid/">Wonen aan de Costa Blanca Zuid</a>: <a href="/wonen-in/rojales/">Rojales</a> · <a href="/wonen-in/ciudad-quesada/">Ciudad Quesada</a> · <a href="/wonen-in/benijofar/">Benijófar</a> · <a href="/wonen-in/formentera-del-segura/">Formentera del Segura</a> · <a href="/wonen-in/guardamar-del-segura/">Guardamar del Segura</a> · <a href="/wonen-in/torrevieja/">Torrevieja</a> · <a href="/wonen-in/orihuela-costa/">Orihuela Costa</a> · <a href="/wonen-in/dolores/">Dolores</a> · <a href="/wonen-in/san-miguel-de-salinas/">San Miguel de Salinas</a><br><a href="/gids/">Woongids</a>: <a href="/gids/nie-nummer/">NIE-nummer</a> · <a href="/gids/naar-school-costa-blanca-zuid/">School</a> · <a href="/gids/zorg-in-spanje/">Zorg</a> · <a href="/gids/overwinteren-of-emigreren/">Overwinteren of emigreren</a> · <a href="/maandlasten/">Maandlastencalculator</a></nav>
 </footer>
 
 <nav class="tabbar" aria-label="Snelmenu">
@@ -730,6 +816,8 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
     <p>We gebruiken Google Analytics (Google Ireland Ltd.) om te meten hoe de site en het woonkompas gebruikt worden, bijvoorbeeld hoeveel vragen worden ingevuld. Daarbij worden cookies geplaatst. Je antwoorden, naam of e-mailadres sturen we niet naar Google. Dit staat standaard aan. Wil je niet gemeten worden, klik dan in de cookiebanner of via "Cookie-instellingen" onderaan de pagina op "Weigeren"; de cookies worden dan verwijderd en Google Analytics laadt niet meer.</p>
     <h3>Kompas, je digitale woongids</h3>
     <p>De reacties in het gesprek worden gemaakt door een AI-taalmodel (Claude van Anthropic). Daarvoor sturen we je antwoorden, zonder naam of e-mailadres, naar onze eigen server en van daaruit naar dat model. Ze worden alleen gebruikt om de reactie te schrijven en niet aan jou gekoppeld of bewaard. Controleer bij tekst die je zelf typt even wat er is ingevuld.</p>
+    <h3>Kaart en maandlastencalculator</h3>
+    <p>De kaart op de pagina over de Costa Blanca Zuid laadt luchtfoto's van Esri en kaartbeelden van OpenStreetMap. Daarbij ziet die dienst, zoals bij elke website, je IP-adres. Wat je in de maandlastencalculator invult, blijft alleen in je eigen browser.</p>
     <h3>Als je je woonkompas laat mailen</h3>
     <p>Pas als je het formulier invult en het vakje aanvinkt, versturen we je antwoorden met je naam, e-mailadres en eventueel telefoonnummer. Kwam je via een advertentie of link met een campagnelabel (zoals utm_source in het webadres), dan sturen we dat label mee, zodat we weten welke campagne werkt. Dat label zit alleen in het webadres en wordt niet via cookies of trackers gevolgd. Daarmee maken we je woonkompas als PDF en mailen we het, samen met de gids, via onze e-maildienst Brevo. We bewaren je profiel en kunnen vrijblijvend contact met je opnemen over je woonwensen. Grondslag: jouw toestemming (art. 6.1.a AVG). Het wekelijkse Marktrapport, de nieuwsbrief en passende woningen ontvang je alleen als je dat apart aanvinkt. Je wordt dan opgenomen in ons klantenbestand; afmelden kan per mailing via de link onderaan elke mail.</p>
     <h3>Bewaartermijn</h3>
@@ -2003,7 +2091,9 @@ function startWizard(){
   go('wizard');
 }
 document.addEventListener('click',e=>{
-  const s=e.target.closest('[data-start]');if(s){e.preventDefault();startWizard();return}
+  const s=e.target.closest('[data-start]');if(s){e.preventDefault();
+    if(s.dataset.pre&&progress()===0){try{Object.assign(P.answers,JSON.parse(s.dataset.pre));save()}catch(x){}}
+    startWizard();return}
   const r=e.target.closest('[data-resume]');if(r){e.preventDefault();startWizard();return}
   const g=e.target.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go);return}
   const pv=e.target.closest('[data-privacy]');if(pv){e.preventDefault();$('#dlgPrivacy').showModal();return}
@@ -2011,6 +2101,24 @@ document.addEventListener('click',e=>{
   const cs=e.target.closest('[data-consent]');if(cs){e.preventDefault();$('#consent').hidden=false;return}
   const c=e.target.closest('[data-close]');if(c){c.closest('dialog').close();return}
 });
+/* Situatie-tabs */
+(function(){
+  const tabs=[...document.querySelectorAll('#situatie [role="tab"]')];
+  function kies(t,focus){
+    tabs.forEach(x=>{const on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;document.getElementById(x.getAttribute('aria-controls')).hidden=!on});
+    if(focus)t.focus();
+    track('situatie_tab',{tab:t.id.replace('sitT-','')});
+  }
+  tabs.forEach((t,i)=>{
+    t.addEventListener('click',()=>kies(t));
+    t.addEventListener('keydown',e=>{
+      let j=null;
+      if(e.key==='ArrowRight')j=(i+1)%tabs.length; else if(e.key==='ArrowLeft')j=(i-1+tabs.length)%tabs.length;
+      else if(e.key==='Home')j=0; else if(e.key==='End')j=tabs.length-1;
+      if(j!==null){e.preventDefault();kies(tabs[j],true)}
+    });
+  });
+})();
 $('#bRestart').onclick=()=>{clearTimeout(autoT);$('#dlgRestart').showModal()};
 $('#restartYes').onclick=()=>{const fav=P.favorites.slice();(choreograph.timers||[]).forEach(clearTimeout);wipe();P.favorites=fav;save();prevThreadLen=0;$('#dlgRestart').close();updateResume();window.scrollTo({top:0});renderChat(true);toast('Je begint opnieuw. Fijn dat je er weer bent!')};
 $('#wipeYes').onclick=()=>{wipe();$('#dlgWipe').close();renderPlaces();updateResume();toast('Je antwoorden zijn van dit apparaat gewist.');go('home')};

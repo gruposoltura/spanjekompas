@@ -37,6 +37,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/css/gids.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -54,7 +55,7 @@
    "publisher": {
     "@id": "https://spanjekompas.com/#organization"
    },
-   "dateModified": "2026-10-20",
+   "dateModified": "2026-10-22",
    "about": {
     "@type": "Place",
     "name": "Costa Blanca Zuid, provincie Alicante, Spanje"
@@ -146,6 +147,8 @@
   <a class="brand" href="/"><img src="/favicon.svg" alt="" width="34" height="34"><b>Spanje<i>Kompas</i></b></a>
   <div class="nav-links">
     <a href="/costa-blanca-zuid/">Costa Blanca Zuid</a>
+    <a href="/gids/">Woongids</a>
+    <a href="/maandlasten/">Maandlasten</a>
     <a class="btn btn-primary" href="/#woonwijzer">Start <span class="hide-s">jouw&nbsp;</span>woonkompas</a>
   </div>
 </div></nav>
@@ -169,6 +172,97 @@
       <li>Internationale voorzieningen: <a href="/wonen-in/ciudad-quesada/">Ciudad Quesada</a>, <a href="/wonen-in/benijofar/">Benijófar</a>, <a href="/wonen-in/torrevieja/">Torrevieja</a> en <a href="/wonen-in/orihuela-costa/">Orihuela Costa</a>.</li>
     </ul>
   </section>
+
+  <section class="kern" aria-labelledby="kernT">
+    <h2 id="kernT" class="sr">De zuidelijke Costa Blanca in cijfers</h2>
+    <ul class="kern-grid">
+      <li><b>± 2.850</b><span class="kern-e">zonuren per jaar</span><span class="kern-u">Gemeten rond Alicante, ruim anderhalf keer zoveel als in Nederland en België.</span></li>
+      <li><b>18 °C</b><span class="kern-e">gemiddeld over het jaar</span><span class="kern-u">Rond 12 °C in januari en 26 °C in augustus.</span></li>
+      <li><b>± 38</b><span class="kern-e">regendagen per jaar</span><span class="kern-u">Met zo'n 311 mm regen per jaar; de meeste valt in de herfst.</span></li>
+      <li><b>± 2½ uur</b><span class="kern-e">vliegen naar Alicante</span><span class="kern-u">Vanaf Amsterdam, Eindhoven of Brussel. Murcia ligt even ver.</span></li>
+    </ul>
+    <p class="small muted kern-bron">Klimaatcijfers: <a href="https://www.aemet.es/es/serviciosclimaticos/datosclimatologicos/valoresclimatologicos?l=8025" rel="noopener" target="_blank">AEMET, klimatologische normaalwaarden Alicante 1981–2010</a>. Vliegtijden zijn indicatief.</p>
+  </section>
+
+  <section id="kaart" class="kaart-sec" aria-labelledby="kaartT">
+    <h2 id="kaartT">Op de kaart, met luchtfoto</h2>
+    <p class="lead">Zoom in op de negen plaatsen en wissel tussen luchtfoto en kaart. Zo zie je meteen hoe dicht een plaats bij zee, de zoutmeren of de boomgaarden van de Vega Baja ligt.</p>
+    <div class="kaart-wrap">
+      <div class="kaart-knoppen" role="group" aria-label="Kaartweergave">
+        <button type="button" class="kk" data-laag="lucht" aria-pressed="true">Luchtfoto</button>
+        <button type="button" class="kk" data-laag="kaart" aria-pressed="false">Kaart</button>
+      </div>
+      <div id="kaartMap" class="kaart-map" role="region" aria-label="Interactieve kaart van de zuidelijke Costa Blanca"><p class="kaart-laden">De kaart wordt geladen…</p></div>
+    </div>
+    <p class="small muted" style="margin-top:8px">Openbare ziekenhuizen in de regio staan onder meer in Torrevieja en in Orihuela (Hospital Vega Baja). Luchtfoto: Esri en partners; kaart: OpenStreetMap-bijdragers.</p>
+    <h3 style="margin-top:28px">Hoe ver is het naar de luchthaven?</h3>
+    <div class="table-wrap"><table class="afst">
+      <thead><tr><th scope="col">Plaats</th><th scope="col">Alicante (ALC)</th><th scope="col">Murcia (RMU)</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><a href="/wonen-in/rojales/">Rojales</a></th><td>± 25 km</td><td>± 45 km</td></tr>
+        <tr><th scope="row"><a href="/wonen-in/ciudad-quesada/">Ciudad Quesada</a></th><td>± 25 km</td><td>± 45 km</td></tr>
+        <tr><th scope="row"><a href="/wonen-in/benijofar/">Benijófar</a></th><td>± 30 km</td><td>± 45 km</td></tr>
+        <tr><th scope="row"><a href="/wonen-in/formentera-del-segura/">Formentera del Segura</a></th><td>± 25 km</td><td>± 45 km</td></tr>
+        <tr><th scope="row"><a href="/wonen-in/guardamar-del-segura/">Guardamar del Segura</a></th><td>± 25 km</td><td>± 50 km</td></tr>
+        <tr><th scope="row"><a href="/wonen-in/torrevieja/">Torrevieja</a></th><td>± 35 km</td><td>± 45 km</td></tr>
+        <tr><th scope="row"><a href="/wonen-in/orihuela-costa/">Orihuela Costa</a></th><td>± 40 km</td><td>± 40 km</td></tr>
+        <tr><th scope="row"><a href="/wonen-in/dolores/">Dolores</a></th><td>± 25 km</td><td>± 50 km</td></tr>
+        <tr><th scope="row"><a href="/wonen-in/san-miguel-de-salinas/">San Miguel de Salinas</a></th><td>± 40 km</td><td>± 35 km</td></tr>
+      </tbody>
+    </table></div>
+    <p class="small muted" style="margin-top:8px">Hemelsbreed vanaf het centrum van de plaats, afgerond op 5 km. Over de weg is het verder; controleer de reistijd voor je eigen adres.</p>
+  </section>
+<script>
+(function(){
+  var el=document.getElementById('kaartMap'); if(!el) return;
+  var P=[{"id":"rojales","naam":"Rojales","zone":"Achterland","sfeer":"Historisch dorp aan de rivier de Segura, met een oude stenen brug en grotwoningen in de heuvel.","ll":[38.088,-0.724],"url":"/wonen-in/rojales/","img":"/img/plaatsen/rojales.jpg","afst":[{"kort":"Alicante (ALC)","km":25},{"kort":"Murcia (RMU)","km":45}]},{"id":"quesada","naam":"Ciudad Quesada","zone":"Achterland","sfeer":"Grote, internationale woonwijk binnen de gemeente Rojales, met veel Noord-Europese bewoners.","ll":[38.07,-0.718],"url":"/wonen-in/ciudad-quesada/","img":"/img/plaatsen/quesada.jpg","afst":[{"kort":"Alicante (ALC)","km":25},{"kort":"Murcia (RMU)","km":45}]},{"id":"benijofar","naam":"Benijófar","zone":"Achterland","sfeer":"Klein en rustig dorp met een gemengde Spaanse en internationale bevolking.","ll":[38.079,-0.738],"url":"/wonen-in/benijofar/","img":"/img/plaatsen/benijofar.jpg","afst":[{"kort":"Alicante (ALC)","km":30},{"kort":"Murcia (RMU)","km":45}]},{"id":"formentera","naam":"Formentera del Segura","zone":"Achterland","sfeer":"Echt Spaans dorp in de vruchtbare huerta van de Segura, met citrus- en groentevelden rondom.","ll":[38.0855,-0.747],"url":"/wonen-in/formentera-del-segura/","img":"/img/plaatsen/formentera.jpg","afst":[{"kort":"Alicante (ALC)","km":25},{"kort":"Murcia (RMU)","km":45}]},{"id":"guardamar","naam":"Guardamar del Segura","zone":"Kust","sfeer":"Kustplaats met een echte dorpskern, waar de Segura in zee uitmondt.","ll":[38.0898,-0.6553],"url":"/wonen-in/guardamar-del-segura/","img":"/img/plaatsen/guardamar.jpg","afst":[{"kort":"Alicante (ALC)","km":25},{"kort":"Murcia (RMU)","km":50}]},{"id":"torrevieja","naam":"Torrevieja","zone":"Kust","sfeer":"Levendige kuststad met een haven, boulevards en een zeer gemengde bevolking.","ll":[37.9787,-0.6822],"url":"/wonen-in/torrevieja/","img":"/img/plaatsen/torrevieja.jpg","afst":[{"kort":"Alicante (ALC)","km":35},{"kort":"Murcia (RMU)","km":45}]},{"id":"orihuela","naam":"Orihuela Costa","zone":"Kust","sfeer":"Kuststrook van de gemeente Orihuela met baaien, urbanisaties en een internationaal publiek.","ll":[37.9257,-0.721],"url":"/wonen-in/orihuela-costa/","img":"/img/plaatsen/orihuela.jpg","afst":[{"kort":"Alicante (ALC)","km":40},{"kort":"Murcia (RMU)","km":40}]},{"id":"dolores","naam":"Dolores","zone":"Achterland","sfeer":"Spaanse plattelandsgemeente met een levendig dorpsplein en weinig toerisme.","ll":[38.1403,-0.7701],"url":"/wonen-in/dolores/","img":"/img/plaatsen/dolores.jpg","afst":[{"kort":"Alicante (ALC)","km":25},{"kort":"Murcia (RMU)","km":50}]},{"id":"sanmiguel","naam":"San Miguel de Salinas","zone":"Achterland","sfeer":"Dorp op een heuvel met uitzicht over de zoutmeren, rustig maar met eigen karakter.","ll":[37.9795,-0.7897],"url":"/wonen-in/san-miguel-de-salinas/","img":"/img/plaatsen/sanmiguel.jpg","afst":[{"kort":"Alicante (ALC)","km":40},{"kort":"Murcia (RMU)","km":35}]}], LH=[{"naam":"Luchthaven Alicante-Elche","ll":[38.2822,-0.5582]},{"naam":"Luchthaven Región de Murcia","ll":[37.8031,-1.1253]}], started=false, map, lagen={}, markers={};
+  function h(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function load(){
+    if(started) return; started=true;
+    var sc=document.createElement('script');
+    sc.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
+    sc.onload=init; sc.onerror=function(){var k=document.querySelector('.kaart-knoppen');if(k)k.hidden=true;el.innerHTML='<p class="kaart-laden">De kaart kon niet worden geladen. De afstanden staan in de tabel hieronder.</p>'};
+    document.head.appendChild(sc);
+  }
+  function init(){
+    el.innerHTML='';
+    map=L.map(el,{scrollWheelZoom:false,zoomControl:true});
+    lagen.lucht=L.layerGroup([
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'Luchtfoto &copy; Esri, Maxar, Earthstar Geographics'}),
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:18})
+    ]);
+    lagen.kaart=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-bijdragers'});
+    lagen.lucht.addTo(map);
+    var b=[];
+    P.forEach(function(p){
+      var ic=L.divIcon({className:'kpin',html:'<span class="kpin-d"></span><span class="kpin-l">'+h(p.naam)+'</span>',iconSize:null,iconAnchor:[9,9]});
+      var m=L.marker(p.ll,{icon:ic,title:p.naam,keyboard:true}).addTo(map);
+      m.bindPopup('<div class="kpop"><img src="'+p.img+'" alt="" width="240" height="150"><p class="eyebrow">'+h(p.zone)+'</p><b>'+h(p.naam)+'</b><p>'+h(p.sfeer)+'</p><p class="kpop-a">'+p.afst.map(function(a){return h(a.kort)+': ± '+a.km+' km'}).join(' · ')+'</p><a href="'+p.url+'">Lees meer over '+h(p.naam)+' →</a></div>',{maxWidth:260});
+      markers[p.id]=m; b.push(p.ll);
+    });
+    LH.forEach(function(l){
+      var ic=L.divIcon({className:'kpin kpin-lh',html:'<span class="kpin-d">✈</span><span class="kpin-l">'+h(l.naam)+'</span>',iconSize:null,iconAnchor:[11,11]});
+      L.marker(l.ll,{icon:ic,title:l.naam,keyboard:false}).addTo(map); b.push(l.ll);
+    });
+    map.fitBounds(b,{padding:[24,24]});
+    var m=(location.hash||'').match(/^#kaart-([a-z]+)$/);
+    if(m&&markers[m[1]]){var q=markers[m[1]].getLatLng();map.setView([q.lat+0.03,q.lng],12,{animate:false});setTimeout(function(){markers[m[1]].openPopup();},250);}
+  }
+  document.querySelectorAll('.kk').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      if(!map) return;
+      var w=btn.getAttribute('data-laag');
+      Object.keys(lagen).forEach(function(k){ if(k===w){ if(!map.hasLayer(lagen[k])) lagen[k].addTo(map);} else map.removeLayer(lagen[k]); });
+      document.querySelectorAll('.kk').forEach(function(x){x.setAttribute('aria-pressed',x===btn?'true':'false')});
+    });
+  });
+  if(/^#kaart/.test(location.hash||'')){ load(); setTimeout(function(){document.getElementById('kaart').scrollIntoView();},60); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){load();io.disconnect();}})},{rootMargin:'400px'});
+    io.observe(el);
+  } else load();
+})();
+</script>
 
   <h2>De negen plaatsen naast elkaar</h2>
   <div class="table-wrap"><table>
@@ -209,7 +303,7 @@
     <a class="btn btn-primary" href="/#woonwijzer">Start jouw woonkompas</a>
   </section>
 
-  <p class="small muted narrow" style="margin-top:28px">De beschrijvingen zijn algemeen en bedoeld als eerste kennismaking. Voorzieningen, reistijden en regels veranderen; controleer wat voor jou belangrijk is altijd ter plaatse of vraag het na. Laatst bijgewerkt: <time datetime="2026-10-20">20 oktober 2026</time>.</p>
+  <p class="small muted narrow" style="margin-top:28px">De beschrijvingen zijn algemeen en bedoeld als eerste kennismaking. Voorzieningen, reistijden en regels veranderen; controleer wat voor jou belangrijk is altijd ter plaatse of vraag het na. Laatst bijgewerkt: <time datetime="2026-10-22">22 oktober 2026</time>.</p>
 </div>
 </main>
 <footer><div class="wrap">
@@ -217,6 +311,8 @@
   <nav aria-label="Voettekst">
     <a href="/">Home</a>
     <a href="/costa-blanca-zuid/">Costa Blanca Zuid</a>
+    <a href="/gids/">Woongids</a>
+    <a href="/maandlasten/">Maandlastencalculator</a>
     <a href="/#privacy">Privacy en gegevens</a>
     <button type="button" id="skCookie">Cookie-instellingen</button>
     <a href="mailto:info@spanjekompas.com">info@spanjekompas.com</a>
