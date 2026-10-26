@@ -606,6 +606,7 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
       </div>
       <p class="micro">Vrijblijvend · Persoonlijk · Helemaal op jouw tempo</p>
       <p class="gift"><span>Gratis</span> Ontvang je persoonlijke woonkompas als PDF, samen met onze woon- en emigratiegids.</p>
+      <p class="micro" style="margin-top:10px">Alleen de gids? <button type="button" class="btn-quiet" style="color:#fff;padding:0;min-height:32px;text-decoration:underline" data-gids="hero">Stuur hem direct naar mijn mail</button></p>
       <p class="micro" id="resumeLine" hidden style="margin-top:10px"><button class="btn-quiet" style="color:#fff;padding:0;min-height:32px" data-resume>Verder waar je gebleven was (<span data-resume-pct>0</span>% ingevuld)</button></p>
     </div>
     <div class="scrollcue" aria-hidden="true"></div>
@@ -631,6 +632,7 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
           <li>Desgewenst elke maandag het Marktrapport met prijzen en trends aan de Costa Blanca</li>
         </ul>
         <button class="btn btn-primary" data-start style="margin-top:20px">Start en ontvang je gratis gids</button>
+        <p style="margin-top:12px"><button type="button" class="btn-quiet" style="padding:0;min-height:32px;text-decoration:underline" data-gids="beloning">Alleen de gids? Stuur hem direct naar mijn mail</button></p>
       </div>
     </div>
   </section>
@@ -809,6 +811,23 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
 
 <!-- Verzenddialoog (inhoud wordt door sendFormHTML() gevuld) -->
 <dialog id="dlgShare" aria-label="Ontvang je woonkompas"><div class="dlg" id="dlgSendBox"></div></dialog>
+<!-- Korte route: alleen de gids -->
+<dialog id="dlgGids" aria-labelledby="gidsT"><div class="dlg">
+  <form class="sendform" id="gidsForm" novalidate>
+    <h2 id="gidsT">Ontvang de gratis woon- en emigratiegids</h2>
+    <p>Vier pagina's over kopen in zes stappen met de kosten, de eerste maanden na emigratie en acht vragen voor elke makelaar. Direct in je mailbox.</p>
+    <div class="sf-row">
+      <div class="field"><label for="g-first">Voornaam</label><input id="g-first" autocomplete="given-name" maxlength="60"><span class="err" id="ge-first" hidden></span></div>
+      <div class="field"><label for="g-email">E-mailadres</label><input id="g-email" type="email" autocomplete="email" maxlength="120"><span class="err" id="ge-email" hidden></span></div>
+    </div>
+    <div class="hp" aria-hidden="true"><label for="g-website">Laat dit veld leeg</label><input id="g-website" tabindex="-1" autocomplete="off"></div>
+    <label class="check"><input type="checkbox" id="gc-ok"><span>Ja, mail mij de gids. SpanjeKompas mag vrijblijvend contact met mij opnemen over mijn woonwensen. <button type="button" class="btn-quiet" style="min-height:0;padding:0" data-privacy>Hoe gaan jullie met mijn gegevens om?</button></span></label>
+    <span class="err" id="ge-ok" hidden></span>
+    <label class="check mr-opt"><input type="checkbox" id="gc-mkt"><span><b>Ja, stuur mij ook het wekelijkse Marktrapport</b>: elke maandag de prijzen, verkopen en trends aan de Costa Blanca. Ik ontvang dan ook de nieuwsbrief en woningen die passen bij mijn wensen. Gratis, los van de vorige keuze en per mailing op te zeggen.</span></label>
+    <div id="gidsResult" role="status" hidden></div>
+    <div class="row"><button type="button" class="btn btn-ghost" data-close>Nog niet</button><button type="submit" class="btn btn-primary" id="gidsSubmit">Stuur mij de gratis gids</button></div>
+  </form>
+</div></dialog>
 
 <!-- Cookiebanner -->
 <div class="consent" id="consent" role="dialog" aria-label="Cookies" hidden>
@@ -830,8 +849,8 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
     <p>De reacties in het gesprek worden gemaakt door een AI-taalmodel (Claude van Anthropic). Daarvoor sturen we je antwoorden, zonder naam of e-mailadres, naar onze eigen server en van daaruit naar dat model. Ze worden alleen gebruikt om de reactie te schrijven en niet aan jou gekoppeld of bewaard. Controleer bij tekst die je zelf typt even wat er is ingevuld.</p>
     <h3>Kaart en maandlastencalculator</h3>
     <p>De kaart op de pagina over de Costa Blanca Zuid laadt luchtfoto's van Esri en kaartbeelden van OpenStreetMap. Daarbij ziet die dienst, zoals bij elke website, je IP-adres. Wat je in de maandlastencalculator invult, blijft alleen in je eigen browser.</p>
-    <h3>Als je je woonkompas laat mailen</h3>
-    <p>Pas als je het formulier invult en het vakje aanvinkt, versturen we je antwoorden met je naam, e-mailadres en eventueel telefoonnummer. Kwam je via een advertentie of link met een campagnelabel (zoals utm_source in het webadres), dan sturen we dat label mee, zodat we weten welke campagne werkt. Daarmee maken we je woonkompas als PDF en mailen we het, samen met de gids, via onze e-maildienst Brevo. We bewaren je profiel en kunnen vrijblijvend contact met je opnemen over je woonwensen. Grondslag: jouw toestemming (art. 6.1.a AVG). Het wekelijkse Marktrapport, de nieuwsbrief en passende woningen ontvang je alleen als je dat apart aanvinkt. Je wordt dan opgenomen in ons klantenbestand; afmelden kan per mailing via de link onderaan elke mail.</p>
+    <h3>Als je je woonkompas of de gids laat mailen</h3>
+    <p>Vraag je alleen de gids aan, dan versturen we je voornaam en e-mailadres en geldt verder hetzelfde als hieronder. Pas als je het formulier invult en het vakje aanvinkt, versturen we je antwoorden met je naam, e-mailadres en eventueel telefoonnummer. Kwam je via een advertentie of link met een campagnelabel (zoals utm_source in het webadres), dan sturen we dat label mee, zodat we weten welke campagne werkt. Daarmee maken we je woonkompas als PDF en mailen we het, samen met de gids, via onze e-maildienst Brevo. We bewaren je profiel en kunnen vrijblijvend contact met je opnemen over je woonwensen. Grondslag: jouw toestemming (art. 6.1.a AVG). Het wekelijkse Marktrapport, de nieuwsbrief en passende woningen ontvang je alleen als je dat apart aanvinkt. Je wordt dan opgenomen in ons klantenbestand; afmelden kan per mailing via de link onderaan elke mail.</p>
     <h3>Bewaartermijn</h3>
     <p>Maximaal 24 maanden na het laatste contact, tenzij er een aankoop volgt en de wet langere bewaring vraagt.</p>
     <h3>Jouw rechten</h3>
@@ -2166,6 +2185,58 @@ function initHero(){
 
 /* Logo's */
 document.querySelectorAll('[data-logo]').forEach(s=>s.innerHTML=logoSVG(s.dataset.logo==='dark'));
+
+/* Korte route: alleen de gids per mail (de woonwijzer is daarna de tweede stap) */
+function openGids(via){
+  const c=P.contact||{};
+  if(!$('#g-first').value)$('#g-first').value=c.first||'';
+  if(!$('#g-email').value)$('#g-email').value=c.email||'';
+  const box=$('#gidsResult');box.hidden=true;box.innerHTML='';
+  const btn=$('#gidsSubmit');btn.hidden=false;btn.disabled=false;
+  track('gids_direct_open',{via:via||'knop'});
+  try{if(typeof fbq==='function')fbq('trackCustom','GidsOpen',{via:via||'knop'})}catch(e){}
+  $('#dlgGids').showModal();setTimeout(()=>$('#g-first').focus(),50);
+}
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-gids]');if(g){e.preventDefault();openGids(g.dataset.gids);return}
+  const k=e.target.closest('[data-gids-start]');if(k){e.preventDefault();$('#dlgGids').close();startWizard()}
+});
+$('#gidsForm').addEventListener('input',ev=>{const id=(ev.target.id||'').replace(/^g-/,'');const e=$('#ge-'+id);if(e){e.hidden=true;ev.target.removeAttribute('aria-invalid')}if(ev.target.id==='gc-ok')$('#ge-ok').hidden=true});
+$('#gidsForm').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  let ok=true;
+  const set=(k,msg)=>{const e=$('#ge-'+k),i=$('#g-'+k);if(msg){e.textContent=msg;e.hidden=false;i.setAttribute('aria-invalid','true');ok=false}else{e.hidden=true;i.removeAttribute('aria-invalid')}};
+  const first=$('#g-first').value.trim(),email=$('#g-email').value.trim();
+  set('first',first?'':'Vul je voornaam in.');
+  set('email',/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)?'':'Vul een geldig e-mailadres in, bijvoorbeeld naam@voorbeeld.nl.');
+  const eo=$('#ge-ok');
+  if(!$('#gc-ok').checked){eo.textContent='Vink dit aan, anders kunnen we de gids niet mailen.';eo.hidden=false;ok=false}else eo.hidden=true;
+  if(!ok){($('#gidsForm').querySelector('[aria-invalid="true"]')||$('#gc-ok')).focus();return}
+  P.contact=Object.assign({},P.contact||{},{first,email});save();
+  let measure=true;try{measure=localStorage.getItem('sk_consent')!=='no'}catch(e){}
+  const eventId='lead-'+uuid(), marketing=$('#gc-mkt').checked;
+  const payload={v:1,mode:'gids',source:'spanjekompas-web',lang:P.lang,profile_id:P.id,first,email,
+    website:$('#g-website').value,
+    consent:{gids:true,marketing,privacy_version:CONFIG.privacyVersion,at:new Date().toISOString()},
+    attribution:P.attribution||{source:'direct'},
+    meta:{event_id:eventId,measure,fbp:readCookie('_fbp'),fbc:readCookie('_fbc'),page_url:location.origin+location.pathname}};
+  const btn=$('#gidsSubmit');btn.disabled=true;btn.textContent='De gids wordt verstuurd…';
+  const res=await submitProfile(payload);
+  btn.disabled=false;btn.textContent='Stuur mij de gratis gids';
+  track(res.ok?'generate_lead':'gids_submit_error',res.ok?{type:'gids',marktrapport:marketing?'ja':'nee'}:{error:String(res.error||'onbekend')});
+  const box=$('#gidsResult');box.hidden=false;
+  if(res.ok){
+    try{if(typeof fbq==='function')fbq('track','Lead',{content_name:'gids',marktrapport:marketing?'ja':'nee'},{eventID:eventId})}catch(e){}
+    btn.hidden=true;
+    box.innerHTML=`<div class="box ok"><b>Verstuurd naar ${esc(email)}.</b> De gids staat binnen een paar minuten in je mailbox. Niets ontvangen? Kijk ook even in je spammap.</div><p style="margin-top:14px">Benieuwd welke plek bij jou past? In ± 6 minuten maak je je persoonlijke woonkompas. Ook dat mailen we je gratis.</p><div class="row"><button type="button" class="btn btn-primary" data-gids-start>Start mijn woonkompas</button></div>`;
+  } else {
+    const msg=res.error==='too_many'?'Je hebt de gids net al aangevraagd. Kijk in je mailbox (en spammap), of probeer het over tien minuten opnieuw.'
+      :'Versturen lukte nu niet. Probeer het zo nog eens, of mail ons op '+CONFIG.contactEmail+'.';
+    box.innerHTML=`<div class="box warn">${esc(msg)}</div>`;
+  }
+});
+/* Via een advertentielink met ?gids=direct opent de korte route meteen */
+try{if(new URLSearchParams(location.search).get('gids')==='direct')setTimeout(()=>openGids('link'),700)}catch(e){}
 
 /* Init */
 initHero();renderMap();renderPlaces();updateResume();syncNav();
