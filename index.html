@@ -8,13 +8,23 @@
     if(window.__skGA) return; window.__skGA=true;
     window.dataLayer=window.dataLayer||[];
     window.gtag=function(){dataLayer.push(arguments);};
-    gtag('js',new Date()); gtag('config',window.SK_GA_ID);
+    gtag('js',new Date()); gtag('config',window.SK_GA_ID,{page_location:window.SK_LANDING||location.href});
     var sc=document.createElement('script'); sc.async=true;
     sc.src='https://www.googletagmanager.com/gtag/js?id='+window.SK_GA_ID;
     document.head.appendChild(sc);
   };
+  // Meta-pixel (zelfde toestemming als GA): standaard aan, uit na Weigeren
+  window.SK_LANDING=location.href;
+  window.SK_FB_PIXEL='1136331222182037';
+  window.skLoadFB=function(){
+    if(window.__skFB) return; window.__skFB=true;
+    try{var m=location.search.match(/[?&]fbclid=([^&#]+)/);
+      if(m) document.cookie='_fbc=fb.1.'+Date.now()+'.'+m[1]+';max-age=7776000;path=/;SameSite=Lax';}catch(e){}
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init',window.SK_FB_PIXEL); fbq('track','PageView');
+  };
   var skc=null; try{ skc=localStorage.getItem('sk_consent'); }catch(e){}
-  if(skc!=='no') window.skLoadGA();
+  if(skc!=='no'){ window.skLoadGA(); window.skLoadFB(); }
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -802,7 +812,7 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
 
 <!-- Cookiebanner -->
 <div class="consent" id="consent" role="dialog" aria-label="Cookies" hidden>
-  <span>We meten bezoek met cookies. <button type="button" class="btn-quiet" data-privacy>Info</button></span>
+  <span>We meten bezoek en advertenties met cookies. <button type="button" class="btn-quiet" data-privacy>Info</button></span>
   <span><button type="button" class="cb cb-yes" id="consentYes">Oké</button> <button type="button" class="cb cb-no" id="consentNo">Weigeren</button></span>
 </div>
 
@@ -813,13 +823,15 @@ dialog::backdrop{background:rgba(10,20,36,.55)}
     <h3>Zonder delen</h3>
     <p>Je antwoorden worden in de opslag van je eigen browser bewaard (localStorage), zodat je later verder kunt. Via "Wis mijn antwoorden" verwijder je alles.</p>
     <h3>Cookies en analytics</h3>
-    <p>We gebruiken Google Analytics (Google Ireland Ltd.) om te meten hoe de site en het woonkompas gebruikt worden, bijvoorbeeld hoeveel vragen worden ingevuld. Daarbij worden cookies geplaatst. Je antwoorden, naam of e-mailadres sturen we niet naar Google. Dit staat standaard aan. Wil je niet gemeten worden, klik dan in de cookiebanner of via "Cookie-instellingen" onderaan de pagina op "Weigeren"; de cookies worden dan verwijderd en Google Analytics laadt niet meer.</p>
+    <p>We gebruiken Google Analytics (Google Ireland Ltd.) om te meten hoe de site en het woonkompas gebruikt worden, bijvoorbeeld hoeveel vragen worden ingevuld. Je antwoorden, naam of e-mailadres sturen we niet naar Google.</p>
+    <p>Daarnaast gebruiken we de Meta-pixel (Meta Platforms Ireland Ltd.) om te meten of onze advertenties op Facebook en Instagram werken: of je via een advertentie kwam, de woonwijzer startte en je woonkompas aanvroeg. Je antwoorden sturen we niet naar Meta. Vraag je je woonkompas aan, dan melden we dat ook rechtstreeks aan Meta, met je e-mailadres en telefoonnummer alleen in versleutelde (gehashte) vorm, zodat Meta het aan een advertentieklik kan koppelen.</p>
+    <p>Beide plaatsen cookies en staan standaard aan. Wil je niet gemeten worden, klik dan in de cookiebanner of via "Cookie-instellingen" onderaan de pagina op "Weigeren"; de cookies worden dan verwijderd, Google Analytics en de Meta-pixel laden niet meer en we melden je aanvraag niet aan Meta.</p>
     <h3>Kompas, je digitale woongids</h3>
     <p>De reacties in het gesprek worden gemaakt door een AI-taalmodel (Claude van Anthropic). Daarvoor sturen we je antwoorden, zonder naam of e-mailadres, naar onze eigen server en van daaruit naar dat model. Ze worden alleen gebruikt om de reactie te schrijven en niet aan jou gekoppeld of bewaard. Controleer bij tekst die je zelf typt even wat er is ingevuld.</p>
     <h3>Kaart en maandlastencalculator</h3>
     <p>De kaart op de pagina over de Costa Blanca Zuid laadt luchtfoto's van Esri en kaartbeelden van OpenStreetMap. Daarbij ziet die dienst, zoals bij elke website, je IP-adres. Wat je in de maandlastencalculator invult, blijft alleen in je eigen browser.</p>
     <h3>Als je je woonkompas laat mailen</h3>
-    <p>Pas als je het formulier invult en het vakje aanvinkt, versturen we je antwoorden met je naam, e-mailadres en eventueel telefoonnummer. Kwam je via een advertentie of link met een campagnelabel (zoals utm_source in het webadres), dan sturen we dat label mee, zodat we weten welke campagne werkt. Dat label zit alleen in het webadres en wordt niet via cookies of trackers gevolgd. Daarmee maken we je woonkompas als PDF en mailen we het, samen met de gids, via onze e-maildienst Brevo. We bewaren je profiel en kunnen vrijblijvend contact met je opnemen over je woonwensen. Grondslag: jouw toestemming (art. 6.1.a AVG). Het wekelijkse Marktrapport, de nieuwsbrief en passende woningen ontvang je alleen als je dat apart aanvinkt. Je wordt dan opgenomen in ons klantenbestand; afmelden kan per mailing via de link onderaan elke mail.</p>
+    <p>Pas als je het formulier invult en het vakje aanvinkt, versturen we je antwoorden met je naam, e-mailadres en eventueel telefoonnummer. Kwam je via een advertentie of link met een campagnelabel (zoals utm_source in het webadres), dan sturen we dat label mee, zodat we weten welke campagne werkt. Daarmee maken we je woonkompas als PDF en mailen we het, samen met de gids, via onze e-maildienst Brevo. We bewaren je profiel en kunnen vrijblijvend contact met je opnemen over je woonwensen. Grondslag: jouw toestemming (art. 6.1.a AVG). Het wekelijkse Marktrapport, de nieuwsbrief en passende woningen ontvang je alleen als je dat apart aanvinkt. Je wordt dan opgenomen in ons klantenbestand; afmelden kan per mailing via de link onderaan elke mail.</p>
     <h3>Bewaartermijn</h3>
     <p>Maximaal 24 maanden na het laatste contact, tenzij er een aankoop volgt en de wet langere bewaring vraagt.</p>
     <h3>Jouw rechten</h3>
@@ -876,7 +888,7 @@ const CONFIG = {
     ritme: 'video/ritme.mp4',
     telt: 'video/telt.mp4'
   },
-  privacyVersion: '2026-10-14'
+  privacyVersion: '2026-10-26'
 };
 
 /* ---------- Iconen (lijnstijl, 24x24) ---------- */
@@ -1232,7 +1244,7 @@ function uuid(){return (crypto.randomUUID?crypto.randomUUID():'p-'+Date.now().to
 function newProfile(){const t=new Date().toISOString();return{id:uuid(),created_at:t,updated_at:t,lang:CONFIG.lang,status:'anonymous',answers:{},skipped:[],favorites:[],shared:null,reactions:{},chat:[]}}
 let P = load() || newProfile();
 P.reactions=P.reactions||{};P.chat=(P.chat||[]).filter(c=>!c.pending);
-/* Campagnebron: alleen de UTM-labels uit het webadres (geen cookies, geen klik-ID's).
+/* Campagnebron: de UTM-labels uit het webadres. GA en de Meta-pixel lezen het oorspronkelijke adres (SK_LANDING in de head).
    Eerste bezoek met labels telt; wordt pas na toestemming meegestuurd met het formulier. */
 function captureAttribution(){
   try{
@@ -1253,7 +1265,10 @@ captureAttribution();
 let qIndex = 0;
 /* ---------- GA4-meting van het kompasgebruik ---------- */
 const TRK={seen:new Set(),phases:new Set()};
-function track(name,params){try{if(typeof gtag==='function')gtag('event',name,params||{})}catch(e){}}
+const FB_MAP={kompas_start:'KompasStart',kompas_result:'KompasResultaat'};
+function track(name,params){try{if(typeof gtag==='function')gtag('event',name,params||{})}catch(e){}
+  try{if(FB_MAP[name]&&typeof fbq==='function')fbq('trackCustom',FB_MAP[name],params||{})}catch(e){}}
+function readCookie(n){try{const m=document.cookie.match(new RegExp('(?:^|; )'+n+'=([^;]*)'));return m?decodeURIComponent(m[1]):''}catch(e){return ''}}
 function load(){try{const s=localStorage.getItem(CONFIG.storageKey);return s?JSON.parse(s):null}catch(e){return null}}
 function save(){P.updated_at=new Date().toISOString();try{localStorage.setItem(CONFIG.storageKey,JSON.stringify(P))}catch(e){}}
 function wipe(){try{localStorage.removeItem(CONFIG.storageKey)}catch(e){}P=newProfile();qIndex=0}
@@ -1996,12 +2011,16 @@ function bindSendForm(){
     const contact={first:$('#f-first').value.trim(),last:$('#f-last').value.trim(),email:$('#f-email').value.trim(),phone:$('#f-phone').value.trim()};
     P.contact=contact; save();
     const payload=buildPdfPayload(contact,$('#c-mkt').checked);
+    let measure=true;try{measure=localStorage.getItem('sk_consent')!=='no'}catch(e){}
+    const eventId='lead-'+uuid();
+    payload.meta={event_id:eventId,measure,fbp:readCookie('_fbp'),fbc:readCookie('_fbc'),page_url:location.origin+location.pathname};
     const btn=$('#sendSubmit');btn.disabled=true;btn.textContent='Je woonkompas wordt gemaakt…';
     const res=await submitProfile(payload);
     btn.disabled=false;btn.textContent='Stuur mij mijn gratis woonkompas';
     const box=$('#sendResult');box.hidden=false;
     track(res.ok?'generate_lead':'kompas_submit_error',res.ok?{progress:progress(),marktrapport:payload.consent.marketing?'ja':'nee'}:{error:String(res.error||'onbekend')});
     if(res.ok){
+      try{if(typeof fbq==='function')fbq('track','Lead',{content_name:'woonkompas',marktrapport:payload.consent.marketing?'ja':'nee'},{eventID:eventId})}catch(e){}
       P.status='shared';P.shared={at:new Date().toISOString(),marketing:payload.consent.marketing};save();
       box.innerHTML=`<div class="box ok"><b>Verstuurd naar ${esc(contact.email)}.</b> Je woonkompas en de gratis gids staan binnen een paar minuten in je mailbox. Niets ontvangen? Kijk ook even in je spammap.</div>`;
       btn.hidden=true;
@@ -2162,11 +2181,11 @@ if(h==='privacy'){const d=document.getElementById('dlgPrivacy');if(d&&d.showModa
   function set(v){
     try{localStorage.setItem('sk_consent',v)}catch(e){}
     b.hidden=true;
-    if(v==='yes'){window.skLoadGA();return}
-    if(window.__skGA){ // toestemming ingetrokken: GA-cookies wissen en herladen
+    if(v==='yes'){window.skLoadGA();window.skLoadFB();return}
+    if(window.__skGA||window.__skFB){ // toestemming ingetrokken: GA-cookies wissen en herladen
       var h=location.hostname.replace(/^www\./,'');
       document.cookie.split(';').forEach(function(k){var n=k.split('=')[0].trim();
-        if(/^_ga/.test(n)){['',location.hostname,'.'+h].forEach(function(d){document.cookie=n+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/'+(d?';domain='+d:'')})}});
+        if(/^(_ga|_fbp|_fbc)/.test(n)){['',location.hostname,'.'+h].forEach(function(d){document.cookie=n+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/'+(d?';domain='+d:'')})}});
       location.reload();
     }
   }

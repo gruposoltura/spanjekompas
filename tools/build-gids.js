@@ -93,13 +93,23 @@ const GA = `<script>
     if(window.__skGA) return; window.__skGA=true;
     window.dataLayer=window.dataLayer||[];
     window.gtag=function(){dataLayer.push(arguments);};
-    gtag('js',new Date()); gtag('config',window.SK_GA_ID);
+    gtag('js',new Date()); gtag('config',window.SK_GA_ID,{page_location:window.SK_LANDING||location.href});
     var sc=document.createElement('script'); sc.async=true;
     sc.src='https://www.googletagmanager.com/gtag/js?id='+window.SK_GA_ID;
     document.head.appendChild(sc);
   };
+  // Meta-pixel (zelfde toestemming als GA): standaard aan, uit na Weigeren
+  window.SK_LANDING=location.href;
+  window.SK_FB_PIXEL='1136331222182037';
+  window.skLoadFB=function(){
+    if(window.__skFB) return; window.__skFB=true;
+    try{var m=location.search.match(/[?&]fbclid=([^&#]+)/);
+      if(m) document.cookie='_fbc=fb.1.'+Date.now()+'.'+m[1]+';max-age=7776000;path=/;SameSite=Lax';}catch(e){}
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init',window.SK_FB_PIXEL); fbq('track','PageView');
+  };
   var skc=null; try{ skc=localStorage.getItem('sk_consent'); }catch(e){}
-  if(skc!=='no') window.skLoadGA();
+  if(skc!=='no'){ window.skLoadGA(); window.skLoadFB(); }
 </script>`;
 
 function head({ title, description, canonical, image, jsonld, extraHead = '' }) {
@@ -160,7 +170,7 @@ const FOOT = `</main>
   </nav>
 </div></footer>
 <div class="consent" id="consent" role="dialog" aria-label="Cookies" hidden>
-  <span>We meten bezoek met cookies. <a href="/#privacy">Info</a></span>
+  <span>We meten bezoek en advertenties met cookies. <a href="/#privacy">Info</a></span>
   <span><button type="button" class="cb cb-yes" id="consentYes">Oké</button> <button type="button" class="cb cb-no" id="consentNo">Weigeren</button></span>
 </div>
 <script>
@@ -171,11 +181,11 @@ const FOOT = `</main>
   function set(v){
     try{localStorage.setItem('sk_consent',v)}catch(e){}
     b.hidden=true;
-    if(v==='yes'){window.skLoadGA();return}
-    if(window.__skGA){
+    if(v==='yes'){window.skLoadGA();window.skLoadFB();return}
+    if(window.__skGA||window.__skFB){
       var h=location.hostname.replace(/^www\\./,'');
       document.cookie.split(';').forEach(function(k){var n=k.split('=')[0].trim();
-        if(/^_ga/.test(n)){['',location.hostname,'.'+h].forEach(function(d){document.cookie=n+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/'+(d?';domain='+d:'')})}});
+        if(/^(_ga|_fbp|_fbc)/.test(n)){['',location.hostname,'.'+h].forEach(function(d){document.cookie=n+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/'+(d?';domain='+d:'')})}});
       location.reload();
     }
   }
